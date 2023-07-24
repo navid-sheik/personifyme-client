@@ -10,12 +10,8 @@
 		6D2D92262A6DF54F005AE6E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92252A6DF54F005AE6E6 /* AppDelegate.swift */; };
 		6D2D92282A6DF54F005AE6E6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92272A6DF54F005AE6E6 /* SceneDelegate.swift */; };
 		6D2D922A2A6DF54F005AE6E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92292A6DF54F005AE6E6 /* ViewController.swift */; };
-		6D2D922D2A6DF54F005AE6E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D922B2A6DF54F005AE6E6 /* Main.storyboard */; };
 		6D2D922F2A6DF550005AE6E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D922E2A6DF550005AE6E6 /* Assets.xcassets */; };
 		6D2D92322A6DF550005AE6E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D92302A6DF550005AE6E6 /* LaunchScreen.storyboard */; };
-		6D2D923D2A6DF550005AE6E6 /* PersonifyMeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D923C2A6DF550005AE6E6 /* PersonifyMeTests.swift */; };
-		6D2D92472A6DF550005AE6E6 /* PersonifyMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92462A6DF550005AE6E6 /* PersonifyMeUITests.swift */; };
-		6D2D92492A6DF550005AE6E6 /* PersonifyMeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92482A6DF550005AE6E6 /* PersonifyMeUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,15 +36,11 @@
 		6D2D92252A6DF54F005AE6E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D2D92272A6DF54F005AE6E6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6D2D92292A6DF54F005AE6E6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		6D2D922C2A6DF54F005AE6E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6D2D922E2A6DF550005AE6E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6D2D92312A6DF550005AE6E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6D2D92332A6DF550005AE6E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D2D92382A6DF550005AE6E6 /* PersonifyMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonifyMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D2D923C2A6DF550005AE6E6 /* PersonifyMeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonifyMeTests.swift; sourceTree = "<group>"; };
 		6D2D92422A6DF550005AE6E6 /* PersonifyMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonifyMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D2D92462A6DF550005AE6E6 /* PersonifyMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonifyMeUITests.swift; sourceTree = "<group>"; };
-		6D2D92482A6DF550005AE6E6 /* PersonifyMeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonifyMeUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +72,6 @@
 			isa = PBXGroup;
 			children = (
 				6D2D92242A6DF54F005AE6E6 /* PersonifyMe */,
-				6D2D923B2A6DF550005AE6E6 /* PersonifyMeTests */,
-				6D2D92452A6DF550005AE6E6 /* PersonifyMeUITests */,
 				6D2D92232A6DF54F005AE6E6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,29 +92,11 @@
 				6D2D92252A6DF54F005AE6E6 /* AppDelegate.swift */,
 				6D2D92272A6DF54F005AE6E6 /* SceneDelegate.swift */,
 				6D2D92292A6DF54F005AE6E6 /* ViewController.swift */,
-				6D2D922B2A6DF54F005AE6E6 /* Main.storyboard */,
 				6D2D922E2A6DF550005AE6E6 /* Assets.xcassets */,
 				6D2D92302A6DF550005AE6E6 /* LaunchScreen.storyboard */,
 				6D2D92332A6DF550005AE6E6 /* Info.plist */,
 			);
 			path = PersonifyMe;
-			sourceTree = "<group>";
-		};
-		6D2D923B2A6DF550005AE6E6 /* PersonifyMeTests */ = {
-			isa = PBXGroup;
-			children = (
-				6D2D923C2A6DF550005AE6E6 /* PersonifyMeTests.swift */,
-			);
-			path = PersonifyMeTests;
-			sourceTree = "<group>";
-		};
-		6D2D92452A6DF550005AE6E6 /* PersonifyMeUITests */ = {
-			isa = PBXGroup;
-			children = (
-				6D2D92462A6DF550005AE6E6 /* PersonifyMeUITests.swift */,
-				6D2D92482A6DF550005AE6E6 /* PersonifyMeUITestsLaunchTests.swift */,
-			);
-			path = PersonifyMeUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,7 +205,6 @@
 			files = (
 				6D2D92322A6DF550005AE6E6 /* LaunchScreen.storyboard in Resources */,
 				6D2D922F2A6DF550005AE6E6 /* Assets.xcassets in Resources */,
-				6D2D922D2A6DF54F005AE6E6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,7 +239,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D2D923D2A6DF550005AE6E6 /* PersonifyMeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,8 +246,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D2D92492A6DF550005AE6E6 /* PersonifyMeUITestsLaunchTests.swift in Sources */,
-				6D2D92472A6DF550005AE6E6 /* PersonifyMeUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,14 +265,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		6D2D922B2A6DF54F005AE6E6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6D2D922C2A6DF54F005AE6E6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		6D2D92302A6DF550005AE6E6 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -441,7 +401,6 @@
 				INFOPLIST_FILE = PersonifyMe/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -468,7 +427,6 @@
 				INFOPLIST_FILE = PersonifyMe/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
