@@ -27,9 +27,9 @@ class CustomButton : UIButton {
         
         super.init(frame: .zero)
         self.setTitle(title, for: .normal)
-        self.backgroundColor =  hasBackground ? .systemBlue : .clear
-        self.layer.cornerRadius =  12
-        
+        self.backgroundColor =  hasBackground ? .black : .clear
+        self.layer.cornerRadius =  4
+//
         let titleColor : UIColor = hasBackground ? .white : .systemBlue
         
         self.setTitleColor(titleColor, for: .normal)
@@ -37,12 +37,12 @@ class CustomButton : UIButton {
         switch fontType {
             
             case .big:
-                self.titleLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 22)
+            self.titleLabel?.font =  UIFont.systemFont(ofSize: 22)
             case .medium:
-                self.titleLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
+                self.titleLabel?.font =   UIFont.systemFont(ofSize: 16)
                 
             case .small:
-                self.titleLabel?.font = UIFont(name: "HelveticaNeue-Bold", size: 16)
+                self.titleLabel?.font =   UIFont.systemFont(ofSize: 12)
                 
             
         }

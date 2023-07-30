@@ -30,7 +30,7 @@ class CustomTextField : UITextField {
         self.fieldType = fieldType
         super.init(frame: .zero)
         self.backgroundColor =  .secondarySystemBackground
-        self.layer.cornerRadius =  10
+        self.layer.cornerRadius =  4
         
         self.returnKeyType =  .done
         self.autocorrectionType = .no

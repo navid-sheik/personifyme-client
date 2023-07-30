@@ -26,6 +26,9 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor  =  .purple
         
+//        UserDefaults.standard.set(nil, forKey: "token")
+//        UserDefaults.standard.set(nil, forKey: "token")
+//        UserDefaults.standard.set(nil, forKey: "verified")
         print(UserDefaults.standard.string(forKey: "token"))
         print(UserDefaults.standard.string(forKey: "refresh_token"))
         self.setUpView()
@@ -97,11 +100,27 @@ class HomeViewController: UIViewController {
     
     
     @objc private func didTapLogout(){
-        let vc = LoginViewController()
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true, completion: nil)
+//        let vc = LoginViewController()
+//        vc.modalPresentationStyle = .fullScreen
+//        self.present(vc, animated: true, completion: nil)
+        Service.shared.logout(expecting: SuccessResponse.self) { [weak self] result in
+            switch result{
+            case .success(let data):
+                print("Success in logout")
+                UserDefaults.standard.removeObject(forKey: "token")
+                UserDefaults.standard.removeObject(forKey: "refresh_token")
+                UserDefaults.standard.removeObject(forKey: "verified")
+
+                
+                
+            case .failure(let error):
+                print(error)
+                AlertManager.showLogoutError(on: self!)
+            }
+        }
     }
     
+  
     
 
     /*

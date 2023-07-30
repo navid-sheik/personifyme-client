@@ -11,6 +11,7 @@ import Foundation
 
 enum Endpoint : String {
     case base = ""
+    case onboarding
     case auth
     case orders
     case listings

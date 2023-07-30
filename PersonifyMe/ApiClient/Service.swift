@@ -27,6 +27,7 @@ final class Service{
         case NetworkUNavailble
         case FailedToDecodeResponse
         case NoResponseCode
+        case UnAuthorized
         case CustomError(statusCode: Int, message : String)
     }
     
@@ -45,6 +46,7 @@ final class Service{
                 return
             }
             
+            
             print(error)
             print(httpResponse.statusCode)
         
@@ -58,16 +60,35 @@ final class Service{
                     } catch {
                         completion(.failure(ServiceError.FailedToDecodeResponse))
                     }
-                } else {
-                    // If status code is outside the range 200-299, try to decode an error message
-                    do {
-                        let errorResponse = try JSONDecoder().decode(ReponseError.self, from: data)
-                        let errorMessages = errorResponse.errors.map { $0.message }.joined(separator: "\n")
-                        completion(.failure(ServiceError.CustomError(statusCode: httpResponse.statusCode, message:errorMessages)))
-                    } catch {
-                        completion(.failure(ServiceError.InvalidRepsonse))
+            }else if httpResponse.statusCode == 401{
+                
+            
+            
+                completion(.failure(ServiceError.UnAuthorized))
+            
+            
+            }
+            
+            
+            else {
+                // If status code is outside the range 200-299, try to decode an error message
+                do {
+                    //user normal decoder
+                    
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print(json)
                     }
+                    
+//                    let errorResponse = try JSONDecoder().decode(ReponseError.self, from: data)
+//                    let errorMessages = errorResponse.errors.map { $0.message }.joined(separator: "\n")
+                    completion(.failure(ServiceError.NoResponseCode))
+                } catch {
+                    completion(.failure(ServiceError.InvalidRepsonse))
                 }
+                
+            }
+            
+            
             
                 
             
@@ -78,6 +99,34 @@ final class Service{
         
         
         
+        
+    }
+    
+    
+    
+    public func refreshToken (){
+        
+        guard let refreshToken  =  UserDefaults.standard.string(forKey: "refresh_token")else {
+            print("Refresh Token Not Found")
+            return
+            
+        }
+        
+        let body = ["refresh_token" : refreshToken]
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        
+        let request  =  Request(endpoint: .base, pathComponents: ["token"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .set(body: jsonData)
+            .build()
+        
+        
+        Service.shared.execute(request, expecting: AuthResponse.self) { [weak self] result in
+        
+            
+            
+        }
         
     }
     
@@ -96,7 +145,6 @@ final class Service{
             
             
         }
-        
         
     }
     
@@ -230,9 +278,116 @@ final class Service{
         
         
     }
+    
+    
+    public func logout<T:Codable>(expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+//        let body = ["password" : password]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+//
+        let request  =  Request(endpoint: .base, pathComponents: ["logout"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .build()
+        
+        
+        print(request)
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+        }
+        
+    }
+    
+    public func createConnectAccount<T:Codable>(_ country : String, expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let body = ["country" : country]
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+      
+        
+        let request  =  Request(endpoint: .onboarding, pathComponents: ["account"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(body: jsonData)
+            .set(method: .POST)
+            .build()
+        
+        print("request is \(request)")
+      
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+            
+            
+        }
+        
+        
+    }
+
 
     
     
+    
+    
+    
+    public func sendVerificationStripeLink<T:Codable>( expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+    
+        
+        let request  =  Request(endpoint: .onboarding, pathComponents: ["link"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .build()
+        
+        print("request is \(request)")
+      
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+            
+            
+        }
+        
+        
+    }
+    
+    public func checkSellerStatus<T:Codable>( expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+    
+        
+        let request  =  Request(endpoint: .seller, pathComponents: ["account"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+//        print("request is \(request)")
+//      
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+            
+            
+        }
+        
+        
+    }
+    
+    
+
+
     
     
     

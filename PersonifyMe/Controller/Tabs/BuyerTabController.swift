@@ -8,6 +8,7 @@
 import UIKit
 
 class BuyerTabController: UITabBarController {
+    var sellerConroller : RestrictedController =  DashboardViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,36 @@ class BuyerTabController: UITabBarController {
     }
     
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Service.shared.checkSellerStatus(expecting: SellerResponse.self) { [weak self] result in
+            switch result{
+               
+            case .success(let data):
+                let hasStartedOnboarding =  data.result.hasStartedOnboarding
+                
+                let hasCompletedOnboarding =  data.result.hasCompletedOnboarding
+                
+                
+                print(hasStartedOnboarding)
+                
+                
+                if (hasStartedOnboarding){
+                    self?.sellerConroller =  OnBoardingLinkViewController()
+                }
+                
+                if (!hasStartedOnboarding && !hasCompletedOnboarding){
+                    self?.sellerConroller =  OnBoardingLaunchViewController()
+                }
+                
+            
+            case .failure(let error):
+                print(error)
+                
+            }
+        }
+    }
+    
     
     // MARK: - Navigation
     
@@ -34,7 +65,10 @@ class BuyerTabController: UITabBarController {
         let likesVC = LikesViewController()
         let cartVC = CartViewController()
         let profileVC =  ProfileViewController()
-        let becomeSellerVC = BecomeSellerViewController()
+        let layout  = UICollectionViewFlowLayout()
+      
+        let becomeSellerVC = sellerConroller
+        
         
         
         homeVC.navigationItem.largeTitleDisplayMode = .automatic

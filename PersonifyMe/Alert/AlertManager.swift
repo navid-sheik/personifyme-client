@@ -109,7 +109,7 @@ extension AlertManager{
 
 extension AlertManager{
     public static func showLogoutError(on vc : UIViewController){
-        showBasicAlert(on: vc, title: "Logout", message: "An error occured during password reset. Please try again later")
+        showBasicAlert(on: vc, title: "Logout", message: "An error occured during logouy reset. Please try again later")
     }
     public static func showLogoutError(on vc : UIViewController, with error: Error){
         showBasicAlert(on: vc, title: "Reset Password Error",  message: "\(error.localizedDescription)")

@@ -22,7 +22,7 @@ enum HTTPMethod: String {
 final class Request{
 
     private struct Constants{
-        static let baseUrl   = "https://462d-2a02-6b66-ea39-0-b9d7-863-78b7-4216.ngrok-free.app"
+        static let baseUrl   = "https://5663-2a02-6b66-ea39-0-843-3510-d982-a969.ngrok-free.app"
     }
     
     /// Desired endpoint
@@ -85,6 +85,10 @@ final class Request{
         self.endpoint = endpoint
         self.pathComponents = pathComponents
         self.queryParameters =  queryParaments
+        if let token   = (UserDefaults.standard.value(forKey: "token")){
+            self.headers["Authorization"] = "Bearer \(token)"
+        }
+       
       
     }
     
