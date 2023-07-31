@@ -84,16 +84,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let resetPasswordController = ResetPasswordViewController(userId: userId, token: token)
             
             
-            Service.shared.verifyPasswordLink(userId, token, expecting: SuccessResponse.self) {[weak self] result in
+            Service.shared.verifyPasswordLink(userId, token, expecting: ApiResponse<[String: String]>.self) {[weak self] result in
                 guard let strongSelf = self else { return }
-                
-                
                 
                 switch result {
                 case .success(let response):
                     
-                    let success = response.success
-                    if success {
+                    
+                    let success = response.status
+                    
+                    print(success)
+        
+                    
+                    if success  == "success"{
                         DispatchQueue.main.async {
                             if topController is ForgotPasswordController, let navigationController = topController.navigationController {
                                 navigationController.pushViewController(resetPasswordController, animated: true)
@@ -116,7 +119,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                     
                     
-                   
                 case .failure(let error):
                     print(error)
                     DispatchQueue.main.async {

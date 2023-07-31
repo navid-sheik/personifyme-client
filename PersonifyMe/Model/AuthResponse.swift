@@ -15,3 +15,13 @@ struct AuthResponse : Codable{
     
     
 }
+
+
+struct AuthResponse2 : Codable{
+    let email : String
+    let username : String
+    let name : String
+    let verified : Bool
+    let token : String
+    let refreshToken : String
+}

@@ -282,33 +282,36 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
         
         print(countryCode)
         
-        Service.shared.createConnectAccount(countryCode, expecting: SuccessResponse.self) {  [weak self] result in
+        Service.shared.createConnectAccount(countryCode, expecting: ApiResponse<SellerResult>.self) {  [weak self] result in
             
-            guard let strongSelf = self else {
+            guard let self = self else {
                 return
             }
             switch result{
-                case .success(let result):
-                    let success  =  result.success
-                        if success{
+                case .success(let response):
+                    
+                    let success  =  response.status
+//                    guard let seller  =  response.data else{
+//                        print("Cannot create seller  account")
+//                        return
+//                    }
+                
+                    if success == "success" {
                             DispatchQueue.main.async {
-                                
                                 
                                 let stripeLinkVC = OnBoardingLinkViewController()
                                 
-                                strongSelf.navigationController?.pushViewController(stripeLinkVC, animated: true)
+                                self.navigationController?.pushViewController(stripeLinkVC, animated: true)
                                 
                             }
                         
-                    }else{
-                        print(result.message)
                     }
                 
                    
                         
                 case .failure(let error):
                 
-                    print(error)
+                AlertManager.showInvalidFullNameAlert(on: self)
                 
             }
             

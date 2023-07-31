@@ -106,71 +106,57 @@ class ResetPasswordViewController : UIViewController{
     }
     
     @objc func didTapReset(){
-        print("Reset Tapped")
-        
         guard let password = self.passwordTextField.text, !password.isEmpty else {
-            print("Password is empty")
+            AlertManager.showInvalidPasswordAlert(on: self)
             return
         }
         guard let repeatPassword = self.confirmPasswordTextField.text, !repeatPassword.isEmpty else {
-            print("Confirm Password  is empty")
+            AlertManager.showInvalidPasswordAlert(on: self)
             return
         }
         
         guard password == repeatPassword else {
-            print("Password does not match")
+            AlertManager.showPasswordNotMatch(on: self)
             return
         }
         
-        Service.shared.resetPassword(userId, token, password, expecting: SuccessResponse.self) {[weak self] result in
+        Service.shared.resetPassword(userId, token, password, expecting:  ApiResponse<[String: String]>.self) {[weak self] result in
             
             guard let self = self else {return}
             
             switch result{
             case .success(let response):
-                print("Success")
-                print(response.success)
+                let success =  response.status
+            
                 DispatchQueue.main.async {
-                    if response.success{
-                        
-                        let loginViewController = LoginViewController()
-                        self.navigationController?.pushViewController(loginViewController, animated: true)
-                        
-                    
-                        
+                    if success == "success"{
+                        let alert = UIAlertController(title: "Password Resetted", message: response.message, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+                            let loginViewController = LoginViewController()
+                            self.navigationController?.pushViewController(loginViewController, animated: true)
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                                        
+                                   
                     }else {
                         //Show alert for a few second and move to controller
                         let alert = UIAlertController(title: "Error", message: response.message, preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
                             // Instantiate the login view controller
-                            let loginViewController = LoginViewController() // Replace this with the actual initialization of your login controller
-
-                            // Push the login view controller onto the navigation stack
-                        
+                            let loginViewController = LoginViewController() // Replace this with the actual initialization of your login
                             self.navigationController?.pushViewController(loginViewController, animated: true)
                         }))
                         self.present(alert, animated: true, completion: nil)
                         
                     }
                     
-               
-                    
                 }
                 
             case .failure(let error):
-                print("Error")
-                print(error)
+                ErrorManager.handleServiceError(error, on: self)
             }
         }
-        
-        
-        
-        
-        
-        
-        
+
     }
-    
-    
-    
+
 }

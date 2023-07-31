@@ -18,16 +18,40 @@ import UIKit
 
 class DashboardViewController : RestrictedController {
     
+    var stripeRequirements : StripeStatusResponse?{
+        didSet{
+            DispatchQueue.main.async {[weak self] in
+                if let verifed =  self?.stripeRequirements?.isVerified {
+                    self?.label.text =   verifed ? "Verified"  : "Pending"
+                }
+              
+            }
+           
+            
+        }
+    }
+    
     // MARK: - Components
     // Here you add all components
     
-    let label : UILabel  =  {
+    var label : UILabel  =  {
         let label = UILabel()
-        label.text = "Verified"
+        label.text = ""
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = .black
         return label
     }()
+    
+    var sellerMenuCollection   :   SellerMenuCollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let collection = SellerMenuCollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        return collection
+    }()
+    
+    
+    var verificationStatus  =  VerificationStatusView ()
     
 
     
@@ -36,8 +60,15 @@ class DashboardViewController : RestrictedController {
     // All properties and variables you need in your ViewController
     
     // MARK: - Lifecycle methods
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.checkStripeStatus()
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Dashboard"
         view.backgroundColor = .systemBackground
@@ -45,15 +76,28 @@ class DashboardViewController : RestrictedController {
         setupUI()
     }
     
+    
+    
     // MARK: - UI Setup
     private func setupUI() {
         // Set up all UI elements here
-        view.addSubview(label)
+        self.navigationItem.hidesBackButton = true
+        view.addSubview(verificationStatus)
         
-        (label).anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 220)
+//        view.addSubview(label)
+        view.addSubview(sellerMenuCollection)
+        
+      
+        sellerMenuCollection.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        //For setting the  collection view resizable, set the bottom anchor less or equal
+        sellerMenuCollection.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        (verificationStatus).anchor( top: sellerMenuCollection.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 60)
+        
         
         
     }
+   
+    
     
     
     // MARK: - IBActions
@@ -64,5 +108,31 @@ class DashboardViewController : RestrictedController {
     
     // MARK: - Private methods
     // All other functions that you use within the ViewController
+    
+    func checkStripeStatus (){
+        Service.shared.statusStripeAccount(expecting: ApiResponse<StripeStatusResponse>.self) { [weak self ] result in
+            guard let self =  self else {return}
+            switch result{
+                
+            case .success(let response):
+                let success  =  response.status
+                guard let stripeData  =  response.data else {
+                    print ("Not data available")
+                    return
+                }
+                self.stripeRequirements = stripeData
+                
+                
+                
+            case .failure(let error):
+                print(error)
+                print("Error displaying for verification for verification")
+            }
+            
+            
+        }
+
+        
+    }
 }
 

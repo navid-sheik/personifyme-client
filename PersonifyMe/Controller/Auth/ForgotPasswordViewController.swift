@@ -23,10 +23,10 @@ class ForgotPasswordController: UIViewController {
         return button
     }()
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .systemBackground
         navigationController?.navigationBar.isHidden = false
         
@@ -53,39 +53,33 @@ class ForgotPasswordController: UIViewController {
         resetPasswordButton.anchor(top: emailTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 60)
         
         
-    
+        
     }
     
     @objc private func resetPasswordButtonTapped(){
         //TODO: Validate Email
-        
-        guard let email =  self.emailTextField.text, !email.isEmpty  else {
-            return
-        
-        }
-        
-        Service.shared.sendPasswordResetLink(email, expecting: SuccessResponse.self) { [weak self] result in
-                
-                guard let self = self else {return}
-                
-                switch result{
-                    case .success(let result):
-                    let success = result.success
-                    
-                    if success{
-                        print("Password Reset Link Sent")
-                    }
-                       
-                    
-                    case .failure(let error):
-                        print(error)
-                        
-                }
-        }
         print("Reset Password Button Tapped")
-    
+        guard let email =  self.emailTextField.text, !email.isEmpty  else {
+            print("Email is empty")
+            AlertManager.showInvalidEmailAlert(on: self)
+            return
+        }
+        
+        Service.shared.sendPasswordResetLink(email, expecting: ApiResponse<[String: String]>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+            case .success(let result):
+                guard let user = result.data else {return}
+                if result.status  == "success"{
+                    AlertManager.showSendingPasswordReset(on: self)
+                }
+                
+            case .failure(let error):
+                ErrorManager.handleServiceError(error, on: self)
+            }
+        }
     }
     
-
-
+    
+    
 }

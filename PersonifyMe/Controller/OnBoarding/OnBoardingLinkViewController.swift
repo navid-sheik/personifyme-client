@@ -23,6 +23,7 @@ class OnBoardingLinkViewController: RestrictedController {
     // Here you add all components
     
     
+    var hasStartedOnboarding : Bool
     
     let titleLabel : UILabel = {
         let label = UILabel()
@@ -56,11 +57,21 @@ class OnBoardingLinkViewController: RestrictedController {
     
     // MARK: - Properties
     // All properties and variables you need in your ViewController
+    init(hasStartedOnboarding : Bool = false){
+        self.hasStartedOnboarding = hasStartedOnboarding
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        becomeSellerButton.setTitle(hasStartedOnboarding ?  "Continue Verification" :  "Start Verification", for: .normal)
         setupUI()
     }
     
@@ -79,7 +90,7 @@ class OnBoardingLinkViewController: RestrictedController {
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
     @objc func handleBecomeSeller() {
         print("Handle Become Seller")
-        Service.shared.sendVerificationStripeLink(expecting: OnBoardingResponse.self) { [weak self]  result in
+        Service.shared.sendVerificationStripeLink(expecting: ApiResponse<String>.self) { [weak self]  result in
             guard let self = self else { return }
             switch result{
                 
@@ -87,18 +98,22 @@ class OnBoardingLinkViewController: RestrictedController {
             case .success(let response):
                 print("Success")
                 print(response)
-                var success  = response.success
+                let success  = response.status
                
                 
-                if (success){
+                if (success ==  "success"){
                     DispatchQueue.main.async {
-                        var stripeLink = response.url
+                        guard let stripeLink = response.data else { return }
+                        
+                        
                         guard let url = URL(string: stripeLink) else { return }
                         
                         let safariViewController = SFSafariViewController(url: url)
                         safariViewController.delegate = self
+                        let navigationController = UINavigationController(rootViewController: safariViewController)
+                        
 
-                        self.navigationController?.pushViewController(safariViewController, animated: true)
+                        self.present(navigationController, animated: true)
                     }
                     
                 }else {
@@ -124,7 +139,23 @@ extension OnBoardingLinkViewController: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         // the user may have closed the SFSafariViewController instance before a redirect
         // occurred. Sync with your backend to confirm the correct state
-        print("Didi finish")
+        print("Finished")
+       
+        
+        navigateToController()
+     
+    
+              
+        
+    }
+    
+   
+    
+    func navigateToController(){
+        let dashBoardVC  =  DashboardViewController()
+        self.navigationController?.pushViewController(dashBoardVC, animated: true)
+        
+        
     }
     
 }

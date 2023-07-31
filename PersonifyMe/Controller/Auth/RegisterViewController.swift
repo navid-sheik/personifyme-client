@@ -112,6 +112,13 @@ class RegisterController :  UIViewController {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .systemBackground
+        self.emailTextField.delegate = self
+        self.passwordTextField.delegate = self
+        self.passwordTextField2.delegate = self
+        self.usernameTextField.delegate = self
+        self.nameTextField.delegate = self
+        
+        
         setUpViews()
     
     }
@@ -241,64 +248,37 @@ class RegisterController :  UIViewController {
         //Craate data object to send to server
         let data = ["email": email, "password": password, "username" :  username, "name" :  fullname]
 
-        //Send the data to server
-        let jsonData  =  try? JSONSerialization.data(withJSONObject: data)
-
-        //Use the url request builder
-        let request  =  Request(endpoint: .base, pathComponents: ["signup"])
-            .add(headerField: "Content-Type", value: "application/json")
-            .set(body: jsonData)
-            .set(method: .POST)
-            .build()
+       
 
         //Send the request
-        Service.shared.execute(request, expecting: AuthResponse.self) { [weak self] result in
+        Service.shared.register(data, expecting: ApiResponse<AuthResponse2>.self) { [weak self] result in
             guard let strongSelf = self else { return }
-
-
-
             switch result{
-                case .success(let data):
-                   
-                
-                    UserDefaults.standard.set(data.token, forKey: "token")
-                    UserDefaults.standard.set(data.token, forKey: "refresh_token")
-                    UserDefaults.standard.set(data.verified, forKey: "verified")
-                
-                    let verifed   = data.verified
-                    print(verifed)
+                case .success(let result):
+                    print(result)
+                    //Check for user data
+                    guard let user_data = result.data else {return}
+                 
+                    //Check verification of the user
+                    let verifed   =  user_data.verified
+                    //Show verified controller if not verifed
                     DispatchQueue.main.async {
-                        
                         if verifed {
-                            
-                            let vc = HomeViewController()
-                            let nav = UINavigationController(rootViewController: vc)
-                            nav.modalPresentationStyle = .fullScreen
-                            strongSelf.present(vc, animated: true, completion: nil)
-                            
-                            
+                            AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified)
+                            strongSelf.dismiss(animated: true, completion: nil)
                         }else{
                             let vc = VerifyEmailViewController(email: email)
                             strongSelf.navigationController?.pushViewController(vc, animated: true)
-                            
                             return
-                            
-                            
                         }
                     }
                     
-
-            case .failure(let error):
-                print(error)
-                AlertManager.showLoginErrorAlert(on: strongSelf)
-                
-            }
-
-
+                case .failure(let error):
+                    ErrorManager.handleServiceError(error, on: self)
+            
+                }
         }
 
-        
-    
     }
     
     @objc private func loginLabelTapped(){
@@ -307,6 +287,39 @@ class RegisterController :  UIViewController {
     }
     
 }
+
+extension RegisterController : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == nameTextField {
+            // If the user tapped Return while editing the name text field,
+            // move to the email text field.
+            nameTextField.resignFirstResponder()
+        } else if textField == emailTextField {
+            // If the user tapped Return while editing the email text field,
+            // dismiss the keyboard.
+            emailTextField.resignFirstResponder()
+        }else if textField == usernameTextField {
+            // If the user tapped Return while editing the email text field,
+            // dismiss the keyboard.
+            usernameTextField.resignFirstResponder()
+        }else if textField == passwordTextField {
+            // If the user tapped Return while editing the email text field,
+            // dismiss the keyboard.
+            passwordTextField.resignFirstResponder()
+            
+        }else if textField == passwordTextField2 {
+            // If the user tapped Return while editing the email text field,
+            // dismiss the keyboard.
+            passwordTextField2.resignFirstResponder()
+        }
+        
+        
+
+        return true
+    }
+}
+
+
 
 
 extension RegisterController : UITextViewDelegate{

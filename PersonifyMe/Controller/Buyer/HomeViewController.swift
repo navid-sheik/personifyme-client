@@ -21,27 +21,27 @@ class HomeViewController: UIViewController {
     }()
     
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  =  .purple
         
-//        UserDefaults.standard.set(nil, forKey: "token")
-//        UserDefaults.standard.set(nil, forKey: "token")
-//        UserDefaults.standard.set(nil, forKey: "verified")
+//        UserDefaults.standard.set("", forKey: "token")
+        //        UserDefaults.standard.set(nil, forKey: "token")
+        //        UserDefaults.standard.set(nil, forKey: "verified")
         print(UserDefaults.standard.string(forKey: "token"))
         print(UserDefaults.standard.string(forKey: "refresh_token"))
         self.setUpView()
         let url = URL(string: "personifyme:navid")
-
-
+        
+        
         UIApplication.shared.open(url!) { (result) in
             if result {
-               // The URL was delivered successfully!
+                // The URL was delivered successfully!
             }
         }
         
-
+        
         
         // Do any additional setup after loading the view.
     }
@@ -54,7 +54,7 @@ class HomeViewController: UIViewController {
         
         self.view.addSubview(mylabel)
         
-    
+        
         mylabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         mylabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive =  true
@@ -78,16 +78,16 @@ class HomeViewController: UIViewController {
             .build()
         
         print(request)
-
+        
         
         Service.shared.execute(request, expecting: AuthResponse.self) { [weak self] result in
             guard let strongSelf = self else {
-                    return
+                return
             }
             
             switch result{
-                case .success(let daata):
-                    print(daata)
+            case .success(let daata):
+                print(daata)
                 
             case .failure(let failure):
                 print(failure)
@@ -95,42 +95,33 @@ class HomeViewController: UIViewController {
             
             
         }
-
+        
     }
     
     
     @objc private func didTapLogout(){
-//        let vc = LoginViewController()
-//        vc.modalPresentationStyle = .fullScreen
-//        self.present(vc, animated: true, completion: nil)
-        Service.shared.logout(expecting: SuccessResponse.self) { [weak self] result in
+        //        let vc = LoginViewController()
+        //        vc.modalPresentationStyle = .fullScreen
+        //        self.present(vc, animated: true, completion: nil)
+        
+        print("logout")
+        
+        Service.shared.logout(expecting: ApiResponse<String>.self) { [weak self] result in
+            
             switch result{
-            case .success(let data):
+            case .success(let _):
                 print("Success in logout")
-                UserDefaults.standard.removeObject(forKey: "token")
-                UserDefaults.standard.removeObject(forKey: "refresh_token")
-                UserDefaults.standard.removeObject(forKey: "verified")
-
+                AuthManager.clearUserDefaults()
+                AlertManager.showLogoutAlert(on: self!)
+                
                 
                 
             case .failure(let error):
-                print(error)
-                AlertManager.showLogoutError(on: self!)
+               ErrorManager.handleServiceError(error, on: self)
             }
+            
         }
     }
     
-  
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
+

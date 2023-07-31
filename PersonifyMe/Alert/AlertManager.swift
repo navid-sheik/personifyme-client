@@ -26,6 +26,10 @@ class AlertManager {
 
 //MARK : - Login Alerts
 extension AlertManager{
+    public static func showLogoutAlert(on vc : UIViewController){
+        showBasicAlert(on: vc, title: "Success logout", message: "You've been successfully logout")
+    }
+    
     public static func showInvalidEmailAlert(on vc : UIViewController){
         showBasicAlert(on: vc, title: "Invalid Email", message: "Please enter a valid email address")
     }
@@ -111,8 +115,8 @@ extension AlertManager{
     public static func showLogoutError(on vc : UIViewController){
         showBasicAlert(on: vc, title: "Logout", message: "An error occured during logouy reset. Please try again later")
     }
-    public static func showLogoutError(on vc : UIViewController, with error: Error){
-        showBasicAlert(on: vc, title: "Reset Password Error",  message: "\(error.localizedDescription)")
+    public static func showLogoutError(on vc : UIViewController, with error: String){
+        showBasicAlert(on: vc, title: "Reset Password Error",  message:  error)
     }
     
 }

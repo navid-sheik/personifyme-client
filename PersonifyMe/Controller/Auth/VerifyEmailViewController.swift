@@ -117,32 +117,26 @@ class VerifyEmailViewController : UIViewController{
     
     @objc func continueButtonTapped(){
         guard let verificationCode = verifyCodeTextField.text else {
+            print("Missing verification code")
             return
-            
         }
-        
-        
-        Service.shared.verifyEmail(self.email, verificationCode, expecting: AuthResponse.self) { [weak self] result in
+        Service.shared.verifyEmail(self.email, verificationCode, expecting: ApiResponse<AuthResponse2>.self) { [weak self] result in
             guard let self = self else {return}
             switch result{
             case .success(let result):
-                
-                UserDefaults.standard.set(result.token, forKey: "token")
-                UserDefaults.standard.set(result.refreshToken, forKey: "refreshToken")
-                UserDefaults.standard.set(result.verified, forKey: "verified")
-                
-                
-                let verifed  =  result.verified
-                
+                guard let user = result.data else {
+                    return
+                }
+                let verifed = user.verified
                 if verifed{
                     DispatchQueue.main.async {
+                        AuthManager.setUserDefaults(token: user.token, refresh_token: user.refreshToken, verified: user.verified)
                         
                         self.dismiss(animated: true)
                     }
                 }
             case .failure(let error):
-                print("failed")
-                print(error)
+                ErrorManager.handleServiceError(error, on: self)
             }
         
         }
@@ -153,22 +147,20 @@ class VerifyEmailViewController : UIViewController{
     @objc func sendVerificationCodeTapped(){
         print("send verification code tapped")
         
-        Service.shared.sendVerificationLink(self.email, expecting: SuccessResponse.self) {  [weak self] result in
+        Service.shared.sendVerificationLink(self.email, expecting: ApiResponse<[String : String]>.self) {  [weak self] result in
             guard let self = self else {return}
             switch result{
-            case .success(let message):
-                let success  =  message.success
-                if success{
+            case .success(let result):
+                let status = result.status
+                if status  == "success"{
                    DispatchQueue.main.async {
                        self.sendVerificationCodeButton.setTitle("Sent Email !", for: .normal)
                        self.notificationLabel.text = "We've sent a notification to your email: \(self.email)"
                        self.verifyButton.isEnabled = true
-                       
                     }
                 }
             case .failure(let error):
-                print("failed")
-                print(error)
+                ErrorManager.handleServiceError(error, on: self)
             }
         
         }

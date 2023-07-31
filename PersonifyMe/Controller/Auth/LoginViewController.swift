@@ -198,64 +198,37 @@ class LoginViewController : UIViewController{
             return
         }
 
-        
         //Craate data object to send to server
         let data = ["email": email, "password": password]
 
-        //Send the data to server
-        let jsonData  =  try? JSONSerialization.data(withJSONObject: data)
-
-        //Use the url request builder
-        let request  =  Request(endpoint: .base, pathComponents: ["login"])
-            .add(headerField: "Content-Type", value: "application/json")
-            .set(body: jsonData)
-            .set(method: .POST)
-            .build()
-
-        //Send the request
-        Service.shared.execute(request, expecting: AuthResponse.self) { [weak self] result in
+        Service.shared.login(data, expecting: ApiResponse<AuthResponse2>.self) { [weak self] result in
             guard let strongSelf = self else { return }
-
-
-
-            switch result{
-                case .success(let data):
-                   
-                
-                    UserDefaults.standard.set(data.token, forKey: "token")
-                    UserDefaults.standard.set(data.token, forKey: "refresh_token")
-                    UserDefaults.standard.set(data.verified, forKey: "verified")
-                
-                    let verifed   = data.verified
-                    print(verifed)
-                DispatchQueue.main.async {
-                    
-                    if verifed {
-                        
-                        strongSelf.dismiss(animated: true, completion: nil)
-                        
             
-                        
-                    }else{
-                        let vc = VerifyEmailViewController(email: email)
-                        strongSelf.navigationController?.pushViewController(vc, animated: true)
-                        
-                        return
-                        
-                        
+            switch result{
+                case .success(let result):
+                    print(result)
+                    //Check for user data
+                    guard let user_data = result.data else {return}
+                 
+                    //Check verification of the user
+                    let verifed   =  user_data.verified
+                    //Show verified controller if not verifed
+                    DispatchQueue.main.async {
+                        if verifed {
+                            AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified)
+                            strongSelf.dismiss(animated: true, completion: nil)
+                        }else{
+                            let vc = VerifyEmailViewController(email: email)
+                            strongSelf.navigationController?.pushViewController(vc, animated: true)
+                            return
+                        }
                     }
+                    
+                case .failure(let error):
+                    ErrorManager.handleServiceError(error, on: self)
+                    
                 }
-            case .failure(let error):
-                print(error)
-//                AlertManager.showLoginErrorAlert(on: strongSelf, with: error.localizedDescription as! Error)
-                
-            }
-
-
         }
-
-        
-        
     }
     
     @objc func forgetPasswordTapped(_ sender : UITapGestureRecognizer ){
@@ -271,23 +244,12 @@ class LoginViewController : UIViewController{
         print("Sign Up Tapped")
         let vc = RegisterController()
         self.navigationController?.pushViewController(vc, animated: true)
-        
-        
-    
-        
-        
-        
-        
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
-    
+
     }
-    
-    
-    
     
 
 }
