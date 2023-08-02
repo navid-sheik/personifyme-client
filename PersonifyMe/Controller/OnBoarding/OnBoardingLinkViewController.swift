@@ -22,6 +22,8 @@ class OnBoardingLinkViewController: RestrictedController {
     // MARK: - Components
     // Here you add all components
     
+
+    
     
     var hasStartedOnboarding : Bool
     

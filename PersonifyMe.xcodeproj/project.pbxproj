@@ -23,6 +23,13 @@
 		6D137C502A7847E200711889 /* DashBoardStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C4F2A7847E200711889 /* DashBoardStats.swift */; };
 		6D137C522A78483200711889 /* VerificationStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C512A78483200711889 /* VerificationStatusView.swift */; };
 		6D137C542A78588C00711889 /* DashBoardStatsElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C532A78588C00711889 /* DashBoardStatsElement.swift */; };
+		6D137C562A78629200711889 /* AddListingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C552A78629200711889 /* AddListingViewController.swift */; };
+		6D137C592A7863D400711889 /* SettingSellerMenuDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C582A7863D400711889 /* SettingSellerMenuDelegate.swift */; };
+		6D137C5B2A786FD100711889 /* ImageListingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C5A2A786FD100711889 /* ImageListingCell.swift */; };
+		6D137C5D2A78872700711889 /* CreateListingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C5C2A78872700711889 /* CreateListingDelegate.swift */; };
+		6D137C602A788FF700711889 /* DropdownMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C5F2A788FF700711889 /* DropdownMenuController.swift */; };
+		6D137C622A789E0300711889 /* LabeledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C612A789E0300711889 /* LabeledTextField.swift */; };
+		6D137C642A78A64400711889 /* BorderedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D137C632A78A64400711889 /* BorderedTextField.swift */; };
 		6D2879112A718EB800FDA177 /* BuyerTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2879102A718EB800FDA177 /* BuyerTabController.swift */; };
 		6D2879142A71922E00FDA177 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2879132A71922E00FDA177 /* Service.swift */; };
 		6D2879162A71923A00FDA177 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2879152A71923A00FDA177 /* Request.swift */; };
@@ -62,7 +69,6 @@
 		6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA682A730419001D6C53 /* BuyersOrdersViewController.swift */; };
 		6DBFEA6C2A7304B5001D6C53 /* SingleItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA6B2A7304B5001D6C53 /* SingleItemViewController.swift */; };
 		6DBFEA6E2A7304C5001D6C53 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA6D2A7304C5001D6C53 /* CategoryViewController.swift */; };
-		6DBFEA702A730511001D6C53 /* ListItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA6F2A730511001D6C53 /* ListItemViewController.swift */; };
 		6DBFEA722A73051D001D6C53 /* ManageOrderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA712A73051D001D6C53 /* ManageOrderController.swift */; };
 		6DBFEA742A73053D001D6C53 /* ManageListingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA732A73053D001D6C53 /* ManageListingsViewController.swift */; };
 		6DBFEA762A730553001D6C53 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA752A730553001D6C53 /* DashboardViewController.swift */; };
@@ -80,6 +86,11 @@
 		6DD19DB32A75E829004F02B5 /* OnBoardingLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19DB22A75E829004F02B5 /* OnBoardingLinkViewController.swift */; };
 		6DD19DB52A75F978004F02B5 /* OnBoardingCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19DB42A75F978004F02B5 /* OnBoardingCollectionView.swift */; };
 		6DD19DB72A760039004F02B5 /* SellerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19DB62A760039004F02B5 /* SellerResponse.swift */; };
+		6DD1A0A62A79402300666AAA /* LabeledTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1A0A52A79402300666AAA /* LabeledTextView.swift */; };
+		6DD1A0A82A79541800666AAA /* CustomSelectableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1A0A72A79541800666AAA /* CustomSelectableView.swift */; };
+		6DD1A0AA2A79906B00666AAA /* TimeProcessingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1A0A92A79906B00666AAA /* TimeProcessingView.swift */; };
+		6DD1A0AC2A799C9F00666AAA /* NumberPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1A0AB2A799C9F00666AAA /* NumberPickerView.swift */; };
+		6DD1A0AF2A79BA6B00666AAA /* SimpleCheckbox in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD1A0AE2A79BA6B00666AAA /* SimpleCheckbox */; };
 		6DD390E62A708D9C00C61808 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390E52A708D9C00C61808 /* LoginViewController.swift */; };
 		6DD390E82A708DAF00C61808 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390E72A708DAF00C61808 /* RegisterViewController.swift */; };
 		6DD390EB2A709C5800C61808 /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390EA2A709C5800C61808 /* ForgotPasswordViewController.swift */; };
@@ -123,6 +134,13 @@
 		6D137C4F2A7847E200711889 /* DashBoardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashBoardStats.swift; sourceTree = "<group>"; };
 		6D137C512A78483200711889 /* VerificationStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationStatusView.swift; sourceTree = "<group>"; };
 		6D137C532A78588C00711889 /* DashBoardStatsElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashBoardStatsElement.swift; sourceTree = "<group>"; };
+		6D137C552A78629200711889 /* AddListingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddListingViewController.swift; sourceTree = "<group>"; };
+		6D137C582A7863D400711889 /* SettingSellerMenuDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSellerMenuDelegate.swift; sourceTree = "<group>"; };
+		6D137C5A2A786FD100711889 /* ImageListingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListingCell.swift; sourceTree = "<group>"; };
+		6D137C5C2A78872700711889 /* CreateListingDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateListingDelegate.swift; sourceTree = "<group>"; };
+		6D137C5F2A788FF700711889 /* DropdownMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropdownMenuController.swift; sourceTree = "<group>"; };
+		6D137C612A789E0300711889 /* LabeledTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextField.swift; sourceTree = "<group>"; };
+		6D137C632A78A64400711889 /* BorderedTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedTextField.swift; sourceTree = "<group>"; };
 		6D2879102A718EB800FDA177 /* BuyerTabController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyerTabController.swift; sourceTree = "<group>"; };
 		6D2879132A71922E00FDA177 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		6D2879152A71923A00FDA177 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
@@ -158,7 +176,6 @@
 		6DBFEA682A730419001D6C53 /* BuyersOrdersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyersOrdersViewController.swift; sourceTree = "<group>"; };
 		6DBFEA6B2A7304B5001D6C53 /* SingleItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleItemViewController.swift; sourceTree = "<group>"; };
 		6DBFEA6D2A7304C5001D6C53 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
-		6DBFEA6F2A730511001D6C53 /* ListItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItemViewController.swift; sourceTree = "<group>"; };
 		6DBFEA712A73051D001D6C53 /* ManageOrderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageOrderController.swift; sourceTree = "<group>"; };
 		6DBFEA732A73053D001D6C53 /* ManageListingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageListingsViewController.swift; sourceTree = "<group>"; };
 		6DBFEA752A730553001D6C53 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
@@ -176,6 +193,10 @@
 		6DD19DB22A75E829004F02B5 /* OnBoardingLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingLinkViewController.swift; sourceTree = "<group>"; };
 		6DD19DB42A75F978004F02B5 /* OnBoardingCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingCollectionView.swift; sourceTree = "<group>"; };
 		6DD19DB62A760039004F02B5 /* SellerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellerResponse.swift; sourceTree = "<group>"; };
+		6DD1A0A52A79402300666AAA /* LabeledTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextView.swift; sourceTree = "<group>"; };
+		6DD1A0A72A79541800666AAA /* CustomSelectableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSelectableView.swift; sourceTree = "<group>"; };
+		6DD1A0A92A79906B00666AAA /* TimeProcessingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeProcessingView.swift; sourceTree = "<group>"; };
+		6DD1A0AB2A799C9F00666AAA /* NumberPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberPickerView.swift; sourceTree = "<group>"; };
 		6DD390E52A708D9C00C61808 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		6DD390E72A708DAF00C61808 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		6DD390EA2A709C5800C61808 /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
@@ -191,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D59000F2A747D4200400F80 /* StripeCardScan in Frameworks */,
+				6DD1A0AF2A79BA6B00666AAA /* SimpleCheckbox in Frameworks */,
 				6D5900112A747D4200400F80 /* StripeFinancialConnections in Frameworks */,
 				6D5900132A747D4200400F80 /* StripeIdentity in Frameworks */,
 				6D59000B2A747D4200400F80 /* Stripe in Frameworks */,
@@ -263,6 +285,7 @@
 			children = (
 				6DD19DB42A75F978004F02B5 /* OnBoardingCollectionView.swift */,
 				6D137C4C2A78390C00711889 /* SellerMenuCollectionView.swift */,
+				6D137C632A78A64400711889 /* BorderedTextField.swift */,
 			);
 			path = CollectionView;
 			sourceTree = "<group>";
@@ -273,8 +296,25 @@
 				6D137C4F2A7847E200711889 /* DashBoardStats.swift */,
 				6D137C512A78483200711889 /* VerificationStatusView.swift */,
 				6D137C532A78588C00711889 /* DashBoardStatsElement.swift */,
+				6DD1A0A72A79541800666AAA /* CustomSelectableView.swift */,
+				6DD1A0A92A79906B00666AAA /* TimeProcessingView.swift */,
 			);
 			path = Seller;
+			sourceTree = "<group>";
+		};
+		6D137C572A78639B00711889 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		6D137C5E2A788FE100711889 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				6D137C5F2A788FF700711889 /* DropdownMenuController.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		6D2879122A71921800FDA177 /* ApiClient */ = {
@@ -316,6 +356,7 @@
 		6D2D92242A6DF54F005AE6E6 /* PersonifyMe */ = {
 			isa = PBXGroup;
 			children = (
+				6D137C572A78639B00711889 /* New Group */,
 				6D137C422A78384400711889 /* CustomView */,
 				6D137C392A78373100711889 /* Enum */,
 				6D137C342A7819ED00711889 /* Protocol */,
@@ -374,12 +415,12 @@
 		6DBFEA6A2A730431001D6C53 /* Seller */ = {
 			isa = PBXGroup;
 			children = (
-				6DBFEA6F2A730511001D6C53 /* ListItemViewController.swift */,
 				6DBFEA712A73051D001D6C53 /* ManageOrderController.swift */,
 				6DBFEA732A73053D001D6C53 /* ManageListingsViewController.swift */,
 				6DBFEA752A730553001D6C53 /* DashboardViewController.swift */,
 				6DBFEA772A730563001D6C53 /* ShopViewController.swift */,
 				6DBFEA7E2A730726001D6C53 /* BecomeSellerViewController.swift */,
+				6D137C552A78629200711889 /* AddListingViewController.swift */,
 			);
 			path = Seller;
 			sourceTree = "<group>";
@@ -457,6 +498,8 @@
 		6DD390DF2A708C3100C61808 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				6D137C582A7863D400711889 /* SettingSellerMenuDelegate.swift */,
+				6D137C5C2A78872700711889 /* CreateListingDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -501,6 +544,7 @@
 		6DD390E32A708C9900C61808 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				6D137C5E2A788FE100711889 /* Helper */,
 				6DD19D9E2A75A522004F02B5 /* OnBoarding */,
 				6DBFEA7D2A7305EC001D6C53 /* Auth */,
 				6DBFEA7C2A7305DC001D6C53 /* Helpers */,
@@ -518,6 +562,7 @@
 			children = (
 				6DD19DAE2A75D954004F02B5 /* OnBoardingCell.swift */,
 				6D137C3A2A78375700711889 /* SellerMenuCell.swift */,
+				6D137C5A2A786FD100711889 /* ImageListingCell.swift */,
 			);
 			path = CellView;
 			sourceTree = "<group>";
@@ -544,6 +589,9 @@
 				6D2879202A71E59B00FDA177 /* CustomButton.swift */,
 				6DD19DA82A75BFA6004F02B5 /* CountryPickerView.swift */,
 				6DD19DAA2A75C3E3004F02B5 /* PickerViewWrapper.swift */,
+				6D137C612A789E0300711889 /* LabeledTextField.swift */,
+				6DD1A0A52A79402300666AAA /* LabeledTextView.swift */,
+				6DD1A0AB2A799C9F00666AAA /* NumberPickerView.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -573,6 +621,7 @@
 				6D5900142A747D4200400F80 /* StripePaymentSheet */,
 				6D5900162A747D4200400F80 /* StripePayments */,
 				6D5900182A747D4200400F80 /* StripePaymentsUI */,
+				6DD1A0AE2A79BA6B00666AAA /* SimpleCheckbox */,
 			);
 			productName = PersonifyMe;
 			productReference = 6D2D92222A6DF54F005AE6E6 /* PersonifyMe.app */;
@@ -648,6 +697,7 @@
 			mainGroup = 6D2D92192A6DF54F005AE6E6;
 			packageReferences = (
 				6D5900092A747D4200400F80 /* XCRemoteSwiftPackageReference "stripe-ios-spm" */,
+				6DD1A0AD2A79BA6B00666AAA /* XCRemoteSwiftPackageReference "SimpleCheckbox" */,
 			);
 			productRefGroup = 6D2D92232A6DF54F005AE6E6 /* Products */;
 			projectDirPath = "";
@@ -692,7 +742,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */,
+				6D137C5D2A78872700711889 /* CreateListingDelegate.swift in Sources */,
 				6D2879182A7192DC00FDA177 /* Endpoint.swift in Sources */,
+				6D137C602A788FF700711889 /* DropdownMenuController.swift in Sources */,
 				6DD390E82A708DAF00C61808 /* RegisterViewController.swift in Sources */,
 				6DD19DB52A75F978004F02B5 /* OnBoardingCollectionView.swift in Sources */,
 				6DBFEA672A730403001D6C53 /* ResetPasswordViewController.swift in Sources */,
@@ -701,19 +753,23 @@
 				6D2879162A71923A00FDA177 /* Request.swift in Sources */,
 				6DD19DA52A75B123004F02B5 /* PageCell.swift in Sources */,
 				6DD19DAB2A75C3E3004F02B5 /* PickerViewWrapper.swift in Sources */,
+				6DD1A0AA2A79906B00666AAA /* TimeProcessingView.swift in Sources */,
 				6DD390EB2A709C5800C61808 /* ForgotPasswordViewController.swift in Sources */,
 				6DD19DAD2A75D8EF004F02B5 /* PromoModel.swift in Sources */,
 				6DD19DB12A75E577004F02B5 /* OnBoardingResponse.swift in Sources */,
 				6DAE93A02A7742B000AF3F25 /* ErrorManager.swift in Sources */,
 				6DBFEA742A73053D001D6C53 /* ManageListingsViewController.swift in Sources */,
-				6DBFEA702A730511001D6C53 /* ListItemViewController.swift in Sources */,
 				6DBFEA6C2A7304B5001D6C53 /* SingleItemViewController.swift in Sources */,
+				6DD1A0AC2A799C9F00666AAA /* NumberPickerView.swift in Sources */,
+				6D137C562A78629200711889 /* AddListingViewController.swift in Sources */,
 				6DD390ED2A709C7C00C61808 /* HomeViewController.swift in Sources */,
 				6DD390F42A709F6D00C61808 /* WebViewController.swift in Sources */,
 				6D2D922A2A6DF54F005AE6E6 /* ViewController.swift in Sources */,
 				6DD19DB32A75E829004F02B5 /* OnBoardingLinkViewController.swift in Sources */,
 				6DBFEA532A72D532001D6C53 /* User.swift in Sources */,
+				6D137C592A7863D400711889 /* SettingSellerMenuDelegate.swift in Sources */,
 				6D137C462A78386800711889 /* NoResultMessage.swift in Sources */,
+				6D137C642A78A64400711889 /* BorderedTextField.swift in Sources */,
 				6D28791C2A71C45800FDA177 /* ErrorResponse.swift in Sources */,
 				6D5900082A73FC1D00400F80 /* Controller.swift in Sources */,
 				6DBFEA612A7303BB001D6C53 /* ProfileViewController.swift in Sources */,
@@ -732,6 +788,7 @@
 				6D137C502A7847E200711889 /* DashBoardStats.swift in Sources */,
 				6D137C542A78588C00711889 /* DashBoardStatsElement.swift in Sources */,
 				6D024C002A76FB2800E678EB /* ApiResponse.swift in Sources */,
+				6D137C622A789E0300711889 /* LabeledTextField.swift in Sources */,
 				6DBFEA4E2A729F80001D6C53 /* Anchors.swift in Sources */,
 				6D137C412A78380B00711889 /* CustomCell.swift in Sources */,
 				6D137C442A78385400711889 /* CustomImageView.swift in Sources */,
@@ -744,7 +801,9 @@
 				6DD19DA72A75B149004F02B5 /* PageModel.swift in Sources */,
 				6DBFEA5C2A72FC5D001D6C53 /* RestrictedController.swift in Sources */,
 				6DD390E62A708D9C00C61808 /* LoginViewController.swift in Sources */,
+				6D137C5B2A786FD100711889 /* ImageListingCell.swift in Sources */,
 				6D2D92262A6DF54F005AE6E6 /* AppDelegate.swift in Sources */,
+				6DD1A0A82A79541800666AAA /* CustomSelectableView.swift in Sources */,
 				6D137C482A78387A00711889 /* InsetLabel.swift in Sources */,
 				6DD19DA02A75A55E004F02B5 /* OnBoardingLaunchViewController.swift in Sources */,
 				6DBFEA5F2A730297001D6C53 /* LikesViewController.swift in Sources */,
@@ -759,6 +818,7 @@
 				6D2D92282A6DF54F005AE6E6 /* SceneDelegate.swift in Sources */,
 				6DBFEA632A7303CE001D6C53 /* CartViewController.swift in Sources */,
 				6DBFEA552A72D56B001D6C53 /* LoginViewModel.swift in Sources */,
+				6DD1A0A62A79402300666AAA /* LabeledTextView.swift in Sources */,
 				6D137C522A78483200711889 /* VerificationStatusView.swift in Sources */,
 				6DBFEA782A730563001D6C53 /* ShopViewController.swift in Sources */,
 			);
@@ -1095,6 +1155,14 @@
 				minimumVersion = 23.0.0;
 			};
 		};
+		6DD1A0AD2A79BA6B00666AAA /* XCRemoteSwiftPackageReference "SimpleCheckbox" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/BeauNouvelle/SimpleCheckbox.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1137,6 +1205,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6D5900092A747D4200400F80 /* XCRemoteSwiftPackageReference "stripe-ios-spm" */;
 			productName = StripePaymentsUI;
+		};
+		6DD1A0AE2A79BA6B00666AAA /* SimpleCheckbox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6DD1A0AD2A79BA6B00666AAA /* XCRemoteSwiftPackageReference "SimpleCheckbox" */;
+			productName = SimpleCheckbox;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

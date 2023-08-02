@@ -18,6 +18,11 @@ import UIKit
 
 class DashboardViewController : RestrictedController {
     
+    let identifierMenuCeller = "sellerCellMenuIdentifier"
+    
+    let padding: CGFloat = 10
+    let spacing: CGFloat = 5
+    
     var stripeRequirements : StripeStatusResponse?{
         didSet{
             DispatchQueue.main.async {[weak self] in
@@ -47,15 +52,45 @@ class DashboardViewController : RestrictedController {
         layout.scrollDirection = .vertical
         let collection = SellerMenuCollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
+        
+
         return collection
     }()
     
     
     var verificationStatus  =  VerificationStatusView ()
     
+    
+    var orderStat : DashBoardStatsElement  = {
+        let view = DashBoardStatsElement(placeholder: "Orders", value: "10")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    
+    }()
 
+    var viewStat : DashBoardStatsElement  = {
+        let view = DashBoardStatsElement(placeholder: "Views", value: "100")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    
+    }()
     
     
+    var impresssionStat : DashBoardStatsElement  = {
+        let view = DashBoardStatsElement(placeholder: "Impressions", value: "20.0K")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        
+        return view
+    
+    }()
+    
+    
+    var sortStatsButton : CustomButton =  {
+        let button  = CustomButton(title: "Today ▼", hasBackground: true, fontType: .medium)
+        return button
+    }()
     // MARK: - Properties
     // All properties and variables you need in your ViewController
     
@@ -72,7 +107,14 @@ class DashboardViewController : RestrictedController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Dashboard"
         view.backgroundColor = .systemBackground
-        
+        sellerMenuCollection.register(SellerMenuCell.self, forCellWithReuseIdentifier:identifierMenuCeller )
+        sellerMenuCollection.dataSource = self
+        sellerMenuCollection.delegate = self
+        if let flowLayout = sellerMenuCollection.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.sectionInset = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+            // other properties
+        }
+
         setupUI()
     }
     
@@ -80,18 +122,37 @@ class DashboardViewController : RestrictedController {
     
     // MARK: - UI Setup
     private func setupUI() {
+        
+        
         // Set up all UI elements here
         self.navigationItem.hidesBackButton = true
+     
         view.addSubview(verificationStatus)
+        view.addSubview(sortStatsButton)
         
 //        view.addSubview(label)
         view.addSubview(sellerMenuCollection)
+        view.addSubview(orderStat)
+        view.addSubview(viewStat)
+        view.addSubview(impresssionStat)
         
-      
-        sellerMenuCollection.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        
+   
+       
+        let bottomStackView  = UIStackView(arrangedSubviews: [orderStat, viewStat, impresssionStat])
+        bottomStackView.alignment = .fill
+        bottomStackView.axis =  .horizontal
+        bottomStackView.distribution = .fillEqually
+        bottomStackView.spacing =  10
+        bottomStackView.translatesAutoresizingMaskIntoConstraints =  false
+        view.addSubview(bottomStackView)
+        
+        sortStatsButton.anchor( top: view.layoutMarginsGuide.topAnchor, left: nil, right: view.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 0,paddingRight: -10, paddingBottom: 0, width: (self.view.frame.width / 3) - 10, height: 30)
+        bottomStackView.anchor( top: sortStatsButton.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 15, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 120)
+        sellerMenuCollection.anchor( top: bottomStackView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
         //For setting the  collection view resizable, set the bottom anchor less or equal
         sellerMenuCollection.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        (verificationStatus).anchor( top: sellerMenuCollection.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 60)
+        (verificationStatus).anchor( top: sellerMenuCollection.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 60)
         
         
         
@@ -136,3 +197,82 @@ class DashboardViewController : RestrictedController {
     }
 }
 
+
+
+///For seller Menu
+extension DashboardViewController : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return SellerMenu.allCases.count
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            
+        //User NOrmal cell
+        
+        let setting  =  SellerMenu.init(rawValue: indexPath.row)
+
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifierMenuCeller, for: indexPath) as! SellerMenuCell
+        cell.label.text =   setting?.description
+        if let stringImage  = setting?.imageSetting {
+            cell.iconMenu.image =  UIImage(systemName: stringImage)
+        }
+        
+       
+        return cell
+            
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: (self.view.frame.width  - (padding * 2) - spacing) / 2  ,height: 50)
+    }
+
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return spacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return spacing
+    }
+    
+
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let itemSelected  =  SellerMenu.init(rawValue: indexPath.row)
+        switch itemSelected{
+            
+       
+            
+        case .some(.ListItem):
+            let controller  = AddListingViewController()
+          
+            self.navigationController?.pushViewController(controller, animated: true)
+            
+        case .none:
+            return
+        case .some(.Orders):
+            return
+        case .some(.Listings):
+            return
+        case .some(.Messages):
+            return
+        case .some(.Reviews):
+            return
+        case .some(.Shop):
+            return
+        case .some(.MyInfo):
+            return
+        case .some(.Support):
+            return
+        }
+        
+      
+       
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+//        return CGSize(width: view.frame.width, height: 50)
+//    }
+    
+}

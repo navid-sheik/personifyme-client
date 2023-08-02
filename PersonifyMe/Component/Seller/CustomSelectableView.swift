@@ -1,20 +1,29 @@
 //
-//  VerificationStatus.swift
+//  SelectableView.swift
 //  PersonifyMe
 //
-//  Created by Navid Sheikh on 31/07/2023.
+//  Created by Navid Sheikh on 01/08/2023.
 //
 
+import Foundation
 import Foundation
 
 import UIKit
 
-class VerificationStatusView :  UIView {
+class CustomSelectableView :  UIView {
+    
+    var labelName : String{
+        didSet{
+            self.label.text =  labelName
+        }
+    }
+    let iconImageName : String?
+    
     
     let label : UILabel   =  {
         let label  = UILabel ()
         label.text = "Verified"
-        label.font  = UIFont.boldSystemFont(ofSize: 14)
+        label.font  = UIFont.systemFont(ofSize: 16)
         label.textAlignment =  .left
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor =  .black
@@ -55,13 +64,17 @@ class VerificationStatusView :  UIView {
     
     
     
+
     
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+     init(labelName: String, imageName: String? ) {
+        self.labelName = labelName
+        self.iconImageName =  imageName
+         self.label.text =  labelName
+        super.init(frame: .zero)
         self.layer.borderColor = UIColor.lightGray.cgColor
         self.layer.borderWidth =  1
         self.layer.cornerRadius = 2
+         self.isUserInteractionEnabled = true
         
         setUpView()
     }
@@ -75,18 +88,26 @@ class VerificationStatusView :  UIView {
     
     
     private func setUpView (){
+        self.translatesAutoresizingMaskIntoConstraints = false
         
-        self.addSubview(iconMenu)
+        
+        if let iconImageName {
+            
+            self.addSubview(iconMenu)
+            iconMenu.image = UIImage(systemName: iconImageName)
+            iconMenu.anchor( top: nil, left: self.leadingAnchor , right: nil, bottom: nil, paddingTop: 0, paddingLeft: 5,paddingRight: 0, paddingBottom: 0, width: 30, height: 30)
+            iconMenu.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        }
+   
        self.addSubview(label)
         
         self.addSubview(displayInfoVerificationButton)
-        iconMenu.anchor( top: nil, left: self.leadingAnchor , right: nil, bottom: nil, paddingTop: 0, paddingLeft: 5,paddingRight: 0, paddingBottom: 0, width: 30, height: 30)
-        iconMenu.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+      
         
-        displayInfoVerificationButton.anchor( top: nil, left: nil, right: self.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: -5, paddingBottom: 0, width: 20, height: 20)
+        displayInfoVerificationButton.anchor( top: nil, left: nil, right: self.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: -10, paddingBottom: 0, width: 20, height: 20)
         displayInfoVerificationButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
-        label.anchor( top: nil, left: iconMenu.trailingAnchor , right: displayInfoVerificationButton.leadingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: nil, height: 30)
+        label.anchor( top: nil, left: (iconImageName != nil) ? iconMenu.trailingAnchor : self.leadingAnchor , right: displayInfoVerificationButton.leadingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 10,paddingRight: -20, paddingBottom: 0, width: nil, height: 30)
         label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
 
@@ -94,7 +115,11 @@ class VerificationStatusView :  UIView {
         
    
     }
+    
+    public func setNewValueForLabel (_ value : String){
+        self.labelName =  value
+       
+    }
 
 }
     
-

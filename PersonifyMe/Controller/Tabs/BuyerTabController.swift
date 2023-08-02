@@ -16,11 +16,20 @@ class BuyerTabController: UITabBarController {
         self.edgesForExtendedLayout = []
         
         
-        tabBar.barTintColor =  .lightGray
+//        tabBar.barTintColor =  .lightGray
         tabBar.unselectedItemTintColor =  .lightGray
-        tabBar.tintColor =  .darkGray
+        tabBar.isTranslucent = false
+        tabBar.barTintColor = UIColor.white
         
-        tabBar.isTranslucent = true
+        
+        if #available(iOS 15.0, *) {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .white // change to your preferred color
+            tabBar.standardAppearance = appearance
+            tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+        }
+        
         
         // Do any additional setup after loading the view.
         setUpTabs()

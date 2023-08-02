@@ -20,7 +20,7 @@ class DashBoardStatsElement : UIView{
     var titleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
+        label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 12)
         label.text = "Total Sales"
         label.textAlignment =  .left
@@ -30,7 +30,7 @@ class DashBoardStatsElement : UIView{
     var valueLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .white
+        label.textColor = .black
         label.font = UIFont.boldSystemFont(ofSize: 28)
         label.text = "$100"
         label.textAlignment =  .center
@@ -38,10 +38,23 @@ class DashBoardStatsElement : UIView{
     }()
     
     
+    
     init(placeholder: String, value: String) {
+      
         self.placeholder = placeholder
         self.value = value
         super.init(frame: .zero)
+        
+        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.layer.borderWidth =  1
+        self.layer.cornerRadius = 2
+        
+        
+        setUpView()
+        
+     
+        
+        
 
     }
     
@@ -55,14 +68,14 @@ class DashBoardStatsElement : UIView{
  
     
     func setUpView (){
-        addSubview(titleLabel)
-        addSubview(valueLabel)
+        self.addSubview(titleLabel)
+        self.addSubview(valueLabel)
         titleLabel.text   = placeholder
         valueLabel.text =  value
         
-        titleLabel.anchor( top: self.topAnchor, left: self.leadingAnchor , right: self.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 20)
+        titleLabel.anchor( top: self.topAnchor, left: self.leadingAnchor , right: self.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 10,paddingRight: 0, paddingBottom: 0, width: nil, height: 20)
         
-        valueLabel.anchor( top: titleLabel.bottomAnchor, left: self.leadingAnchor , right: self.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 60)
+        valueLabel.anchor( top: self.topAnchor, left: self.leadingAnchor , right: self.trailingAnchor, bottom: self.bottomAnchor, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil )
         
 
         

@@ -37,7 +37,7 @@ class CustomTextField : UITextField {
         self.autocapitalizationType = .none
         
         self.leftViewMode = .always
-        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 12, height: 0))
+        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 4, height: 0))
         self.translatesAutoresizingMaskIntoConstraints = false
         
         
