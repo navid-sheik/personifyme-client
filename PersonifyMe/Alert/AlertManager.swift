@@ -24,6 +24,18 @@ class AlertManager {
     }
 }
 
+//Product Alert
+extension AlertManager{
+    public static func showProductVAlidationError(on vc : UIViewController, message: String){
+        showBasicAlert(on: vc, title: "Product Error", message: message)
+    }
+    
+    public static func showReviewError(on vc : UIViewController, message: String){
+        showBasicAlert(on: vc, title: "Review Error", message: message)
+    }
+    
+}
+
 //MARK : - Login Alerts
 extension AlertManager{
     public static func showLogoutAlert(on vc : UIViewController){

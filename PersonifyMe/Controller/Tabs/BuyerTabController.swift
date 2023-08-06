@@ -96,7 +96,7 @@ class BuyerTabController: UITabBarController {
     
     private func setUpTabs() {
         let homeVC = HomeViewController()
-        let likesVC = LikesViewController()
+        let likesVC = ManageListingController()
         let cartVC = CartViewController()
         let profileVC =  ProfileViewController()
         let layout  = UICollectionViewFlowLayout()

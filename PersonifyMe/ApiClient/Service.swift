@@ -57,7 +57,23 @@ final class Service{
 //                    print(jsonObject)
                     let result = try JSONDecoder().decode(type.self, from: data)
                     completion(.success(result))
+                } catch let error as DecodingError {
+                    print(error)
+                    switch error {
+                    case .typeMismatch(let context):
+                        print("Type mismatch: \(context)")
+                    case .valueNotFound(let context):
+                        print("Value not found: \(context)")
+                    case .keyNotFound(let key, let context):
+                        print("Key not found: \(key.stringValue) in \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Data corrupted: \(context.debugDescription)")
+                    @unknown default:
+                        print("Unknown error: \(error.localizedDescription)")
+                    }
+                    completion(.failure(ServiceError.FailedToDecodeResponse))
                 } catch {
+                    print("Other error: \(error)")
                     completion(.failure(ServiceError.FailedToDecodeResponse))
                 }
             }else if httpResponse.statusCode == 401{
@@ -471,6 +487,125 @@ extension Service{
             
         }
         
+        
+    }
+    
+}
+
+//Product
+extension Service{
+    
+    
+    public func fetchAllProducts<T:Codable>(expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let request  =  Request(endpoint: .products, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+        
+    }
+    
+    public func createProduct<T:Codable>( _ product : ProductListing,expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+    
+        let jsonData  =  try? JSONEncoder().encode(product)
+        
+        let request  =  Request(endpoint: .products, pathComponents: ["create"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+        
+    }
+    
+    
+    
+}
+
+extension Service {
+    
+    
+    public func fetchReviewForProduct<T:Codable>(_ productId : String,  expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let request  =  Request(endpoint: .reviews, pathComponents: ["product", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+        
+    }
+    
+    public func createNewReview<T:Codable>( _ rating: Int, _ description : String, _ productId : String ,expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let body = ["rating" : rating, "text" : description, "productId" : productId ] as [String : Any]
+        
+        
+        
+        if let jsonData = try? JSONSerialization.data(withJSONObject: body, options: .prettyPrinted) {
+            let request  =  Request(endpoint: .reviews, pathComponents: [])
+                .add(headerField: "Content-Type", value: "application/json")
+                .set(method: .POST)
+                .set(body: jsonData)
+                .build()
+            
+            Service.shared.execute(request, expecting: T.self) { [weak self] result in
+                guard let _ = self else { return }
+                
+                completion(result)
+                
+                
+            }
+            
+        }
+    }
+    
+    
+    
+    
+}
+
+
+extension Service {
+    
+    public func fecthAllCategories<T:Codable>( expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        
+        
+        let request  =  Request(endpoint: .categories, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
         
     }
     

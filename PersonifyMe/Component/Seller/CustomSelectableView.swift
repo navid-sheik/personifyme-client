@@ -19,6 +19,8 @@ class CustomSelectableView :  UIView {
     }
     let iconImageName : String?
     
+    var value : String? = nil
+    
     
     let label : UILabel   =  {
         let label  = UILabel ()
@@ -118,7 +120,12 @@ class CustomSelectableView :  UIView {
     
     public func setNewValueForLabel (_ value : String){
         self.labelName =  value
-       
+        self.value = value
+    }
+    
+    public func getValue() -> String?{
+        return self.value ?? nil
+    
     }
 
 }

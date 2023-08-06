@@ -13,7 +13,10 @@ enum Endpoint : String {
     case base = ""
     case onboarding
     case auth
+    case products
+    case reviews
     case orders
     case listings
+    case categories
     case seller
 }
