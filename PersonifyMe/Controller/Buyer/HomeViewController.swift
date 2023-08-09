@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    
+    var animatedBarButtonItem: UIBarButtonItem?
     
     //MARK: CELL Identifiers
     var bannerIdentifierCell  : String =  "bannerIdentifierCell"
@@ -71,11 +71,13 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.edgesForExtendedLayout  = []
-        self.view.backgroundColor =  .white
+        self.view.backgroundColor =  .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
-        
         searchBar.placeholder = "Search"
+        searchBar.searchTextField.clearButtonMode = .whileEditing
           navigationItem.titleView = searchBar
+        searchBar.searchTextField.clearButtonMode = .whileEditing
+       
           searchBar.delegate = self
        
 
@@ -424,6 +426,15 @@ class HomeViewController: UIViewController {
     @objc private func refreshingData (){
         feathAllDataNeeded()
     }
+    
+    @objc func handleBackButton(){
+        self.dismissSearch()
+        if self.searchBar.isFirstResponder {
+            self.searchBar.resignFirstResponder()
+            self.searchBar.text = ""
+            
+        }
+    }
         
         
 }
@@ -434,9 +445,26 @@ extension HomeViewController : UISearchBarDelegate{
     
  
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        if animatedBarButtonItem == nil {
+               animatedBarButtonItem =   UIBarButtonItem(image: UIImage(systemName:  "arrow.backward"), style: .plain, target: self, action: #selector(handleBackButton))
+           }
+           
+           // Animate the appearance
+           UIView.animate(withDuration: 0.3, animations: {
+               self.navigationItem.setLeftBarButton(self.animatedBarButtonItem, animated: true)
+               self.navigationController?.navigationBar.layoutIfNeeded()
+           })
         
-        self.searchBar.showsCancelButton = true
+      
+      
         presentSearch()
+    }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        // When the search bar is not active, remove the bar button item
+        UIView.animate(withDuration: 0.3, animations: {
+            self.navigationItem.setLeftBarButton(nil, animated: true)
+            self.navigationController?.navigationBar.layoutIfNeeded()
+        })
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -450,7 +478,6 @@ extension HomeViewController : UISearchBarDelegate{
         searchBar.text = ""
         searchBar.resignFirstResponder()
 //        searchBar.showsCancelButton = false
-        self.searchBar.showsCancelButton = false
         dismissSearch()
     
         
@@ -459,9 +486,13 @@ extension HomeViewController : UISearchBarDelegate{
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        let controller = SearchResultViewController()
+      
+        let controller = SearchResultViewController(textSearchBar: searchBar.text ?? "")
+        self.searchResultsController.view.frame.origin.x = self.searchResultsController.view.frame.width
+        self.searchBar.text = ""
+   
+        self.navigationController?.pushViewController(controller, animated: false )
         
-        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     // Perform the search and update the searchResultsController with the results
@@ -479,14 +510,19 @@ extension HomeViewController : UISearchBarDelegate{
                 searchResultsController =  LikesViewController()
     //            menuController.delegate = self
                 //view.insertSubview(menuController.view, aboveSubview: centerController.view)
+                searchResultsController.view.frame.origin.x = self.searchResultsController.view.frame.width
                 view.insertSubview(searchResultsController.view, at: 1)
                 addChild(searchResultsController)
+                
                 searchResultsController.didMove(toParent: self)
+                UIView.animate(withDuration: 0.3) {
+                        self.searchResultsController.view.frame.origin.x = 0
+                    }
             }else{
                 // Assuming searchResultsController view's frame is already offscreen, e.g., to the right.
                 // This will depend on your specific layout, modify as needed.
   
-                UIView.animate(withDuration: 0.2, animations: {
+                UIView.animate(withDuration: 0.3, animations: {
                     self.searchResultsController.view.frame.origin.x = 0
                     
                   })
@@ -501,7 +537,7 @@ extension HomeViewController : UISearchBarDelegate{
     // Dismiss the search view controller.
     func dismissSearch() {
         // Animate the searchResultsController's view back offscreen
-        UIView.animate(withDuration: 0.2, animations: {
+        UIView.animate(withDuration: 0.3, animations: {
             self.searchResultsController.view.frame.origin.x =  self.searchResultsController.view.frame.width
 
         })

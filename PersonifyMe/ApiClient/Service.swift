@@ -34,12 +34,14 @@ final class Service{
    
     
     
-    public func execute <T: Codable> (_ urlRequest :  URLRequest?,expecting type : T.Type, retryCount: Int = 0, completion : @escaping (Result <T, Error>) -> Void){
+    public func execute <T: Codable> (_ urlRequest :  URLRequest?,expecting type : T.Type, retryCount: Int = 0,  completion : @escaping (Result <T, Error>) -> Void){
  
         guard let urlRequest =  urlRequest else {
             completion(.failure(ServiceError.FailedToCreateRequest))
             return
         }
+        
+     
         
         let task  = URLSession.shared.dataTask(with: urlRequest) {[weak self] data, response, error in
             guard let data  =  data, error  == nil, let httpResponse = response as? HTTPURLResponse  else{
