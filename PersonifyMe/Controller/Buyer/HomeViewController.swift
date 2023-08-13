@@ -581,6 +581,8 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: cellNewArrivalsIdentifier, for: indexPath) as! ProductCell
             //        cell.tagName.text =  featuredIngredients[indexPath.row].strIngredient
             
+            
+     
             cell.mainImage.loadImageUrlString(urlString: allproducts[indexPath.row].images[0])
             return cell
         }
@@ -644,8 +646,8 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 1{
-            let controller  = ProductViewController()
-            controller.product = allproducts[indexPath.row]
+            let controller  = ProductViewController(product:  allproducts[indexPath.row])
+      
             navigationController?.pushViewController(controller, animated: true)
             
             

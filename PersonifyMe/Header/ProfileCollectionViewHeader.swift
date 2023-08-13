@@ -46,6 +46,8 @@ class ProfileCollectionViewHeader : UICollectionReusableView {
         addButton.anchor( top: nil, left: nil, right: self.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: -10, paddingBottom: 0, width: 30, height: 30)
         addButton.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     }
+    
+    
         
      
         

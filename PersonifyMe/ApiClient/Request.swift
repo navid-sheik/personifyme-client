@@ -22,7 +22,7 @@ enum HTTPMethod: String {
 final class Request{
 
     private struct Constants{
-        static let baseUrl   = "https://4c5e-2a02-6b66-ea39-0-b101-2549-9aaf-85a8.ngrok-free.app"
+        static let baseUrl   = "https://a722-2a02-6b66-ea39-0-f110-a5-845a-8001.ngrok-free.app"
     }
     
     /// Desired endpoint

@@ -29,7 +29,8 @@ class AddListingViewController: UIViewController{
     
     let exchangeValue : Bool = false
     
-    
+    var personalizationLabelTopConstraint: NSLayoutConstraint?
+
     //MARK: Arrays
     var images : [UIImage] = []
     
@@ -39,6 +40,12 @@ class AddListingViewController: UIViewController{
     var pickerContainerView = UIView()
     let countryPicker = UIPickerView()
     
+    
+    var variants : [Variant] = []{
+        didSet{
+            self.updateActionButtonTitle()
+        }
+    }
     
     //MARK: MAIN SCROLLVIEW
     lazy var containerScrollView :  UIScrollView =  {
@@ -150,7 +157,7 @@ class AddListingViewController: UIViewController{
     
     let variantView : UILabel = {
         let label = UILabel()
-        label.text = "Variation View"
+        label.text = "No Variations"
         label.translatesAutoresizingMaskIntoConstraints = false
         let lighterGray = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
         label.backgroundColor = lighterGray
@@ -158,6 +165,20 @@ class AddListingViewController: UIViewController{
         
         return label
     }()
+    
+    let variationStack  =  {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 10
+        stack.alignment = .fill
+        
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    
+    
     ///Personalization
     let personalizationLabel  : UILabel =  {
         let label  = UILabel()
@@ -336,13 +357,17 @@ class AddListingViewController: UIViewController{
     
     //MARK: DROPDOWN
     
-    lazy var menuVC: DropdownMenuController = {
-           let dropdown = DropdownMenuController()
+    
+    var categorySelected : Category?
+    
+    lazy var categoryVC: CategoryMenuContronller = {
+           let dropdown = CategoryMenuContronller()
             dropdown.modalPresentationStyle = .popover
-            dropdown.items = ["64ca8a8b9ecb2a6823af6030", "Eletronics", "Smarthphone"] // The items in the dropdown
-            dropdown.selectedItem = { item in
-                    print(item)
-                    self.categoriesView.setNewValueForLabel(item)
+    
+            dropdown.selectedItem = { category in
+                   
+                self.categorySelected =  category
+                self.categoriesView.setNewValueForLabel(category.name)
         
             }
            return dropdown
@@ -360,6 +385,9 @@ class AddListingViewController: UIViewController{
             return dropdown
     }()
     
+    
+    
+
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -379,6 +407,11 @@ class AddListingViewController: UIViewController{
         setUpDelegate()
         setImageCollectionView()
         setupUI()
+        buttonFunction()
+    }
+    
+    private func buttonFunction(){
+        addVariantButton.addTarget(self, action: #selector(presetPopVariant), for: .touchUpInside)
     }
     
     //MARK: - SET UP DELETEGATE
@@ -393,7 +426,9 @@ class AddListingViewController: UIViewController{
     
     // MARK: - UI Setup
     private func setupUI() {
-        
+        variationStack.isHidden = true
+        addVariantButton.isHidden = true
+        addVariantButton.alpha = 0.0
         //ScrollView
         view.addSubview(containerScrollView)
         containerScrollView.addSubview(contentView)
@@ -421,7 +456,13 @@ class AddListingViewController: UIViewController{
         contentView.addSubview(variationLabel)
         contentView.addSubview(swittchVariant)
         contentView.addSubview(addVariantButton)
-        contentView.addSubview(variantView)
+        
+
+        
+        contentView.addSubview(variationStack)
+        variationStack.addArrangedSubview(variantView)
+        
+        
         //Personalization
         contentView.addSubview(personalizationLabel)
         contentView.addSubview(personalizationTextView)
@@ -477,7 +518,7 @@ class AddListingViewController: UIViewController{
         categoriesView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDropDownCategory)))
         conditionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDropDownCondition)))
         titleTextField.anchor( top: contentView.layoutMarginsGuide.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: nil, height: 30)
-        imageCollectionView.backgroundColor =  .cyan
+ 
         imageCollectionView.anchor( top: titleTextField.bottomAnchor , left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
         
         addImageButton.anchor( top: imageCollectionView.bottomAnchor, left:  nil, right:  nil, bottom: nil, paddingTop: 15, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: self.view.frame.width / 2, height: nil)
@@ -498,10 +539,16 @@ class AddListingViewController: UIViewController{
         addVariantButton.anchor( top: princeAndConditionStackView.bottomAnchor , left: nil, right: contentView.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 0,paddingRight: -10, paddingBottom: 0, width: self.view.frame.width / 3, height: 30)
         addVariantButton.centerYAnchor.constraint(equalTo: variationLabel.centerYAnchor).isActive = true
         
-        variantView.anchor( top: variationLabel.bottomAnchor , left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 200)
         
+        variantView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        variationStack.anchor( top: addVariantButton.bottomAnchor , left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
-        personalizationLabel.anchor( top: variantView.bottomAnchor, left:  contentView.leadingAnchor, right:  nil, bottom: nil, paddingTop: 15, paddingLeft: 10,paddingRight: 0, paddingBottom: 0, width: nil, height: 30)
+    
+        
+        personalizationLabel.anchor( top: nil  , left:  contentView.leadingAnchor, right:  nil, bottom: nil, paddingTop: 15, paddingLeft: 10,paddingRight: 0, paddingBottom: 0, width: nil, height: 30)
+        personalizationLabelTopConstraint = personalizationLabel.topAnchor.constraint(equalTo: addVariantButton.bottomAnchor, constant: 15)
+        personalizationLabelTopConstraint?.isActive = true
+       
         
         personalizationTextView.anchor( top: personalizationLabel.bottomAnchor, left:  contentView.leadingAnchor, right:  contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 100)
         
@@ -567,28 +614,38 @@ class AddListingViewController: UIViewController{
     
     //Show Drop Menu
     @objc func handleDropDownCategory(){
-        present(menuVC, animated: true, completion: nil)
+        present(categoryVC, animated: true, completion: nil)
     }
     @objc func handleDropDownCondition(){
         present(conditionMenu, animated: true, completion: nil)
     }
     
     //Switch Variant, allow to enter variant
-    @objc func handleSwitchAction(sender: UISwitch){
-        
-        
-        if sender.isOn {
-            print("Turned on")
-            UIApplication.shared.registerForRemoteNotifications()
-            
-            
-        }
-        else{
-            UIApplication.shared.unregisterForRemoteNotifications()
-            print("Turned off")
-        }
+    @objc func handleSwitchAction(sender: UISwitch) {
+        UIView.animate(withDuration: 0.3, animations: {
+            if sender.isOn {
+                self.variationStack.isHidden = false
+                self.addVariantButton.isHidden = false
+                self.addVariantButton.alpha = 1.0
+                // Update constraint
+                self.personalizationLabelTopConstraint?.isActive = false
+                self.personalizationLabelTopConstraint = self.personalizationLabel.topAnchor.constraint(equalTo: self.variationStack.bottomAnchor, constant: 15)
+                self.personalizationLabelTopConstraint?.isActive = true
+            } else {
+                self.variationStack.isHidden = true
+                self.addVariantButton.alpha = 0.0
+                // Update constraint
+                self.personalizationLabelTopConstraint?.isActive = false
+                self.personalizationLabelTopConstraint = self.personalizationLabel.topAnchor.constraint(equalTo: self.addVariantButton.bottomAnchor, constant: 15)
+                self.personalizationLabelTopConstraint?.isActive = true
+            }
+            self.contentView.layoutIfNeeded()
+        }, completion: { (finished) in
+            if finished && !sender.isOn {
+                self.addVariantButton.isHidden = true
+            }
+        })
     }
-    
     //Open number picker controller
     @objc func didTapNumber() {
         let numbers = Array(1...10)
@@ -624,7 +681,7 @@ class AddListingViewController: UIViewController{
         
         //Category
         
-        guard let category  = categoriesView.getValue() else {
+        guard let category  = categorySelected else {
             AlertManager.showProductVAlidationError(on: self, message: "Select Category")
             return
         }
@@ -753,16 +810,56 @@ class AddListingViewController: UIViewController{
         let customizationOptions =  CustomizationOptionListing(field: "Personalization", instructions: personalizationInStructions, customizationType: "Text")
         
         
-
+        let hasVariation = swittchVariant.isOn && !variants.isEmpty
+        let product = ProductListing(
+            title: title,
+            description: description,
+            price: price,
+            quantity: quantity,
+            category_id: category.id,
+            customizationOptions: [customizationOptions],
+            images: [],
+            condition: condition,
+            hasVariations: hasVariation,
+            variations: hasVariation ? variants : nil,
+            shippingInfo: shippingInfo,
+            returnPolicy: returnCheckBox.isChecked,
+            shippingPolicy: exchangeCheckBox.isChecked
+        )
         
         //CREATE THE PRODUCT
-        let product  = ProductListing(title: title, description: description, price: price, quantity: quantity, category_id: category, customizationOptions: [customizationOptions], images: ["https://i.pinimg.com/originals/0a/31/79/0a3179547dcda386369a632f9f8a7ee4.jpg"], condition: condition, hasVariations: false, variations: nil, shippingInfo: shippingInfo, returnPolicy: true, shippingPolicy: true)
+      
+        
+        
+        if  images.count == 0 {
+            AlertManager.showProductVAlidationError(on: self, message: "Add atleast one image")
+            return
+        }
+        
+        
+        
+        
+        
+        
+       
+        var productWithImages = product
+        productWithImages.images = images.compactMap { image in
+            if let base64String = image.jpegData(compressionQuality: 0.8)?.base64EncodedString() {
+                return "data:image/jpeg;base64,\(base64String)"
+            }
+            return nil
+            
+        }
+        
+        print(productWithImages.images)
+        
+        
         
         
         
         //NETWWORK CALL + REDIRECT TO MANAGE LISTING PAGE
         
-        Service.shared.createProduct(product, expecting: ApiResponse<Product>.self, completion: { [weak self] result in
+        Service.shared.createProduct(productWithImages,  expecting: ApiResponse<Product>.self, completion: { [weak self] result in
             
             guard let self  = self else {
                 return
@@ -792,6 +889,125 @@ class AddListingViewController: UIViewController{
     
 }
 
+
+extension AddListingViewController  {
+    @objc  func presetPopVariant() {
+        print("Add  variant controller")
+       
+        let vc =  AddVariantController()
+        vc.modalPresentationStyle = .overCurrentContext
+       
+//        vc.modalTransitionStyle = .crossDissolve
+//        vc.modalPresentationStyle = .popover
+        vc.delegate = self
+        //representative of actually presented VC
+        if (!variants.isEmpty){
+            vc.variants = variants
+        
+        }
+        self.definesPresentationContext = true //*** adding this line should solve your issue ***
+        self.present(vc, animated: true, completion: nil)
+        
+    }
+    
+    
+ 
+    
+    func updateActionButtonTitle() {
+        if variants.isEmpty {
+            addVariantButton.setTitle("Add Variants", for: .normal)
+        } else {
+            addVariantButton.setTitle("Edit Variants", for: .normal)
+        }
+    }
+    
+}
+
+
+extension AddListingViewController: AddVariantControllerDelegate{
+    func saveNewVariation(variantsArray: [Variant]?) {
+        self.variants = variantsArray ?? []
+        UIView.animate(withDuration: 0.3, animations: {
+            // Check if the variantsArray is empty or nil
+            guard let variants = variantsArray, !variants.isEmpty else {
+                // If the array is empty or nil, simply show the default view
+                if !self.variationStack.arrangedSubviews.contains(self.variantView) {
+                    self.variationStack.addArrangedSubview(self.variantView)
+                }
+                return
+            }
+            
+            // Remove the default view from the stack view
+            self.variantView.removeFromSuperview()
+            
+            // Remove any previous variant views from the stack view
+            for view in self.variationStack.arrangedSubviews {
+                self.variationStack.removeArrangedSubview(view)
+                view.removeFromSuperview()
+            }
+            
+            // Define a maximum number of options per row
+            let maxOptionsPerRow = 3
+            
+            // Iterate through the variants and create views
+            for variant in variants {
+                // Create a vertical stack view for each variant
+                let variantStack = UIStackView()
+                variantStack.axis = .vertical
+                variantStack.spacing = 5
+                
+                // Add a label for the variant name
+                let nameLabel = UILabel()
+                nameLabel.text = variant.name
+                nameLabel.font = UIFont.boldSystemFont(ofSize: 16)
+                variantStack.addArrangedSubview(nameLabel)
+                
+                // Prepare horizontal stack and counter for options
+                var optionsStack = UIStackView()
+                optionsStack.axis = .horizontal
+                optionsStack.spacing = 5
+                optionsStack.distribution = .fillProportionally
+                var optionCounter = 0
+
+                for option in variant.options {
+                    if optionCounter >= maxOptionsPerRow {
+                        // Add the filled optionsStack to variantStack and reset for a new row
+                        variantStack.addArrangedSubview(optionsStack)
+                        optionsStack = UIStackView()
+                        optionsStack.axis = .horizontal
+                        optionsStack.spacing = 5
+                        optionsStack.distribution = .fillProportionally
+                        optionCounter = 0
+                    }
+                    
+                    let optionLabel = UILabel()
+                    optionLabel.text = option
+                    optionLabel.backgroundColor = UIColor.black // Color the background
+                    optionLabel.textColor = UIColor.white
+                    optionLabel.font = UIFont.systemFont(ofSize: 14)
+                    optionLabel.textAlignment = .center
+                    optionLabel.layer.cornerRadius = 5
+                    optionLabel.layer.masksToBounds = true // Needed for cornerRadius
+                    optionLabel.sizeToFit()
+                    let minHeight: CGFloat = 25 // adjust this value as needed
+                    optionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: minHeight).isActive = true
+
+                    optionsStack.addArrangedSubview(optionLabel)
+                    optionCounter += 1
+                }
+                
+                // Ensure the last optionsStack is added if it has content
+                if !optionsStack.arrangedSubviews.isEmpty {
+                    variantStack.addArrangedSubview(optionsStack)
+                }
+
+                self.variationStack.addArrangedSubview(variantStack)
+            }
+        })
+    }
+  
+    
+}
 
 extension AddListingViewController{
     
@@ -853,10 +1069,12 @@ extension AddListingViewController : UITextFieldDelegate{
 ///Collection View For Images
 extension AddListingViewController : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if images.count == 0 {
+            return 1
+        }
         
         
-        return  images.count == 0 ? 1 : images.count
-        
+        return  images.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -866,10 +1084,19 @@ extension AddListingViewController : UICollectionViewDelegateFlowLayout, UIColle
         
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: imageListingSellerIdentifier, for: indexPath) as! ImageListingCell
-        if images.count != 0 {
+        
+        if images.count  != 0{
             cell.mainImage.image = images[indexPath.row]
             cell.delegate = self
+            
+            
         }
+        else {
+            cell.isPlaceholder = true
+        }
+        
+        
+
         
         
         
@@ -985,6 +1212,11 @@ extension AddListingViewController :  CreateListingDelegate{
             // Now delete the item from your UICollectionView.
             imageCollectionView.performBatchUpdates({
                 imageCollectionView.deleteItems(at: [indexPath])
+                if images.isEmpty {
+                    imageCollectionView.insertItems(at: [IndexPath(item: 0, section: 0)])
+                  
+                }
+                            
             }, completion: nil)
         }
         

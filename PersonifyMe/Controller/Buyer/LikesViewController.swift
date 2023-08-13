@@ -111,8 +111,8 @@ extension LikesViewController  :  UICollectionViewDelegateFlowLayout, UICollecti
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Select item")
         guard let product =  products?[indexPath.row] else {return}
-        let controller = ProductViewController()
-        controller.product = product
+        let controller = ProductViewController(product: product)
+
         self.navigationController?.pushViewController(controller, animated: true)
     }
 

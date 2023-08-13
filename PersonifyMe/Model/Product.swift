@@ -104,7 +104,7 @@ struct ProcessingTime: Codable {
 struct Variation: Codable {
     let id: String
     let name: String
-    let options: [Option]
+    let options: [String]
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
@@ -116,7 +116,8 @@ struct Variation: Codable {
 struct Option: Codable {
     let id: String
     let name: String
-    let quantity, price: Int
+    let quantity: Int?
+    let price: Int?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
@@ -132,10 +133,10 @@ struct ProductListing: Codable {
     let quantity : Int
     let category_id: String
     let customizationOptions: [CustomizationOptionListing]
-    let images: [String]
+    var images: [String]
     let condition: String
     let hasVariations: Bool
-    let variations: [Variation]? // Optional, as there may not be variations
+    let variations: [Variant]? // Optional, as there may not be variations
     let shippingInfo: ShippingInfo
     let returnPolicy, shippingPolicy: Bool
 }
@@ -146,6 +147,7 @@ struct CustomizationOptionListing: Codable{
     let field : String
     let instructions : String
     let customizationType : String
+    
    
     
     

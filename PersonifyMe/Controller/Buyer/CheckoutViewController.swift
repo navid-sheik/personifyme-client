@@ -16,7 +16,7 @@ import StripePaymentSheet
 
 class CheckoutViewController: UIViewController {
 
-    private static let backendURL = URL(string: "https://257f-2a02-6b66-ea39-0-80fa-3d05-5529-3f8b.ngrok-free.app")!
+    private static let backendURL = URL(string: "https://05f7-2a02-6b66-ea39-0-3859-c1a7-b0e-22dd.ngrok-free.app")!
 
     private var paymentIntentClientSecret: String?
     private lazy var addressViewController: AddressViewController? = {

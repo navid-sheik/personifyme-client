@@ -17,7 +17,7 @@ class CheckoutViewController2: UIViewController {
         return button
     }()
   var paymentSheet: PaymentSheet?
-  let backendCheckoutUrl = URL(string: "https://4c5e-2a02-6b66-ea39-0-b101-2549-9aaf-85a8.ngrok-free.app")! // Your backend endpoint
+  let backendCheckoutUrl = URL(string: "https://a722-2a02-6b66-ea39-0-f110-a5-845a-8001.ngrok-free.app")! // Your backend endpoint
 
   override func viewDidLoad() {
     super.viewDidLoad()

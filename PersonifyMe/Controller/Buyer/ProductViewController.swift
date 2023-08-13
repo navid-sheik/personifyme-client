@@ -21,17 +21,12 @@ import Foundation
 
 
 import UIKit
+import DropDown
 
 class ProductViewController: UIViewController {
     
-    var product : Product?{
-        didSet{
-            guard let product = product else {return}
-            productTitle.text = product.title
-            imageCollectionView.reloadData()
-        }
+    var product : Product
     
-    }
     
     var reviews : [Review] = []{
         didSet{
@@ -42,6 +37,8 @@ class ProductViewController: UIViewController {
             
         }
     }
+    
+    var images :  [String] = []
     
     //MARK: - Identifier
     
@@ -112,8 +109,13 @@ class ProductViewController: UIViewController {
         let tableView = ExpandableTableViewV2(frame: .zero, style: .plain)
         
         tableView.sections = [
-            Section(title: "Section 1", items: [GlobalTexts.productionDelivery]),
-                   Section(title: "Section 2", items: ["Item 3"])
+            Section(title: "HOW TO PERSONALIZE", items: [GlobalTexts.productionDelivery]),
+                   Section(title: "PRODUCT & DELIVERY", items: ["Item 3"]),
+                           Section(title: "OUR GUARANTEE", items: ["Item 3"]),
+                        Section(title: "FAQ", items: ["Item 3"]),
+                          
+                          
+                          
                    // Add more sections here
                ]
       
@@ -197,19 +199,77 @@ class ProductViewController: UIViewController {
         tb.tableFooterView =  UIView()
         return tb
     }()
+    
+    
+    let stackViewVariants: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 10
+        stack.distribution  = .fillProportionally
+        stack.alignment = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
 
+    
+    var placeholderLabel : UILabel!
+    let personalizationView : VariantProductTextView = {
+        let field = VariantProductTextView()
+        field.translatesAutoresizingMaskIntoConstraints = false
+        return field
+    }()
+    
+    
+    
     
     
     // MARK: - Properties
     // All properties and variables you need in your ViewController
     
-    
-    
+   
     
     //MARK: - INIT
     
+    init(product: Product) {
+        self.product = product
+        if  product.images.count > 0 {
+            self.images = product.images
+        
+        }
+        super.init(nibName: nil, bundle: nil)
+    
+        
+      
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
+    
+    private func configureUI(){
+        productTitle.text =  product.title
+        priceLabel.text  = String(product.price)
+        descriptionTextView.text = product.description
+
+        
+        
+       
+        let isInternational = product.shippingInfo.internationalDelivery?.available ?? false
+        let service = DeliveryEstimationService()
+        let message = service.deliveryMessage(for: product.shippingInfo, isInternational: isInternational)
+//        print(message)
+        
+        
+        estimateLabel.text = message
+        placeholderLabel.text = product.customizationOptions.first?.instructions
+        
+        
+        
+        
+    }
     
     
     // MARK: - Lifecycle methods
@@ -217,7 +277,19 @@ class ProductViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
+       
+        personalizationView.textView.delegate = self
+         placeholderLabel = UILabel()
+         placeholderLabel.text = "Enter some text..."
+         placeholderLabel.font = .italicSystemFont(ofSize: (    personalizationView.textView.font?.pointSize)!)
+         placeholderLabel.sizeToFit()
+        personalizationView.textView.addSubview(placeholderLabel)
+         placeholderLabel.frame.origin = CGPoint(x: 5, y: (    personalizationView.textView.font?.pointSize)! / 2)
+         placeholderLabel.textColor = .tertiaryLabel
+         placeholderLabel.isHidden = !personalizationView.textView.text.isEmpty
+    
         
+        configureUI()
         
         imageCollectionView.delegate = self
         imageCollectionView.dataSource = self
@@ -229,17 +301,22 @@ class ProductViewController: UIViewController {
         
 //        reviewTable.estimatedRowHeight = 200 // Or any other value based on your design
         
-        
-    
+      
        
         setupUI()
+        
+        guard let variants = self.product.variations else {return }
+        self.setupVariantsWithDelegate(variants)
         fecthReviews()
     }
+    
+    
     
     // MARK: - UI Setup
     private func setupUI() {
         // Set up all UI elements here
         //ScrollView
+        containerScrollView.delegate = self
         view.addSubview(containerScrollView)
         containerScrollView.addSubview(contentView)
         containerScrollView.topAnchor.constraint(equalTo:  view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -258,6 +335,8 @@ class ProductViewController: UIViewController {
 
         contentView.addSubview(imageCollectionView)
         contentView.addSubview(productTitle)
+      
+        
         contentView.addSubview(addToCartButton)
         contentView.addSubview(estimateLabel)
         contentView.addSubview(reviewTable)
@@ -275,7 +354,20 @@ class ProductViewController: UIViewController {
         contentView.addSubview(priceStackView)
         priceStackView.anchor( top: productTitle.bottomAnchor, left: contentView.leadingAnchor, right: nil, bottom: nil,  paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
-        addToCartButton.anchor( top: priceStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 50)
+        
+   
+        contentView.addSubview(stackViewVariants)
+        
+        stackViewVariants.anchor( top: priceStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        
+        
+        contentView.addSubview(personalizationView)
+        personalizationView.anchor( top: stackViewVariants.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        
+        
+        
+   
+        addToCartButton.anchor( top: personalizationView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 50)
         
         estimateLabel.anchor( top: addToCartButton.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
@@ -300,6 +392,36 @@ class ProductViewController: UIViewController {
     }
     
     
+    func setupVariantsWithDelegate(_ variants: [Variation]) {
+        // Clear all arranged subviews first
+        stackViewVariants.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        for variant in variants {
+            let fieldView = VariantProductViewField()
+            fieldView.label.text = variant.name
+
+            let dropDown = DropDown()
+            dropDown.anchorView = fieldView.textField
+            dropDown.bottomOffset = CGPoint(x: 0, y: fieldView.textField.bounds.height + 35)
+            dropDown.dataSource = variant.options
+
+            dropDown.selectionAction = { [weak self] (index: Int, item: String) in
+                print("Selected item: \(item) at index: \(index)")
+
+                // Update the textField with the selected item
+                fieldView.textField.text = item
+
+                // Store the selected option for this variant
+    
+            }
+
+            fieldView.textField.delegate = self
+            fieldView.textField.dropDown = dropDown
+
+            stackViewVariants.addArrangedSubview(fieldView)
+            
+        }
+    }
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
     
@@ -310,11 +432,8 @@ class ProductViewController: UIViewController {
     // MARK: - Fetching
     
     func fecthReviews(){
-        guard let  productId = product?.productId  else {
-            print("We couldn't fetch the product the id")
-            return
-        }
-        Service.shared.fetchReviewForProduct(productId, expecting: ApiResponse<[Review]>.self) { [weak self] result in
+      
+        Service.shared.fetchReviewForProduct(product.productId, expecting: ApiResponse<[Review]>.self) { [weak self] result in
             guard let self = self else {return }
             switch result {
                 
@@ -342,16 +461,53 @@ class ProductViewController: UIViewController {
         return stackView
     }
     
+    
+    func configureCell (){
+        
+    }
+    
+}
+
+extension ProductViewController: UIScrollViewDelegate{
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        view.endEditing(true)
+    }
+}
+
+extension ProductViewController : UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        placeholderLabel.isHidden = !textView.text.isEmpty
+    }
+    func textViewDidEndEditing(_ textView: UITextView) {
+        placeholderLabel.isHidden = !textView.text.isEmpty
+    }
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        placeholderLabel.isHidden = true
+    }
+}
+
+
+extension ProductViewController:  UITextFieldDelegate{
+//    func textFieldDidBeginEditing(_ textField: UITextField) {
+//        textField.resignFirstResponder()
+//        dropDown.show()
+//    }
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        textField.dropDown?.show()
+        return false // Prevents the keyboard from showing
+    }
+
+    
 }
 
 extension ProductViewController : AddReviewDelegate {
     func addReview() {
         print("Add new review")
-        guard let productId  = product?.productId else {
-            print("Product id is nil")
-            return
-        }
-        let vc =  CreateReviePopController(productId: productId)
+//        if let  productId  = product.productId else {
+//            print("Product id is nil")
+//            return
+//        }
+        let vc =  CreateReviePopController(productId: product.productId)
         vc.modalPresentationStyle = .overCurrentContext
         vc.delegate = self
 //        vc.modalTransitionStyle = .crossDissolve
@@ -400,16 +556,17 @@ extension ProductViewController :  PopReviewControllerDelegate{
 
 extension ProductViewController  : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return images.count == 0 ? 1 : images.count
+    
+    
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: cellImageProductIdentifier, for: indexPath) as! ProductCellImage
         
-        if let imageString = product?.images[0]{
-            cell.mainImage.loadImageUrlString(urlString: imageString)
+        if images.count != 0 {
+            cell.mainImage.loadImageUrlString(urlString: images[indexPath.row])
         }
-        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

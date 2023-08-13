@@ -21,6 +21,22 @@ class ImageListingCell: CustomCell {
     
     weak var delegate: CreateListingDelegate?
     
+    var isPlaceholder : Bool = false {
+        didSet{
+            if isPlaceholder{
+                mainImage.image =  UIImage(named: "image-placeholder")
+                closeBUtton.isHidden = true
+            }else{
+                closeBUtton.isHidden = false
+            }
+        }
+    }
+    override func prepareForReuse() {
+        closeBUtton.isHidden = false
+        isPlaceholder = false
+    }
+    
+    
    
     let mainImage : CustomImageView  = {
         let imageView  = CustomImageView()
