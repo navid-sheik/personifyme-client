@@ -125,6 +125,8 @@
 		6DBFEA762A730553001D6C53 /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA752A730553001D6C53 /* DashboardViewController.swift */; };
 		6DBFEA782A730563001D6C53 /* ShopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA772A730563001D6C53 /* ShopViewController.swift */; };
 		6DBFEA7F2A730726001D6C53 /* BecomeSellerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA7E2A730726001D6C53 /* BecomeSellerViewController.swift */; };
+		6DC02BD12A899376001BCD91 /* Cart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC02BD02A899376001BCD91 /* Cart.swift */; };
+		6DC02BD32A89E22D001BCD91 /* NumberFormatterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC02BD22A89E22D001BCD91 /* NumberFormatterService.swift */; };
 		6DC9612A2A87EDE200D2B94D /* VariantCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC961292A87EDE200D2B94D /* VariantCell.swift */; };
 		6DC9612C2A8838E800D2B94D /* CategoryMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC9612B2A8838E800D2B94D /* CategoryMenuController.swift */; };
 		6DC9612E2A8848E500D2B94D /* VariantProductViewField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC9612D2A8848E500D2B94D /* VariantProductViewField.swift */; };
@@ -303,6 +305,8 @@
 		6DBFEA752A730553001D6C53 /* DashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		6DBFEA772A730563001D6C53 /* ShopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopViewController.swift; sourceTree = "<group>"; };
 		6DBFEA7E2A730726001D6C53 /* BecomeSellerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BecomeSellerViewController.swift; sourceTree = "<group>"; };
+		6DC02BD02A899376001BCD91 /* Cart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cart.swift; sourceTree = "<group>"; };
+		6DC02BD22A89E22D001BCD91 /* NumberFormatterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatterService.swift; sourceTree = "<group>"; };
 		6DC961292A87EDE200D2B94D /* VariantCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantCell.swift; sourceTree = "<group>"; };
 		6DC9612B2A8838E800D2B94D /* CategoryMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryMenuController.swift; sourceTree = "<group>"; };
 		6DC9612D2A8848E500D2B94D /* VariantProductViewField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantProductViewField.swift; sourceTree = "<group>"; };
@@ -778,6 +782,7 @@
 				6D057E8E2A7B0E3000F79A47 /* Category.swift */,
 				6D057E902A7B0E3E00F79A47 /* Review.swift */,
 				6D057E922A7B0E5E00F79A47 /* Seller.swift */,
+				6DC02BD02A899376001BCD91 /* Cart.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -786,6 +791,7 @@
 			isa = PBXGroup;
 			children = (
 				6DC961332A888BC400D2B94D /* DeliveryEstimationService.swift */,
+				6DC02BD22A89E22D001BCD91 /* NumberFormatterService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1218,6 +1224,7 @@
 				6DBFEA512A72B218001D6C53 /* AlertManager.swift in Sources */,
 				6D4810CC2A82E11200D5B6B8 /* ProfilePaymentCell.swift in Sources */,
 				6D024C042A77002700E678EB /* TokenResponse.swift in Sources */,
+				6DC02BD32A89E22D001BCD91 /* NumberFormatterService.swift in Sources */,
 				6D127FCB2A7EF97C003DBD16 /* ContainerHomeController.swift in Sources */,
 				6D11D4342A80956300B81C88 /* ReusableProgressBar.swift in Sources */,
 				6D057E952A7B1FFA00F79A47 /* BannerCell.swift in Sources */,
@@ -1271,6 +1278,7 @@
 				6D11D42A2A800CF100B81C88 /* CartViewCell.swift in Sources */,
 				6DD19DA32A75B0F1004F02B5 /* PagingController.swift in Sources */,
 				6D10E72A2A7DC1C1000C4398 /* CreateReviePopControllerw.swift in Sources */,
+				6DC02BD12A899376001BCD91 /* Cart.swift in Sources */,
 				6D28791A2A71BD8000FDA177 /* AuthResponse.swift in Sources */,
 				6DBFEA722A73051D001D6C53 /* ManageOrderController.swift in Sources */,
 				6D10E72E2A7DFAA9000C4398 /* DynamicTableView.swift in Sources */,

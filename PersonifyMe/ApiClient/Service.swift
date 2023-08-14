@@ -612,3 +612,89 @@ extension Service {
     }
     
 }
+
+//Cart
+
+
+extension Service{
+    public func fetchCart<T:Codable>( expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        
+        
+        let request  =  Request(endpoint: .cart, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    public func addProductToCart<T:Codable>(_ cartItem : CartItemSend , expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+
+     
+      
+        let jsonData  =  try? JSONEncoder().encode(cartItem)
+        
+        let request  =  Request(endpoint: .cart, pathComponents: ["items"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    public func deleteProductFromCart<T:Codable>(_ itemId : String , expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+
+     
+        
+        let request  =  Request(endpoint: .cart, pathComponents: ["items", itemId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .DELETE)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    public func updateProductFromCart<T:Codable>(_ cartItemId : String , _ cartItem: CartItem,   expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+
+        let jsonData  =  try? JSONEncoder().encode(cartItem)
+        
+        let request  =  Request(endpoint: .cart, pathComponents: ["items", cartItemId])
+            .add(headerField: "Content-Type", value: "application/json")
+        
+            .set(method: .PUT)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+        
+}

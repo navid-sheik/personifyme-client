@@ -27,6 +27,9 @@ class ProductViewController: UIViewController {
     
     var product : Product
     
+    weak var delegate: CartUpdateDelegate?
+
+    
     
     var reviews : [Review] = []{
         didSet{
@@ -93,7 +96,6 @@ class ProductViewController: UIViewController {
     
     let addToCartButton : CustomButton =  {
         let button  =  CustomButton(title: "ADD TO CART"  ,  hasBackground : true, fontType: .medium)
-        
         return button
     }()
     
@@ -277,6 +279,7 @@ class ProductViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
+        addToCartButton.addTarget(self, action: #selector(handleAddCart), for: .touchUpInside)
        
         personalizationView.textView.delegate = self
          placeholderLabel = UILabel()
@@ -316,6 +319,10 @@ class ProductViewController: UIViewController {
     private func setupUI() {
         // Set up all UI elements here
         //ScrollView
+        if let tabBarController = self.navigationController?.tabBarController as? BuyerTabController {
+            self.delegate = tabBarController
+        }
+        
         containerScrollView.delegate = self
         view.addSubview(containerScrollView)
         containerScrollView.addSubview(contentView)
@@ -464,6 +471,94 @@ class ProductViewController: UIViewController {
     
     func configureCell (){
         
+    }
+    
+    
+    //MARK: OBJECT C
+    
+    @objc func handleAddCart(_ sender: UIButton){
+     
+        
+        let personalizationText  = personalizationView.textView.text ?? ""
+        
+        
+        guard  personalizationText != "" else {
+            print("Please enter a text")
+            AlertManager.showAddToCartError(on: self, message: "Enter personalization ")
+          
+            return
+        }
+        
+        let variantsArray = getVariantValues()
+        
+        let cartItem = CartItemSend(productId: product.productId, quantity: 1, price: product.price, hasVariations: true , variations: variantsArray, customizationOptions: [personalizationText], cartItemId: nil, createdAt: nil, updatedAt: nil)
+        
+        
+        let originalColor = sender.backgroundColor
+        let originalText  =  sender.title(for: .normal)
+        
+        addToCartButton.setTitle("ADDED", for: .normal)
+        addToCartButton.backgroundColor =  originalColor?.withAlphaComponent(0.5)
+        
+        // Animate the changes over 0.3 seconds (or any desired duration)
+        UIView.animate(withDuration: 0.3, delay: 0.5, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.5, options: [], animations: {
+               sender.backgroundColor = originalColor
+           }) { _ in
+               // Smoothly animate the return of the original title after the background animation finishes
+               UIView.transition(with: sender, duration: 0.8, options: .transitionCrossDissolve, animations: {
+                   sender.setTitle(originalText, for: .normal)
+               }, completion: nil)
+           }
+        delegate?.addProductToCart(cartItem)
+        
+        
+        
+        
+    }
+    
+    func addToCartAnimation() {
+        // Create a temporary view for the animation
+        let tempView = CustomImageView()// assuming you have a UIImageView for the product
+        tempView.loadImageUrlString(urlString: images[0])
+        tempView.frame = CGRect(x: tempView.frame.origin.x,
+                                y: tempView.frame.origin.y,
+                                width: tempView.frame.size.width,
+                                height: tempView.frame.size.height)
+        
+        self.view.addSubview(tempView)
+
+        // Determine the endpoint (the cart's position)
+        let cartPosition = addToCartButton.frame.origin // assuming cartButton is the cart's icon or button
+
+        // Animation
+        UIView.animate(withDuration: 1.0, animations: {
+            // Scale and move the product
+            tempView.frame.size.width = 50
+            tempView.frame.size.height = 50
+            tempView.frame.origin.x = cartPosition.x
+            tempView.frame.origin.y = cartPosition.y
+            tempView.alpha = 0.5
+        }, completion: { _ in
+            // Cleanup: Remove the temporary view after animation
+            tempView.removeFromSuperview()
+        })
+    }
+
+    func getVariantValues() -> [VariantCart] {
+        var variantCarts: [VariantCart] = []
+
+        for subview in stackViewVariants.arrangedSubviews {
+            if let fieldView = subview as? VariantProductViewField,
+               let variant = fieldView.label.text,
+               let value = fieldView.textField.text,
+               !value.isEmpty {
+
+                let variantCart = VariantCart(variant: variant, value: value)
+                variantCarts.append(variantCart)
+            }
+        }
+
+        return variantCarts
     }
     
 }

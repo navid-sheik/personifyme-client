@@ -19,8 +19,15 @@ class CartViewController: UIViewController {
     
     
     // MARK: - VAriables
+    var cart : Cart?{
+        didSet{
+            guard let cart = cart else {return }
+            self.configureCell(cart)
+            self.tableViewProducts.reloadData()
+        }
+    }
     
-    
+  
     // MARK: - Components
     // Here you add all components
     let tableViewProducts:  DynamicTableView = {
@@ -85,6 +92,7 @@ class CartViewController: UIViewController {
         setNavigationBar()
         setTableView()
         setupUI()
+        
     }
     
     
@@ -163,6 +171,10 @@ class CartViewController: UIViewController {
         
     }
     
+    func configureCell (_ cart: Cart){
+        let subTotal  =  cart.totalPrice
+        subTotaValue.text =  "$\( NumberFormatterService.formatToTwoDecimalPlaces(subTotal) )"
+    }
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
@@ -182,11 +194,15 @@ class CartViewController: UIViewController {
 
 extension CartViewController : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        let items = cart?.items.count ?? 0
+        return  items
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell  =  tableView.dequeueReusableCell(withIdentifier: itemTableViewCell) as! CartViewCell
+        cell.cartItem = cart?.items[indexPath.row]
+        cell.delegate = self
+        cell.selectionStyle = .none
         
         return cell
     }
@@ -196,7 +212,7 @@ extension CartViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return  2
+        return 1
     }
     
     
@@ -215,6 +231,61 @@ extension CartViewController : UITableViewDelegate, UITableViewDataSource{
     
     
 }
+extension CartViewController: CartViewCellDelegate{
+    func updateCartItem(_ cell: CartViewCell, withItemCartId cartItemId: String, cartItem: CartItem) {
+        print(cartItemId)
+        print(cartItem.quantity)
+        
+        
+        Service.shared.updateProductFromCart(cartItemId, cartItem, expecting: ApiResponse<Cart>.self) { [weak self] result in
+            switch result{
+            case .success(let response ):
+                DispatchQueue.main.async {
+                    self?.cart = response.data
+                    if let indexPath = self?.tableViewProducts.indexPath(for: cell) {
+                                   // Reload only the specific row
+                                   self?.tableViewProducts.reloadRows(at: [indexPath], with: .none)
+                    }
+                }
+                
+            
+            case .failure(let error):
+                print(error)
+            
+                    
+            }
+        }
+    }
+    
+    func deleteCartItem(_ cell: CartViewCell, withItemCartId cartItemId : String) {
+        print("delete")
+        
+        if let indexPath = tableViewProducts.indexPath(for: cell) {
+            print("Number of items before deletion: \(cart?.items.count ?? 0)")
+            Service.shared.deleteProductFromCart(cartItemId, expecting: ApiResponse<Cart>.self) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result{
+                    
+                    
+                case .success(_):
+                    DispatchQueue.main.async {
+                        self.cart?.items.remove(at: indexPath.row)
+                        print("Number of items after deletion: \(self.cart?.items.count ?? 0)")
 
+                        // Temporarily replace the deleteRows call with reloadData
+                        self.tableViewProducts.reloadData()
+                    }
+                case .failure(_):
+                    print("Error in deleting")
+                }
+            }
+           
+            
+            
+        }
+    }
+    
+}
 
 

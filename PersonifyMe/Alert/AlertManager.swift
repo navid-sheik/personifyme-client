@@ -26,6 +26,9 @@ class AlertManager {
 
 //Product Alert
 extension AlertManager{
+    public static func showAddToCartError(on vc : UIViewController, message: String){
+        showBasicAlert(on: vc, title: "Add To Cart Error", message: message)
+    }
     public static func showProductVAlidationError(on vc : UIViewController, message: String){
         showBasicAlert(on: vc, title: "Product Error", message: message)
     }

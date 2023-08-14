@@ -19,4 +19,5 @@ enum Endpoint : String {
     case listings
     case categories
     case seller
+    case cart
 }
