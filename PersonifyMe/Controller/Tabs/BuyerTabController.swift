@@ -10,6 +10,7 @@ import UIKit
 
 protocol CartUpdateDelegate : class{
     func addProductToCart(_ cartItem: CartItemSend?)
+    func emptyCart()
 }
 
 class BuyerTabController: UITabBarController {
@@ -64,6 +65,7 @@ class BuyerTabController: UITabBarController {
                            let cartVC = navController.viewControllers.first as? CartViewController {
             
                             cartVC.cart = cart
+                        
                             
                             self.updateCartTag(cart.items.count)
                         }
@@ -141,7 +143,8 @@ class BuyerTabController: UITabBarController {
         let homeVC = HomeViewController()
         let likesVC = OrderBuyerController()
         let cartVC = CartViewController()
-        let profileVC =  BalanceViewController()
+        cartVC.delegate = self
+        let profileVC =  OrderBuyerController()
         let layout  = UICollectionViewFlowLayout()
         
         let becomeSellerVC = sellerConroller
@@ -197,6 +200,10 @@ class BuyerTabController: UITabBarController {
     }
 }
 extension BuyerTabController: CartUpdateDelegate{
+    func emptyCart() {
+        self.updateCartTag(0)
+    }
+    
     func addProductToCart(_ cartItem: CartItemSend?) {
         
         guard let item =  cartItem else {return}

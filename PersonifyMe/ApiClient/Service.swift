@@ -696,5 +696,151 @@ extension Service{
             
         }
     }
+    
+    
+    
+    public func clearCart<T:Codable>(  expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
         
+
+    
+        
+        let request  =  Request(endpoint: .cart, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+        
+            .set(method: .DELETE)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+        
+}
+extension Service{
+    public func createPaymentIntent<T:Codable>(   expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let request  =  Request(endpoint: .base, pathComponents: ["create-payment-intent"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    public func createNewOrder<T:Codable>(_ order : Order,   expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let jsonData  =  try? JSONEncoder().encode(order)
+        
+        let request  =  Request(endpoint: .orders, pathComponents: ["success"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    public func updateOrder<T:Codable>(  _ orderId : String,  with order : Order ,expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let jsonData  =  try? JSONEncoder().encode(order)
+        
+        let request  =  Request(endpoint: .orders, pathComponents: [orderId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+        
+    
+    
+    
+    
+    
+    
+}
+
+
+
+extension Service{
+    public func getOrdersForBuyers<T:Codable>(expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        let request  =  Request(endpoint: .orders, pathComponents: ["items"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    public func getOrderFromSeller<T:Codable>(  expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        let request  =  Request(endpoint: .orders, pathComponents: ["seller"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+}
+
+
+extension Service{
+    
+    public func uploadTrackingNumber<T:Codable>( to orderId : String, with  trackingObject : Tracking , expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        let jsonData  =  try? JSONEncoder().encode(trackingObject)
+        let request  =  Request(endpoint: .orders, pathComponents: ["items", orderId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
 }

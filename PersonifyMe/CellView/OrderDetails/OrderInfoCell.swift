@@ -47,7 +47,7 @@ class  OrderInfoCell : UITableViewCell{
     let addressValue  : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text =  "Navid Sheikh \n86 Ferenz Road,E61LL\n London United Kingdom,\n+447405341412"
+        label.text =  "Navid Sheikh \n+447405341412 \n 86 Ferenz Road \n London, GB, E3 2NT"
         label.font = UIFont.boldSystemFont(ofSize: 12)
         label.textColor = UIColor.gray
         label.numberOfLines = 0

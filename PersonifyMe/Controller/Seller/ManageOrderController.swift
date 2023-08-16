@@ -20,6 +20,15 @@ import UIKit
 
 class ManageOrderController: UIViewController {
     
+    var ordersItems : [OrderItem] = []{
+        didSet{
+            print(ordersItems)
+            DispatchQueue.main.async {
+                self.tableViewProducts.reloadData()
+            }
+        }
+    }
+    
     //MARK: - IDENTIFER
     let headerOrderIdentifier  : String = "headerOrderIdentifier"
     let tableCellOrderIdentifier  : String = "tableCellOrderIdentifier"
@@ -67,6 +76,7 @@ class ManageOrderController: UIViewController {
         setUpSearchBar()
         setTableView()
         setupUI()
+        fetchOrder()
     }
     
     // MARK: - UI Setup
@@ -94,7 +104,7 @@ class ManageOrderController: UIViewController {
         searchBar.delegate = self
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal
-        searchBar.showsBookmarkButton = true
+//        searchBar.showsBookmarkButton = true
         
         searchBar.setImage(UIImage(systemName: "slider.horizontal.3"), for: .bookmark, state: .normal)
 
@@ -114,6 +124,21 @@ class ManageOrderController: UIViewController {
         navigationItem.title = "Listings"
         
         
+    }
+    
+    private func fetchOrder(){
+        Service.shared.getOrderFromSeller(expecting: ApiResponse<[OrderItem]>.self, completion: { [weak self ] result  in
+            guard let self =  self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let orderItems = response.data else {return}
+                self.ordersItems =  orderItems
+                
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
     
     // MARK: - IBActions
@@ -172,17 +197,19 @@ extension ManageOrderController : UITableViewDataSource, UITableViewDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return ordersItems.count
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  10
+        return  1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: tableCellOrderIdentifier, for: indexPath) as! ManageOrderCell
        
+        cell.orderItem =  ordersItems[indexPath.section]
+        cell.delegate = self
         
         return cell
     }
@@ -202,4 +229,51 @@ extension ManageOrderController : UITableViewDataSource, UITableViewDelegate {
 
 }
 
+
+
+extension ManageOrderController: ManageOrderCellDelegate{
+    func showTrackingpage(for cell: ManageOrderCell) {
+        let vc = AddTrackingController()
+        vc.delegate = self
+        
+        let indexPath = tableViewProducts.indexPath(for: cell)
+        vc.order = ordersItems[indexPath!.section]
+        vc.modalPresentationStyle = .overCurrentContext
+        self.definesPresentationContext = true //*** adding this line should solve your issue ***
+        self.present(vc, animated: true, completion: nil)
+        
+        
+    }
+    
+   
+    
+    
+}
+
+extension ManageOrderController: AddTrackingControllerDelegate{
+    func updateValue(courierName: String, trackingNumber: String, order: OrderItem?, indexPath: IndexPath?) {
+        print("Update table now ")
+
+            guard let indexPath = indexPath, let order = order else { return }
+
+            
+            self.ordersItems[indexPath.row] = order
+            self.tableViewProducts.reloadRows(at: [indexPath], with: .automatic)
+        
+        
+       
+
+        
+        
+        
+        
+//        ordersItems[indexPath?.row] = order!
+//        tableViewProducts.reloadRows(at: [indexPath!], with: .automatic)
+//
+    }
+    
+   
+    
+    
+}
 

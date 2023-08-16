@@ -161,6 +161,8 @@ class ProductViewController: UIViewController {
         label.textContainerInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8);
         label.sizeToFit()
         label.isScrollEnabled = false
+        label.isUserInteractionEnabled = false
+        label.isEditable = false
         return label
     }()
     

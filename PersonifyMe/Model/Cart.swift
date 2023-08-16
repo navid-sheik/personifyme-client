@@ -57,26 +57,6 @@ struct CartItem: Codable {
     }
 }
 
-struct CartItemSend: Codable {
-    let productId: String
-    let quantity: Int
-    let price: Double
-    let hasVariations: Bool
-
-    let variations: [VariantCart]
-    let customizationOptions: [String]
-    
-    // Properties specific to data from the server:
-    let cartItemId: String?
-    let createdAt: String?
-    let updatedAt: String?
-
-    enum CodingKeys: String, CodingKey {
-        case cartItemId = "_id"
-        case productId, quantity, price, hasVariations, variations, customizationOptions, createdAt, updatedAt
-    }
-}
-
 struct VariantCart: Codable {
     let variant: String
     let value: String
@@ -103,3 +83,25 @@ extension CartItem {
         }
 }
 
+
+
+
+struct CartItemSend: Codable {
+    let productId: String
+    let quantity: Int
+    let price: Double
+    let hasVariations: Bool
+
+    let variations: [VariantCart]
+    let customizationOptions: [String]
+    
+    // Properties specific to data from the server:
+    let cartItemId: String?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case cartItemId = "_id"
+        case productId, quantity, price, hasVariations, variations, customizationOptions, createdAt, updatedAt
+    }
+}

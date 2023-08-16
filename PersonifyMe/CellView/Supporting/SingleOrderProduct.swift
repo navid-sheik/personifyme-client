@@ -62,6 +62,14 @@ class SingleOrderProduct : UITableViewCell{
         label.textAlignment = .right
         return label
     }()
+    let personalizationLabel : UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 10)
+        label.textColor = UIColor.gray
+        return label
+    }()
 
     
     let dummyView : UIView = {
@@ -90,13 +98,17 @@ class SingleOrderProduct : UITableViewCell{
         productTitleLabel.anchor(top: self.topAnchor, left: productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         addSubview(variantLabel)
-        variantLabel.anchor(top: productTitleLabel.bottomAnchor, left: self.productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        variantLabel.anchor(top: productTitleLabel.bottomAnchor, left: self.productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 8, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         
         let priceLabelQuantiyStack  = StackManager.createStackView(with: [priceLabel, quantityLabel], axis: .horizontal, spacing: 10, distribution: .fillEqually, alignment: .center)
         
         addSubview(priceLabelQuantiyStack)
-        priceLabelQuantiyStack.anchor(top: variantLabel.bottomAnchor, left: self.productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10, paddingRight: -10, paddingBottom: nil, width: nil, height: nil)
+        priceLabelQuantiyStack.anchor(top: variantLabel.bottomAnchor, left: self.productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 8, paddingLeft: 10, paddingRight: -10, paddingBottom: nil, width: nil, height: nil)
+        
+//        addSubview(personalizationLabel)
+//        personalizationLabel.anchor(top: priceLabelQuantiyStack.bottomAnchor, left: self.productImageView.trailingAnchor, right: self.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 10, paddingRight: -10, paddingBottom: nil, width: nil, height: nil)
+//
         
         
         

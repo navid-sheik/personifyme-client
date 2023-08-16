@@ -70,8 +70,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         print("host = \(url.host)")
         
+        if url.host == "payment-result" {
+            
+            print("payment result")
+            
+        }
         
 
+        
         if url.host == "password-reset", pathComponents.count > 2 {
             let userId = pathComponents[1]
             let token = pathComponents[2]

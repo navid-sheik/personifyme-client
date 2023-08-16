@@ -252,7 +252,9 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
         case .none:
             return
         case .some(.Orders):
-            return
+            let controller  = ManageOrderController()
+          
+            self.navigationController?.pushViewController(controller, animated: true)
         case .some(.Listings):
             return
         case .some(.Messages):

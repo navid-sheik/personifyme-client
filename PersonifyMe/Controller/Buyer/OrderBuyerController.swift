@@ -18,6 +18,17 @@ import UIKit
 
 class OrderBuyerController: UIViewController {
     
+    var orderItems : [OrderItem]=[]{
+        didSet{
+            filteredOrderItems = orderItems
+            DispatchQueue.main.async {
+                self.tableViewOrders.reloadData()
+            }
+           
+        }
+    }
+    var filteredOrderItems: [OrderItem] = []
+    
     
     //MARK: - Identifier
     
@@ -70,6 +81,7 @@ class OrderBuyerController: UIViewController {
         setUpSearchBar()
         setTableView()
         setupUI()
+        fetchOrder()
     }
     
     // MARK: - UI Setup
@@ -109,6 +121,21 @@ class OrderBuyerController: UIViewController {
         
     }
     
+    private func fetchOrder(){
+        Service.shared.getOrdersForBuyers(expecting: ApiResponse<[OrderItem]>.self, completion: { [weak self ] result  in
+            guard let self =  self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let orderItems = response.data else {return}
+                self.orderItems =  orderItems
+                
+            case .failure(let error):
+                print(error)
+            }
+        })
+    }
+    
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
@@ -130,23 +157,26 @@ extension OrderBuyerController : UISearchBarDelegate {
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
- 
-        // Update the search results
-        
+        if searchText.isEmpty {
+            filteredOrderItems = orderItems
+        } else {
+            filteredOrderItems = orderItems.filter {
+                $0.product.title.lowercased().contains(searchText.lowercased())
+            }
+        }
+        tableViewOrders.reloadData()
         print(searchText)
     }
 
+
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        // Clear the search results and remove the search results controller
         searchBar.text = ""
         searchBar.resignFirstResponder()
-//        searchBar.showsCancelButton = false
         self.searchBar.showsCancelButton = false
-
-    
-        
-   
+        filteredOrderItems = orderItems
+        tableViewOrders.reloadData()
     }
+
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
@@ -168,24 +198,26 @@ extension OrderBuyerController : UITableViewDataSource, UITableViewDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 10
+        return  filteredOrderItems.count
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return  1
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: tableCellOrderIdentifier, for: indexPath) as! OrderBuyerSell
-       
-
+        cell.orderItem =  filteredOrderItems[indexPath.section]
+        
         return cell
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = OrderDetailsController()
+        controller.orderItem = orderItems[indexPath.section]
         
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -195,13 +227,46 @@ extension OrderBuyerController : UITableViewDataSource, UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header  =  BuyerOrderHeader()
+        
        
+        header.status.text  = orderItems[section].status.rawValue
+        
+        if  let date = orderItems[section].createdAt{
+            header.date.text =  TimeManager.orderDateFormatter( date)
+           
+        }
+        
+     
         return header
     }
 
     
     
 
+}
+extension  OrderBuyerController{
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        switch selectedScope {
+        case 0:
+            print("Processing selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Processing }
+        case 1:
+            print("Shipped selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Shipped }
+        case 2:
+            print("Delivered selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Delivered }
+        case 3:
+            print("Refunded or Cancelled or Returned selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Refunded || $0.status == .Cancelled || $0.status == .Returned }
+        default:
+            filteredOrderItems = orderItems
+        }
+        tableViewOrders.reloadData()
+    }
+
+    
+    
 }
 
 

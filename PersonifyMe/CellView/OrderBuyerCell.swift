@@ -11,8 +11,14 @@ import UIKit
 
 
 class OrderBuyerSell : UITableViewCell{
+    var orderItem : OrderItem?{
+        didSet{
+            guard let orderItem  = orderItem else {return}
+            self.configureCell (orderItem)
+        }
+    }
     
-    let productImageView : CustomImageView = {
+    var  productImageView : CustomImageView = {
         let imageView = CustomImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
@@ -24,7 +30,7 @@ class OrderBuyerSell : UITableViewCell{
     }()
     
     
-    let shopLabel : UILabel = {
+    var  shopLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "My Shop"
@@ -35,7 +41,7 @@ class OrderBuyerSell : UITableViewCell{
     }()
     
     
-    let productTitleLabel : UILabel = {
+    var productTitleLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "A Unique Embodiment of Your Personal Style,Crafted with Precision, Simple Kind Something"
@@ -45,7 +51,7 @@ class OrderBuyerSell : UITableViewCell{
         return label
     }()
     
-    let variantLabel : UILabel = {
+    var  variantLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Black,United States"
@@ -54,7 +60,7 @@ class OrderBuyerSell : UITableViewCell{
         return label
     }()
     
-    let priceLabel : UILabel = {
+    var  priceLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$8.75"
@@ -62,7 +68,7 @@ class OrderBuyerSell : UITableViewCell{
         label.textColor = UIColor.gray
         return label
     }()
-    let quantityLabel : UILabel = {
+    var  quantityLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "x1"
@@ -72,7 +78,7 @@ class OrderBuyerSell : UITableViewCell{
         return label
     }()
     
-    let totalPlaceholder : UILabel = {
+    var  totalPlaceholder : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Total:"
@@ -81,7 +87,7 @@ class OrderBuyerSell : UITableViewCell{
         return label
     }()
     
-    let totalPriceValue : UILabel = {
+    var  totalPriceValue : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$59.90"
@@ -91,7 +97,7 @@ class OrderBuyerSell : UITableViewCell{
     }()
     
     
-    let trackOrder : CustomButton = {
+    var trackOrder : CustomButton = {
         let button  = CustomButton(title: "Track Order", hasBackground: true,  fontType: .small)
         
         return button
@@ -102,7 +108,7 @@ class OrderBuyerSell : UITableViewCell{
     
     
     
-    let dummyView : UIView = {
+    var  dummyView : UIView = {
         let custom_view  =  UIView()
         custom_view.translatesAutoresizingMaskIntoConstraints = false
         return custom_view
@@ -116,6 +122,7 @@ class OrderBuyerSell : UITableViewCell{
         setupUI()
         
     }
+    
     
     func setupUI(){
         
@@ -169,6 +176,18 @@ class OrderBuyerSell : UITableViewCell{
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureCell(_ orderItem : OrderItem){
+        
+    
+        self.productTitleLabel.text =  self.orderItem?.product.title
+        
+        let variantOptions = self.orderItem?.variant?.map { $0.value }.joined(separator:", ")
+        self.variantLabel.text = variantOptions
+        guard let imageString  = self.orderItem?.product.images.first else {return}
+        self.productImageView.loadImageUrlString(urlString: imageString)
+        
     }
     
     

@@ -53,6 +53,17 @@ class CustomButton : UIButton {
             fatalError("init(coder:) has not been implemented")
         }
         
+    @objc private func handleButtonStateChange() {
+           UIView.animate(withDuration: 0.3) {
+               self.alpha = self.isEnabled ? 1.0 : 0.75
+           }
+       }
+
+       override var isEnabled: Bool {
+           didSet {
+               handleButtonStateChange()
+           }
+       }
         
     
 }

@@ -11,6 +11,21 @@ import UIKit
 
 
 class OrderProductCell : UITableViewCell{
+    var orderItem : OrderItem?{
+        didSet{
+            guard let orderItem = orderItem else {return}
+            self.orderItems = [orderItem]
+            DispatchQueue.main.async {
+                self.totalPriceValue.text =  "$\(orderItem.total)"
+                
+            }
+            
+        }
+    }
+    
+    var orderItems :[OrderItem] = []
+    
+    
     
     
     //MARK:Identifier
@@ -171,12 +186,29 @@ class OrderProductCell : UITableViewCell{
 
 extension OrderProductCell : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return orderItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell  = tableView.dequeueReusableCell(withIdentifier: singleOrderProductIdentifier) as! SingleOrderProduct
         cell.selectionStyle = .none
+        if let imageString = orderItems[indexPath.row].product.images.first{
+            cell.productImageView.loadImageUrlString(urlString: imageString)
+        }
+        
+        let variantOptions = self.orderItem?.variant?.map { $0.value }.joined(separator:", ")
+      
+        cell.variantLabel.text =   variantOptions
+        cell.productTitleLabel.text = self.orderItem?.product.title
+        if let quantity = self.orderItem?.quantity, let price = self.orderItem?.price{
+            cell.quantityLabel.text =  "x\(quantity)"
+            cell.priceLabel.text =  "$\(price)"
+        }
+//        if let personalization  = self.orderItem?.customizationOptions?.first{
+//            cell.personalizationLabel.text = "Personalization\(personalization )"
+//
+//        }
+       
         return cell
     }
     

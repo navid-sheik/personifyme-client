@@ -11,12 +11,41 @@ import Foundation
 
 import UIKit
 
+
+protocol CartViewControllerDelegate: AnyObject {
+    func emptyCart()
+}
+
+
+extension CartViewController:CartViewControllerDelegate {
+    func emptyCart() {
+        Service.shared.clearCart(expecting: ApiResponse<String>.self) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                DispatchQueue.main.async {
+                    self.cart = nil
+                    self.delegate?.emptyCart()
+                    let subTotal  =  0.00
+                    self.subTotaValue.text =  "$\( NumberFormatterService.formatToTwoDecimalPlaces(subTotal) )"
+                    self.tableViewProducts.reloadData()
+                }
+           
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    
+}
 class CartViewController: UIViewController {
+    
     
     // MARK: - Identifier
     let headerTableViewCellIdentifier : String = "headerTableViewCellIdentifier"
     let itemTableViewCell : String = "itemTableViewCell"
-    
+    weak var delegate : CartUpdateDelegate?
     
     // MARK: - VAriables
     var cart : Cart?{
@@ -50,7 +79,7 @@ class CartViewController: UIViewController {
     
     let subTotaValue : UILabel = {
         let label = UILabel()
-        label.text = "$20.00"
+        label.text = "$0.00"
         label.font = UIFont.systemFont(ofSize: 24)
         label.textColor = UIColor.gray
         return label
@@ -148,6 +177,11 @@ class CartViewController: UIViewController {
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.updateCheckoutButton()
+    }
+    
     private func setTableView (){
         tableViewProducts.delegate = self
         tableViewProducts.dataSource = self
@@ -180,9 +214,18 @@ class CartViewController: UIViewController {
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
     @objc func handleCheckOut(){
         print("The item")
-        let vc = CheckoutViewController()
-        navigationController?.pushViewController(vc, animated: true)
-    
+        
+        if !(cart?.items.isEmpty ?? false) {
+            let vc = CheckoutViewController()
+            vc.delegate = self
+            vc.cart = self.cart
+            let navigationVc  = UINavigationController(rootViewController: vc)
+            navigationVc.modalPresentationStyle = .fullScreen
+            self.present(navigationVc, animated: true, completion: nil)
+//            navigationController?.pushViewController(vc, animated: true)
+        
+        }
+     
     }
     // MARK: - Navigation
     // Segue preparations and related stuff
@@ -244,7 +287,10 @@ extension CartViewController: CartViewCellDelegate{
                     self?.cart = response.data
                     if let indexPath = self?.tableViewProducts.indexPath(for: cell) {
                                    // Reload only the specific row
-                                   self?.tableViewProducts.reloadRows(at: [indexPath], with: .none)
+                              
+                        self?.tableViewProducts.reloadRows(at: [indexPath], with: .none)
+                        self?.updateCheckoutButton()
+                        
                     }
                 }
                 
@@ -256,6 +302,9 @@ extension CartViewController: CartViewCellDelegate{
             }
         }
     }
+    
+    
+
     
     func deleteCartItem(_ cell: CartViewCell, withItemCartId cartItemId : String) {
         print("delete")
@@ -275,6 +324,7 @@ extension CartViewController: CartViewCellDelegate{
 
                         // Temporarily replace the deleteRows call with reloadData
                         self.tableViewProducts.reloadData()
+                        self.updateCheckoutButton()
                     }
                 case .failure(_):
                     print("Error in deleting")
@@ -286,6 +336,19 @@ extension CartViewController: CartViewCellDelegate{
         }
     }
     
+    
+    func updateCheckoutButton(){
+        guard let count =  cart?.items.count else {return}
+        if count > 0 {
+            checkoutButton.isEnabled = true
+           
+        
+        }else{
+            checkoutButton.isEnabled = false
+           
+        }
+        
+    }
 }
 
 

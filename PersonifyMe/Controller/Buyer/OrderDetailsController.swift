@@ -18,9 +18,18 @@ import UIKit
 class OrderDetailsController: UIViewController {
     
     
+    var orderItem : OrderItem?{
+        didSet{
+            guard let orderItem =  orderItem else {return}
+            self.configureUI(orderItem)
+            self.tableViewProducts.reloadData()
+        }
+    }
+    
     let productinfoCellIdentifier : String = "productinfoCell"
     let orderStatusCellIdentifer : String =  "orderStatusCell"
     let orderInfoCellIdentifier : String =  "orderInfoCellIdentifier"
+    let orderPersonalizationCellIdentifier : String = "orderPersonalizationCellIdentifier"
     
     //TOP PART
     
@@ -188,9 +197,14 @@ class OrderDetailsController: UIViewController {
         self.tableViewProducts.dataSource = self
         self.tableViewProducts.register(OrderProductCell.self, forCellReuseIdentifier: productinfoCellIdentifier)
         self.tableViewProducts.register(OrderStatusCell.self, forCellReuseIdentifier: orderStatusCellIdentifer)
+        self.tableViewProducts.register(OrderStatusPersonalization.self, forCellReuseIdentifier: orderPersonalizationCellIdentifier)
         self.tableViewProducts.register(OrderInfoCell.self, forCellReuseIdentifier: orderInfoCellIdentifier)
         
        
+    }
+    
+    private func  configureUI(_ order : OrderItem){
+        self.totalPriceValue.text =  "\(order.total)"
     }
     
     
@@ -214,13 +228,16 @@ class OrderDetailsController: UIViewController {
         
         return stackProductsViews
     }
+    
+    
+    
 }
 
 
 extension OrderDetailsController : UITableViewDelegate, UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        3
+        4
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -231,14 +248,32 @@ extension OrderDetailsController : UITableViewDelegate, UITableViewDataSource{
         if indexPath.section == 0 {
               let cell = tableView.dequeueReusableCell(withIdentifier: orderStatusCellIdentifer, for: indexPath) as! OrderStatusCell
               // configure your cell if needed
+                cell.status.text =  orderItem?.status.rawValue
+                cell.message.text = orderItem?.status.descriptionBuyer
               return cell
           } else if indexPath.section == 1 {
               let cell = tableView.dequeueReusableCell(withIdentifier: productinfoCellIdentifier, for: indexPath) as! OrderProductCell
+              cell.orderItem = orderItem
               // configure your cell if needed
               return cell
           }else if indexPath.section == 2 {
+           let cell = tableView.dequeueReusableCell(withIdentifier: orderPersonalizationCellIdentifier, for: indexPath) as! OrderStatusPersonalization
+           
+           // configure your cell if needed
+          if let personalizationText  = self.orderItem?.customizationOptions?.first{
+              cell.personalization.text = "\(personalizationText )"
+  
+          }
+           return cell
+       }else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: orderInfoCellIdentifier, for: indexPath) as! OrderInfoCell
             // configure your cell if needed
+              cell.addressValue.text =  orderItem?.shippingDetails?.formattedAddress()
+              cell.orderIDValue.text = orderItem?.orderId
+              cell.orderDateValue.text = TimeManager.orderFormatterWithTime(orderItem?.createdAt ?? "" )
+              
+              
+              
             return cell
         }
         return UITableViewCell()

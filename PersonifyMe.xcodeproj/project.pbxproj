@@ -71,6 +71,9 @@
 		6D2D922A2A6DF54F005AE6E6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D92292A6DF54F005AE6E6 /* ViewController.swift */; };
 		6D2D922F2A6DF550005AE6E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D922E2A6DF550005AE6E6 /* Assets.xcassets */; };
 		6D2D92322A6DF550005AE6E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D2D92302A6DF550005AE6E6 /* LaunchScreen.storyboard */; };
+		6D33EA292A8A959C0004E9B2 /* AddressCheckoutView .swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33EA282A8A959C0004E9B2 /* AddressCheckoutView .swift */; };
+		6D33EA2B2A8A9F7D0004E9B2 /* PaymentMethodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33EA2A2A8A9F7D0004E9B2 /* PaymentMethodView.swift */; };
+		6D33EA2D2A8B1B490004E9B2 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33EA2C2A8B1B490004E9B2 /* Order.swift */; };
 		6D4810BF2A82924A00D5B6B8 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810BE2A82924A00D5B6B8 /* ProfileController.swift */; };
 		6D4810C22A82BE3800D5B6B8 /* ProfileTopPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810C12A82BE3800D5B6B8 /* ProfileTopPart.swift */; };
 		6D4810C42A82BE4100D5B6B8 /* ProfileOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810C32A82BE4100D5B6B8 /* ProfileOrders.swift */; };
@@ -133,6 +136,9 @@
 		6DC961302A887A5A00D2B94D /* DropDownTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC9612F2A887A5A00D2B94D /* DropDownTextfield.swift */; };
 		6DC961322A8882DE00D2B94D /* VariantProductTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC961312A8882DE00D2B94D /* VariantProductTextView.swift */; };
 		6DC961342A888BC400D2B94D /* DeliveryEstimationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DC961332A888BC400D2B94D /* DeliveryEstimationService.swift */; };
+		6DCE8B702A8C3D57000C4D1F /* OrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE8B6F2A8C3D57000C4D1F /* OrderItem.swift */; };
+		6DCE8B722A8C5D02000C4D1F /* OrderStatusPersonalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE8B712A8C5D02000C4D1F /* OrderStatusPersonalization.swift */; };
+		6DCE8B742A8C74E4000C4D1F /* AddTrackingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE8B732A8C74E4000C4D1F /* AddTrackingController.swift */; };
 		6DD19DA02A75A55E004F02B5 /* OnBoardingLaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19D9F2A75A55E004F02B5 /* OnBoardingLaunchViewController.swift */; };
 		6DD19DA32A75B0F1004F02B5 /* PagingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19DA22A75B0F1004F02B5 /* PagingController.swift */; };
 		6DD19DA52A75B123004F02B5 /* PageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD19DA42A75B123004F02B5 /* PageCell.swift */; };
@@ -259,6 +265,9 @@
 		6D2D92332A6DF550005AE6E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D2D92382A6DF550005AE6E6 /* PersonifyMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonifyMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D2D92422A6DF550005AE6E6 /* PersonifyMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PersonifyMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D33EA282A8A959C0004E9B2 /* AddressCheckoutView .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressCheckoutView .swift"; sourceTree = "<group>"; };
+		6D33EA2A2A8A9F7D0004E9B2 /* PaymentMethodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodView.swift; sourceTree = "<group>"; };
+		6D33EA2C2A8B1B490004E9B2 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 		6D4810BE2A82924A00D5B6B8 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		6D4810C12A82BE3800D5B6B8 /* ProfileTopPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileTopPart.swift; sourceTree = "<group>"; };
 		6D4810C32A82BE4100D5B6B8 /* ProfileOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileOrders.swift; sourceTree = "<group>"; };
@@ -313,6 +322,9 @@
 		6DC9612F2A887A5A00D2B94D /* DropDownTextfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownTextfield.swift; sourceTree = "<group>"; };
 		6DC961312A8882DE00D2B94D /* VariantProductTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantProductTextView.swift; sourceTree = "<group>"; };
 		6DC961332A888BC400D2B94D /* DeliveryEstimationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryEstimationService.swift; sourceTree = "<group>"; };
+		6DCE8B6F2A8C3D57000C4D1F /* OrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItem.swift; sourceTree = "<group>"; };
+		6DCE8B712A8C5D02000C4D1F /* OrderStatusPersonalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusPersonalization.swift; sourceTree = "<group>"; };
+		6DCE8B732A8C74E4000C4D1F /* AddTrackingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTrackingController.swift; sourceTree = "<group>"; };
 		6DD19D9F2A75A55E004F02B5 /* OnBoardingLaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingLaunchViewController.swift; sourceTree = "<group>"; };
 		6DD19DA22A75B0F1004F02B5 /* PagingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingController.swift; sourceTree = "<group>"; };
 		6DD19DA42A75B123004F02B5 /* PageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageCell.swift; sourceTree = "<group>"; };
@@ -457,6 +469,7 @@
 		6D137C422A78384400711889 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
+				6D33EA272A8A954E0004E9B2 /* Checkout */,
 				6D4810C02A82AF1500D5B6B8 /* Profile */,
 				6D137C432A78385400711889 /* CustomImageView.swift */,
 				6DC9612D2A8848E500D2B94D /* VariantProductViewField.swift */,
@@ -581,6 +594,15 @@
 			path = PersonifyMe;
 			sourceTree = "<group>";
 		};
+		6D33EA272A8A954E0004E9B2 /* Checkout */ = {
+			isa = PBXGroup;
+			children = (
+				6D33EA282A8A959C0004E9B2 /* AddressCheckoutView .swift */,
+				6D33EA2A2A8A9F7D0004E9B2 /* PaymentMethodView.swift */,
+			);
+			path = Checkout;
+			sourceTree = "<group>";
+		};
 		6D4810C02A82AF1500D5B6B8 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
@@ -664,6 +686,7 @@
 				6DBFEA772A730563001D6C53 /* ShopViewController.swift */,
 				6DBFEA7E2A730726001D6C53 /* BecomeSellerViewController.swift */,
 				6D137C552A78629200711889 /* AddListingViewController.swift */,
+				6DCE8B732A8C74E4000C4D1F /* AddTrackingController.swift */,
 			);
 			path = Seller;
 			sourceTree = "<group>";
@@ -783,6 +806,8 @@
 				6D057E902A7B0E3E00F79A47 /* Review.swift */,
 				6D057E922A7B0E5E00F79A47 /* Seller.swift */,
 				6DC02BD02A899376001BCD91 /* Cart.swift */,
+				6D33EA2C2A8B1B490004E9B2 /* Order.swift */,
+				6DCE8B6F2A8C3D57000C4D1F /* OrderItem.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -875,6 +900,7 @@
 				6DE9447A2A81A5E0005C6C3F /* OrderStatusCell.swift */,
 				6DE9447C2A81A5EB005C6C3F /* OrderProductCell.swift */,
 				6DE9447E2A81A600005C6C3F /* OrderInfoCell.swift */,
+				6DCE8B712A8C5D02000C4D1F /* OrderStatusPersonalization.swift */,
 			);
 			path = OrderDetails;
 			sourceTree = "<group>";
@@ -1154,6 +1180,7 @@
 				6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */,
 				6D137C5D2A78872700711889 /* CreateListingDelegate.swift in Sources */,
 				6D2879182A7192DC00FDA177 /* Endpoint.swift in Sources */,
+				6D33EA292A8A959C0004E9B2 /* AddressCheckoutView .swift in Sources */,
 				6D137C602A788FF700711889 /* CategoryMenuContronller.swift in Sources */,
 				6D4810BF2A82924A00D5B6B8 /* ProfileController.swift in Sources */,
 				6DC961302A887A5A00D2B94D /* DropDownTextfield.swift in Sources */,
@@ -1164,6 +1191,7 @@
 				6DD19DB52A75F978004F02B5 /* OnBoardingCollectionView.swift in Sources */,
 				6DBFEA672A730403001D6C53 /* ResetPasswordViewController.swift in Sources */,
 				6D2879212A71E59B00FDA177 /* CustomButton.swift in Sources */,
+				6DCE8B722A8C5D02000C4D1F /* OrderStatusPersonalization.swift in Sources */,
 				6D137C362A781FEC00711889 /* StripeStatusResponse.swift in Sources */,
 				6D057E8F2A7B0E3000F79A47 /* Category.swift in Sources */,
 				6D2879162A71923A00FDA177 /* Request.swift in Sources */,
@@ -1182,6 +1210,7 @@
 				6DBFEA6C2A7304B5001D6C53 /* SingleItemViewController.swift in Sources */,
 				6DE944842A81BA98005C6C3F /* OrderInfoProductView.swift in Sources */,
 				6DD1A0AC2A799C9F00666AAA /* NumberPickerView.swift in Sources */,
+				6DCE8B742A8C74E4000C4D1F /* AddTrackingController.swift in Sources */,
 				6D137C562A78629200711889 /* AddListingViewController.swift in Sources */,
 				6DC961322A8882DE00D2B94D /* VariantProductTextView.swift in Sources */,
 				6D127FC32A7EA754003DBD16 /* CustomHeaderView.swift in Sources */,
@@ -1197,6 +1226,7 @@
 				6DBFEA532A72D532001D6C53 /* User.swift in Sources */,
 				6D137C592A7863D400711889 /* SettingSellerMenuDelegate.swift in Sources */,
 				6D137C462A78386800711889 /* NoResultMessage.swift in Sources */,
+				6D33EA2D2A8B1B490004E9B2 /* Order.swift in Sources */,
 				6D137C642A78A64400711889 /* BorderedTextField.swift in Sources */,
 				6D28791C2A71C45800FDA177 /* ErrorResponse.swift in Sources */,
 				6D057E9B2A7B348700F79A47 /* CategoryHomeCell.swift in Sources */,
@@ -1210,6 +1240,7 @@
 				6D0401F22A734A6400347870 /* SuccessResponse.swift in Sources */,
 				6D4810C22A82BE3800D5B6B8 /* ProfileTopPart.swift in Sources */,
 				6D6A966E2A7C89FB0042C39F /* VariantField.swift in Sources */,
+				6DCE8B702A8C3D57000C4D1F /* OrderItem.swift in Sources */,
 				6D4810CA2A82D86200D5B6B8 /* ProfileShippingCell.swift in Sources */,
 				6DE944812A81A7C4005C6C3F /* SingleOrderProduct.swift in Sources */,
 				6D2879142A71922E00FDA177 /* Service.swift in Sources */,
@@ -1267,6 +1298,7 @@
 				6DE944742A818653005C6C3F /* OrderBuyerCell.swift in Sources */,
 				6D2D92262A6DF54F005AE6E6 /* AppDelegate.swift in Sources */,
 				6DD1A0A82A79541800666AAA /* CustomSelectableView.swift in Sources */,
+				6D33EA2B2A8A9F7D0004E9B2 /* PaymentMethodView.swift in Sources */,
 				6D10E7302A7E0093000C4398 /* ProductLikeCell.swift in Sources */,
 				6D137C482A78387A00711889 /* InsetLabel.swift in Sources */,
 				6D11D42C2A80124800B81C88 /* CartHeader.swift in Sources */,

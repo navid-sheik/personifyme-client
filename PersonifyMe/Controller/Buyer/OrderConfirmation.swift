@@ -18,6 +18,13 @@ import UIKit
 
 class OrderConfirmation: UIViewController {
     
+    weak var delegate: CartViewControllerDelegate?
+    var order : Order?{
+        didSet{
+            print("The order is ready")
+        }
+    }
+    
     
     let productCellIdentifier : String = "productCellIdentifier"
     // MARK: - Components
@@ -208,6 +215,8 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+        continueShopping.addTarget(self, action: #selector(handleContinueShopping), for: .touchUpInside)
+        continueShopping.isEnabled = true
         setNavigationBar()
         setUpTableView()
         setupUI()
@@ -309,7 +318,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         
         
         contentView.addSubview(addressStack)
-        addressStack.anchor( top: customINformationLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        addressStack.anchor( top: customINformationLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         
         
@@ -338,7 +347,22 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
     
-    
+    @objc func handleContinueShopping(){
+        print("Clicking")
+        print ("Handle shopping")
+        delegate?.emptyCart()
+        self.dismiss(animated: true) { [weak self] in
+               // After dismissing, switch to the desired tab
+            print("Something")
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        // Access the root view controller of the window associated with the window scene
+                        if let tabBarController = windowScene.windows.first?.rootViewController as? UITabBarController {
+                            // Set the desired tab index
+                            tabBarController.selectedIndex = 0
+                        }
+                    }
+        }
+    }
     // MARK: - Navigation
     // Segue preparations and related stuff
     

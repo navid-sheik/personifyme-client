@@ -51,6 +51,31 @@ class TimeManager {
 
         return "Just now"
     }
+    static func orderDateFormatter(_ dateString: String) -> String {
+           let isoFormatter = ISO8601DateFormatter()
+           isoFormatter.formatOptions.insert(.withFractionalSeconds)
+
+           guard let date = isoFormatter.date(from: dateString) else {
+               return "Invalid date"
+           }
+           
+           let dateFormatter = DateFormatter()
+           dateFormatter.dateFormat = "MMM d, yyyy"
+           
+           return dateFormatter.string(from: date)
+       }
     
-     
+    static func orderFormatterWithTime(_ dateString: String) -> String {
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withFullDate, .withTime, .withColonSeparatorInTime, .withTimeZone, .withFractionalSeconds]
+            
+            guard let date = isoFormatter.date(from: dateString) else {
+                return "Invalid date"
+            }
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM d, yyyy HH:mm"
+            
+            return dateFormatter.string(from: date)
+        }
 }

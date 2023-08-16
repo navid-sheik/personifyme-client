@@ -7,13 +7,86 @@
 
 import Foundation
 
+import UIKit
 
+
+enum SellerIdentifier: Codable {
+    case string(String)
+    case seller(Seller)
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        // Try to decode as a String
+        if let idString = try? container.decode(String.self) {
+            self = .string(idString)
+            return
+        }
+        
+        // Try to decode as a Seller object
+        if let sellerObject = try? container.decode(Seller.self) {
+            self = .seller(sellerObject)
+            return
+        }
+        
+        throw DecodingError.typeMismatch(SellerIdentifier.self,
+                                         DecodingError.Context(codingPath: decoder.codingPath,
+                                                               debugDescription: "Mismatched Types"))
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        switch self {
+        case .string(let idString):
+            try container.encode(idString)
+        case .seller(let sellerObject):
+            try container.encode(sellerObject)
+        }
+    }
+}
+
+enum CategoryIdentifier: Codable {
+    case string(String)
+    case category(Category)
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        // Try to decode as a String
+        if let idString = try? container.decode(String.self) {
+            self = .string(idString)
+            return
+        }
+        
+        // Try to decode as a Category object
+        if let categoryObject = try? container.decode(Category.self) {
+            self = .category(categoryObject)
+            return
+        }
+        
+        throw DecodingError.typeMismatch(CategoryIdentifier.self,
+                                         DecodingError.Context(codingPath: decoder.codingPath,
+                                                               debugDescription: "Mismatched Types"))
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        switch self {
+        case .string(let idString):
+            try container.encode(idString)
+        case .category(let categoryObject):
+            try container.encode(categoryObject)
+        }
+    }
+}
 // MARK: - Product
 struct Product: Codable {
     let productId, title, description: String
-    let sellerId: Seller
+    let sellerId: SellerIdentifier
     let price: Double
-    let categoryId: Category
+    let categoryId: CategoryIdentifier
     let customizationOptions: [CustomizationOption]
     let sold: Int
     let quantity : Int
