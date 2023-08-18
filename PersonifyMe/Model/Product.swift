@@ -84,7 +84,7 @@ enum CategoryIdentifier: Codable {
 // MARK: - Product
 struct Product: Codable {
     let productId, title, description: String
-    let sellerId: SellerIdentifier
+    let sellerId: SellerIdentifier?
     let price: Double
     let categoryId: CategoryIdentifier
     let customizationOptions: [CustomizationOption]
@@ -95,7 +95,7 @@ struct Product: Codable {
     let isDeleted: Bool
     let condition: String
     let hasVariations: Bool
-    let variations: [Variation]? // Optional, as there may not be variations
+    let variations: [Variant]? // Optional, as there may not be variations
     let shippingInfo: ShippingInfo
     let returnPolicy, shippingPolicy: Bool
     let createdAt, updatedAt: String?
@@ -118,6 +118,15 @@ struct Product: Codable {
         case shippingPolicy = "shippingPolicy"
         case createdAt, updatedAt
     }
+    
+    var category: Category? {
+          switch categoryId {
+          case .string(_):
+              return nil
+          case .category(let categoryObject):
+              return categoryObject
+          }
+      }
 }
 
 
@@ -201,12 +210,13 @@ struct Option: Codable {
 
 
 struct ProductListing: Codable {
+    
     let title, description: String
     let price: Double
     let quantity : Int
     let category_id: String
     let customizationOptions: [CustomizationOptionListing]
-    var images: [String]
+    var images: [String]?
     let condition: String
     let hasVariations: Bool
     let variations: [Variant]? // Optional, as there may not be variations

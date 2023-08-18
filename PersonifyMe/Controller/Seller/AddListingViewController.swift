@@ -18,8 +18,111 @@ import UIKit
 
 import SimpleCheckbox
 
+
+
 class AddListingViewController: UIViewController{
     
+    
+    var product : Product?{
+        didSet{
+            if let product = self.product{
+                self.configureCell(product: product)
+            }
+        
+        }
+       
+    }
+    
+    
+    func configureCell (product : Product){
+        if let imagesUrl =  self.product?.images{
+            self.existingImagesURLs = imagesUrl
+            loadImages(from: imagesUrl) { images in
+                self.images =  images
+              
+                self.imageCollectionView.reloadData()
+            }
+            
+        }
+        self.titleTextField.text =  product.title
+        if let category = product.category {
+            
+            self.categorySelected =  category
+            self.categoriesView.setNewValueForLabel(category.name)
+        }
+        self.conditionView.setNewValueForLabel(product.condition)
+        self.descriptionLabeledTexView.textView.text = product.description
+        self.priceTextField.textField.text =  "\(product.price)"
+        self.quantiyTextField.textField.text =  "\(product.quantity)"
+        self.personalizationTextView.textView.text =  product.customizationOptions.first?.instructions
+        self.originCountryTextField.text =  product.shippingInfo.originCountry
+        self.destinationCountryTextField.text =  product.shippingInfo.destinationCountry
+        self.timeProcessingView.minTextField.text =   "\(product.shippingInfo.processingTime.min)"
+        self.timeProcessingView.maxTextfield.text =   "\(product.shippingInfo.processingTime.max)"
+        self.timeStandardDelivery.minTextField.text =   "\(product.shippingInfo.standardDelivery.deliveryTime.min)"
+        self.timeStandardDelivery.maxTextfield.text =   "\(product.shippingInfo.standardDelivery.deliveryTime.max)"
+        if let minInternational = product.shippingInfo.internationalDelivery?.deliveryTime.min, let maxinternational = product.shippingInfo.internationalDelivery?.deliveryTime.max {
+            
+            self.timeViewInternationalDelivery.minTextField.text =   "\(minInternational)"
+            self.timeViewInternationalDelivery.maxTextfield.text =   "\(maxinternational)"
+            
+        }
+        
+   
+        self.returnCheckBox.isChecked = product.returnPolicy
+        self.exchangeCheckBox.isChecked =  product.shippingPolicy
+
+       
+     
+      
+        
+       
+        
+        self.submitItemButton.setTitle("UPDATE", for: .normal)
+        self.saveItemButton.setTitle("DELETE", for: .normal)
+        self.saveItemButton.isEnabled = true
+        
+        
+    }
+    
+    func loadImages(from urlStrings: [String], completion: @escaping ([UIImage?]) -> Void) {
+        // Initialize the images array with 'nil' placeholders
+        var images = [UIImage?](repeating: nil, count: urlStrings.count)
+        
+        // Create a dispatch group to handle multiple async tasks
+        let group = DispatchGroup()
+        
+        for (index, urlString) in urlStrings.enumerated() {
+            if let url = URL(string: urlString) {
+                // Enter the group before starting the async task
+                group.enter()
+                
+                DispatchQueue.global().async {
+                    do {
+                        let data = try Data(contentsOf: url)
+                        let image = UIImage(data: data)
+                        // Assign the image to its correct position in the images array
+                        images[index] = image
+                    } catch {
+                        print("Error loading image: \(error)")
+                    }
+                    
+                    // Leave the group after finishing the async task
+                    group.leave()
+                }
+            }
+        }
+        
+        // Set up a completion handler for when all tasks are done
+        group.notify(queue: DispatchQueue.main) {
+            completion(images)
+        }
+    }
+    
+    var existingImagesURLs: [String] = []
+    var deleteUrls : [String] = []
+    var newImages: [UIImage] = []
+
     //MARK: IDENTIFIER
     let imageListingSellerIdentifier =  "imageListingSellerIdentifier"
     
@@ -32,7 +135,7 @@ class AddListingViewController: UIViewController{
     var personalizationLabelTopConstraint: NSLayoutConstraint?
 
     //MARK: Arrays
-    var images : [UIImage] = []
+    var images : [UIImage?] = []
     
     //MARK: Picker
     
@@ -348,6 +451,7 @@ class AddListingViewController: UIViewController{
     }()
     var saveItemButton : CustomButton =  {
         let button  = CustomButton(title: "Save As Draft", hasBackground: true, fontType: .medium)
+        button.isEnabled = false
         return button
     }()
     
@@ -399,19 +503,41 @@ class AddListingViewController: UIViewController{
         self.returnPoliciesView.text =  GlobalTexts.returnPolicies
         //Image actions
         addImageButton.addTarget(self, action: #selector(handleAddImage), for: .touchUpInside)
-        submitItemButton.addTarget(self, action: #selector(createProduct), for: .touchUpInside)
+        submitItemButton.addTarget(self, action: #selector(submitProduct), for: .touchUpInside)
+        saveItemButton.addTarget(self, action: #selector(handleLeftSideButton), for: .touchUpInside)
         
         
-       
+        
+     
         setupPickerView()
         setUpDelegate()
         setImageCollectionView()
         setupUI()
         buttonFunction()
+        
+        
+   
+        if let hasVariations = product?.hasVariations{
+            self.swittchVariant.isOn = hasVariations
+            self.swittchVariant.sendActions(for: .valueChanged)
+        }
+       
+        //For the updating listing
+        if product?.hasVariations == true , let  variations  =  product?.variations{
+            self.saveNewVariation(variantsArray: variations)
+        
+          
+           
+            
+        }
+        
+        
+        
     }
     
     private func buttonFunction(){
         addVariantButton.addTarget(self, action: #selector(presetPopVariant), for: .touchUpInside)
+      
     }
     
     //MARK: - SET UP DELETEGATE
@@ -664,8 +790,31 @@ class AddListingViewController: UIViewController{
         }
     }
     
+    @objc func handleLeftSideButton(){
+        
+        
+        
+        if let productId  = product?.productId{
+            Service.shared.deleteSellerProducts(with: productId, expecting: ApiResponse<String>.self) { [weak self] result in
+                guard let self = self else {return}
+                switch result{
+                    
+                case .success(let response):
+                    guard let deletedProduct = response.data else {return}
+                    print(deletedProduct)
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                case .failure(_):
+                    print("Failed ")
+                }
+            }
+            
+        }
+    }
+    
     //Submit product
-    @objc func createProduct (){
+    @objc func submitProduct (){
         //VALIDATION
         
         //Title
@@ -816,7 +965,7 @@ class AddListingViewController: UIViewController{
             description: description,
             price: price,
             quantity: quantity,
-            category_id: category.id,
+            category_id: category.categoryId,
             customizationOptions: [customizationOptions],
             images: [],
             condition: condition,
@@ -844,29 +993,67 @@ class AddListingViewController: UIViewController{
        
         var productWithImages = product
         productWithImages.images = images.compactMap { image in
-            if let base64String = image.jpegData(compressionQuality: 0.8)?.base64EncodedString() {
+            if let base64String = image?.jpegData(compressionQuality: 0.8)?.base64EncodedString() {
                 return "data:image/jpeg;base64,\(base64String)"
             }
             return nil
             
         }
         
-        print(productWithImages.images)
+//        print(productWithImages.images)
         
         
+        
+        //Create product or update
+        
+        if let existingProduct =  self.product {
+            updateProduct(with: productWithImages)
+            
+        } else {
+            createProduct(with: productWithImages)
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+       
         
         
         
         //NETWWORK CALL + REDIRECT TO MANAGE LISTING PAGE
         
-        Service.shared.createProduct(productWithImages,  expecting: ApiResponse<Product>.self, completion: { [weak self] result in
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+    func createProduct (with productToSend : ProductListing ){
+        Service.shared.createProduct(productToSend,  expecting: ApiResponse<Product>.self, completion: { [weak self] result in
             
             guard let self  = self else {
                 return
             }
             switch result {
             case .success(let response):
-                print(response)
+//                print(response)
                 DispatchQueue.main.async {
                     let vc =  ManageListingController()
                     self.navigationController?.pushViewController(vc, animated: true)
@@ -875,16 +1062,42 @@ class AddListingViewController: UIViewController{
                 print(error)
             }
         })
+    }
+    
+    func updateProduct (with productToSend : ProductListing ){
         
+        var myproduct = productToSend
         
+        let newImagesToUpload = newImages.compactMap { image in
+            if let base64String = image.jpegData(compressionQuality: 0.8)?.base64EncodedString() {
+                return "data:image/jpeg;base64,\(base64String)"
+            }
+            return nil
+            
+        }
         
+        myproduct.images =  nil
         
+        guard let productId  = self.product?.productId else {return}
         
+        print(deleteUrls)
         
-        
-        
-        
-        
+        Service.shared.updateProduct(to: productId, with: myproduct, newImagesToUpload: newImagesToUpload, deletedUrls : deleteUrls ,  expecting: ApiResponse<Product>.self) { [weak self] result in
+         
+            guard let self  = self else {
+                return
+            }
+            switch result {
+            case .success(let response):
+//                print(response)
+                DispatchQueue.main.async {
+                    let vc =  ManageListingController()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
 }
@@ -1131,6 +1344,14 @@ extension AddListingViewController : UIImagePickerControllerDelegate, UINavigati
             // Add the selected image to your images array
             let squareImage = cropToBounds(image: pickedImage, width: Double(pickedImage.size.width), height: Double(pickedImage.size.width))
             images.append(squareImage)
+            if (product != nil){
+                newImages.append(pickedImage)
+                print("This is ", existingImagesURLs)
+                print(newImages.count)
+                print(deleteUrls)
+            }
+         
+            
             
             // Reload the collection view
             imageCollectionView.reloadData()
@@ -1210,6 +1431,21 @@ extension AddListingViewController :  CreateListingDelegate{
         if let indexPath  = imageCollectionView.indexPath(for: cell){
             images.remove(at: indexPath.row)
             // Now delete the item from your UICollectionView.
+            if product != nil {
+               if indexPath.row < existingImagesURLs.count {
+                   // It's an existing image, so move it to deleteUrls.
+                   let deletedURL = existingImagesURLs.remove(at: indexPath.row)
+                   deleteUrls.append(deletedURL)
+               } else {
+                   // It's a new image.
+                   let newIndex = indexPath.row - existingImagesURLs.count // Adjust the index to fall within newImages
+                   newImages.remove(at: newIndex)
+               }
+                print("This is ", existingImagesURLs)
+                print(newImages.count)
+                print(deleteUrls)
+           }
+            
             imageCollectionView.performBatchUpdates({
                 imageCollectionView.deleteItems(at: [indexPath])
                 if images.isEmpty {

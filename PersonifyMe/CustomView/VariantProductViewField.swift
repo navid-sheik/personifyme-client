@@ -56,6 +56,8 @@ class  VariantProductViewField:  UIView {
         return textField
     }()
     
+    
+    
     let dropDown = DropDown()
     
     

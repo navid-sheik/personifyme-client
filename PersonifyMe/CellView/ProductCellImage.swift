@@ -19,6 +19,14 @@ class ProductCellImage :  CustomCell{
         return imageView
     }()
     
+    
+
+    
+    
+    
+    
+    
+    
     override func setUpCell() {
         //stylingCell()
         contentView.addSubview(mainImage)
@@ -38,4 +46,5 @@ class ProductCellImage :  CustomCell{
         self.layer.masksToBounds = false
         self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.contentView.layer.cornerRadius).cgPath
     }
+    
 }

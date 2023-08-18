@@ -84,6 +84,7 @@
 		6D4810D02A83052500D5B6B8 /* SettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810CF2A83052500D5B6B8 /* SettingCell.swift */; };
 		6D4810D22A8305E100D5B6B8 /* SettiongOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810D12A8305E100D5B6B8 /* SettiongOption.swift */; };
 		6D4810D42A832E8100D5B6B8 /* OrderConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810D32A832E8100D5B6B8 /* OrderConfirmation.swift */; };
+		6D4899782A8DE26C000C606F /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4899772A8DE26C000C606F /* Shop.swift */; };
 		6D5900082A73FC1D00400F80 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5900072A73FC1D00400F80 /* Controller.swift */; };
 		6D59000B2A747D4200400F80 /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 6D59000A2A747D4200400F80 /* Stripe */; };
 		6D59000D2A747D4200400F80 /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 6D59000C2A747D4200400F80 /* StripeApplePay */; };
@@ -103,6 +104,9 @@
 		6D6A966E2A7C89FB0042C39F /* VariantField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A966D2A7C89FB0042C39F /* VariantField.swift */; };
 		6D6A96702A7C9A9C0042C39F /* ReviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A966F2A7C9A9C0042C39F /* ReviewTableViewCell.swift */; };
 		6D6A96722A7CA2FD0042C39F /* ReviewRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A96712A7CA2FD0042C39F /* ReviewRating.swift */; };
+		6D720DA52A8EEEDF00CA0ED1 /* SettingsShopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D720DA42A8EEEDF00CA0ED1 /* SettingsShopController.swift */; };
+		6D720DA82A8EF55300CA0ED1 /* ShopSettingTxtField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D720DA72A8EF55300CA0ED1 /* ShopSettingTxtField.swift */; };
+		6D720DAA2A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D720DA92A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift */; };
 		6DA19BB32A85D777006C5EF3 /* AddVariantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA19BB22A85D777006C5EF3 /* AddVariantController.swift */; };
 		6DAE939E2A773F8000AF3F25 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE939D2A773F8000AF3F25 /* AuthManager.swift */; };
 		6DAE93A02A7742B000AF3F25 /* ErrorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE939F2A7742B000AF3F25 /* ErrorManager.swift */; };
@@ -118,7 +122,6 @@
 		6DBFEA5F2A730297001D6C53 /* LikesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA5E2A730297001D6C53 /* LikesViewController.swift */; };
 		6DBFEA612A7303BB001D6C53 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA602A7303BB001D6C53 /* ProfileViewController.swift */; };
 		6DBFEA632A7303CE001D6C53 /* CartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA622A7303CE001D6C53 /* CartViewController.swift */; };
-		6DBFEA652A7303E6001D6C53 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA642A7303E6001D6C53 /* SettingsViewController.swift */; };
 		6DBFEA672A730403001D6C53 /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA662A730403001D6C53 /* ResetPasswordViewController.swift */; };
 		6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA682A730419001D6C53 /* BuyersOrdersViewController.swift */; };
 		6DBFEA6C2A7304B5001D6C53 /* SingleItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DBFEA6B2A7304B5001D6C53 /* SingleItemViewController.swift */; };
@@ -278,6 +281,7 @@
 		6D4810CF2A83052500D5B6B8 /* SettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCell.swift; sourceTree = "<group>"; };
 		6D4810D12A8305E100D5B6B8 /* SettiongOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettiongOption.swift; sourceTree = "<group>"; };
 		6D4810D32A832E8100D5B6B8 /* OrderConfirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmation.swift; sourceTree = "<group>"; };
+		6D4899772A8DE26C000C606F /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
 		6D5900072A73FC1D00400F80 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		6D59001B2A748D5600400F80 /* ConnectOnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectOnboardViewController.swift; sourceTree = "<group>"; };
 		6D6A96602A7C2B280042C39F /* GlobalArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalArrays.swift; sourceTree = "<group>"; };
@@ -289,6 +293,9 @@
 		6D6A966D2A7C89FB0042C39F /* VariantField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantField.swift; sourceTree = "<group>"; };
 		6D6A966F2A7C9A9C0042C39F /* ReviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTableViewCell.swift; sourceTree = "<group>"; };
 		6D6A96712A7CA2FD0042C39F /* ReviewRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewRating.swift; sourceTree = "<group>"; };
+		6D720DA42A8EEEDF00CA0ED1 /* SettingsShopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsShopController.swift; sourceTree = "<group>"; };
+		6D720DA72A8EF55300CA0ED1 /* ShopSettingTxtField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopSettingTxtField.swift; sourceTree = "<group>"; };
+		6D720DA92A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShopSelectableTextFiled .swift"; sourceTree = "<group>"; };
 		6DA19BB22A85D777006C5EF3 /* AddVariantController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddVariantController.swift; sourceTree = "<group>"; };
 		6DAE939D2A773F8000AF3F25 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		6DAE939F2A7742B000AF3F25 /* ErrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorManager.swift; sourceTree = "<group>"; };
@@ -304,7 +311,6 @@
 		6DBFEA5E2A730297001D6C53 /* LikesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikesViewController.swift; sourceTree = "<group>"; };
 		6DBFEA602A7303BB001D6C53 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		6DBFEA622A7303CE001D6C53 /* CartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartViewController.swift; sourceTree = "<group>"; };
-		6DBFEA642A7303E6001D6C53 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		6DBFEA662A730403001D6C53 /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
 		6DBFEA682A730419001D6C53 /* BuyersOrdersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyersOrdersViewController.swift; sourceTree = "<group>"; };
 		6DBFEA6B2A7304B5001D6C53 /* SingleItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleItemViewController.swift; sourceTree = "<group>"; };
@@ -469,6 +475,7 @@
 		6D137C422A78384400711889 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
+				6D720DA62A8EF54000CA0ED1 /* Shop */,
 				6D33EA272A8A954E0004E9B2 /* Checkout */,
 				6D4810C02A82AF1500D5B6B8 /* Profile */,
 				6D137C432A78385400711889 /* CustomImageView.swift */,
@@ -621,6 +628,15 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
+		6D720DA62A8EF54000CA0ED1 /* Shop */ = {
+			isa = PBXGroup;
+			children = (
+				6D720DA72A8EF55300CA0ED1 /* ShopSettingTxtField.swift */,
+				6D720DA92A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift */,
+			);
+			path = Shop;
+			sourceTree = "<group>";
+		};
 		6DA19BB12A85D515006C5EF3 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
@@ -655,7 +671,6 @@
 				6DBFEA5E2A730297001D6C53 /* LikesViewController.swift */,
 				6DBFEA602A7303BB001D6C53 /* ProfileViewController.swift */,
 				6DBFEA622A7303CE001D6C53 /* CartViewController.swift */,
-				6DBFEA642A7303E6001D6C53 /* SettingsViewController.swift */,
 				6DBFEA682A730419001D6C53 /* BuyersOrdersViewController.swift */,
 				6DBFEA6B2A7304B5001D6C53 /* SingleItemViewController.swift */,
 				6DBFEA6D2A7304C5001D6C53 /* CategoryViewController.swift */,
@@ -687,6 +702,7 @@
 				6DBFEA7E2A730726001D6C53 /* BecomeSellerViewController.swift */,
 				6D137C552A78629200711889 /* AddListingViewController.swift */,
 				6DCE8B732A8C74E4000C4D1F /* AddTrackingController.swift */,
+				6D720DA42A8EEEDF00CA0ED1 /* SettingsShopController.swift */,
 			);
 			path = Seller;
 			sourceTree = "<group>";
@@ -808,6 +824,7 @@
 				6DC02BD02A899376001BCD91 /* Cart.swift */,
 				6D33EA2C2A8B1B490004E9B2 /* Order.swift */,
 				6DCE8B6F2A8C3D57000C4D1F /* OrderItem.swift */,
+				6D4899772A8DE26C000C606F /* Shop.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1176,6 +1193,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D4899782A8DE26C000C606F /* Shop.swift in Sources */,
 				6D10E72C2A7DF561000C4398 /* TimeManager.swift in Sources */,
 				6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */,
 				6D137C5D2A78872700711889 /* CreateListingDelegate.swift in Sources */,
@@ -1223,6 +1241,7 @@
 				6D2770BA2A8723E70030234A /* Variant.swift in Sources */,
 				6DC9612E2A8848E500D2B94D /* VariantProductViewField.swift in Sources */,
 				6DD19DB32A75E829004F02B5 /* OnBoardingLinkViewController.swift in Sources */,
+				6D720DAA2A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift in Sources */,
 				6DBFEA532A72D532001D6C53 /* User.swift in Sources */,
 				6D137C592A7863D400711889 /* SettingSellerMenuDelegate.swift in Sources */,
 				6D137C462A78386800711889 /* NoResultMessage.swift in Sources */,
@@ -1263,6 +1282,7 @@
 				6D11D42E2A8033D600B81C88 /* CheckoutViewController.swift in Sources */,
 				6DBFEA762A730553001D6C53 /* DashboardViewController.swift in Sources */,
 				6DD390F02A709EC800C61808 /* CustomTextField.swift in Sources */,
+				6D720DA52A8EEEDF00CA0ED1 /* SettingsShopController.swift in Sources */,
 				6DD19DB72A760039004F02B5 /* SellerResponse.swift in Sources */,
 				6DD19DAF2A75D954004F02B5 /* OnBoardingCell.swift in Sources */,
 				6D127FC72A7ECBE8003DBD16 /* SearchResultViewController.swift in Sources */,
@@ -1316,7 +1336,6 @@
 				6D10E72E2A7DFAA9000C4398 /* DynamicTableView.swift in Sources */,
 				6D137C382A78331800711889 /* SellerMenu.swift in Sources */,
 				6D137C3B2A78375700711889 /* SellerMenuCell.swift in Sources */,
-				6DBFEA652A7303E6001D6C53 /* SettingsViewController.swift in Sources */,
 				6DAE939E2A773F8000AF3F25 /* AuthManager.swift in Sources */,
 				6D057E8D2A7A8C2F00F79A47 /* Product.swift in Sources */,
 				6DE9447D2A81A5EB005C6C3F /* OrderProductCell.swift in Sources */,
@@ -1329,6 +1348,7 @@
 				6D11D4322A80916900B81C88 /* NavigationController.swift in Sources */,
 				6D4810C42A82BE4100D5B6B8 /* ProfileOrders.swift in Sources */,
 				6DD1A0A62A79402300666AAA /* LabeledTextView.swift in Sources */,
+				6D720DA82A8EF55300CA0ED1 /* ShopSettingTxtField.swift in Sources */,
 				6DE9447F2A81A600005C6C3F /* OrderInfoCell.swift in Sources */,
 				6D137C522A78483200711889 /* VerificationStatusView.swift in Sources */,
 				6DBFEA782A730563001D6C53 /* ShopViewController.swift in Sources */,

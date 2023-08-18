@@ -261,10 +261,12 @@ class RegisterController :  UIViewController {
                  
                     //Check verification of the user
                     let verifed   =  user_data.verified
+                    let user_id  =  user_data.user_id
+                    let seller_id  = user_data.seller_id
                     //Show verified controller if not verifed
                     DispatchQueue.main.async {
                         if verifed {
-                            AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified)
+                            AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified, user_id: user_id, seller_id: seller_id)
                             strongSelf.dismiss(animated: true, completion: nil)
                         }else{
                             let vc = VerifyEmailViewController(email: email)

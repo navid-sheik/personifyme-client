@@ -8,11 +8,11 @@
 import Foundation
 // MARK: - CategoryID
 struct Category: Codable {
-    let id, name, description: String
+    let categoryId,  name, description: String
     let parent : String?
 
     enum CodingKeys: String, CodingKey {
-        case id = "_id"
+        case categoryId = "_id"
         case name, description, parent
     }
 }

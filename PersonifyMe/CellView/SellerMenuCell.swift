@@ -1,5 +1,5 @@
 //
-//  SellerMenuCell.swift
+//  Cell.swift
 //  PersonifyMe
 //
 //  Created by Navid Sheikh on 31/07/2023.

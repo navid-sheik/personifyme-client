@@ -27,6 +27,39 @@ class ProductViewController: UIViewController {
     
     var product : Product
     
+    var shopInfo :  Shop?
+    var sellerInfo : Seller?
+    
+    var isLiked : Bool =  false
+    
+    var productLike : [String] = []{
+        didSet{
+            
+          
+            DispatchQueue.main.async {
+                if self.productLike.contains(self.product.productId){
+                    self.isLiked = true
+                    
+                    UIView.transition(with: self.favouriteButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                        let image = UIImage(systemName: "heart.fill")?.withRenderingMode(.alwaysTemplate)
+                        self.favouriteButton.setImage(image , for: .normal)
+                    }, completion: nil)
+                
+                }else {
+                    self.isLiked = false
+                    UIView.transition(with: self.favouriteButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                        let image = UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate)
+                        self.favouriteButton.setImage(image , for: .normal)
+                    }, completion: nil)
+                    
+                  
+                }
+            }
+            
+            
+        }
+    }
+    
     weak var delegate: CartUpdateDelegate?
 
     
@@ -188,7 +221,18 @@ class ProductViewController: UIViewController {
         return textView
     }()
     
-    
+    let favouriteButton: UIButton = {
+        let button = UIButton(type: .system)
+//        let image = UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate)
+//        button.setImage(image, for: .normal)
+        button.tintColor = .red
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.contentMode = .scaleAspectFill
+        button.clipsToBounds = false
+        button.isHidden = false
+        button.isUserInteractionEnabled = true
+        return button
+    }()
     
     
     
@@ -225,6 +269,16 @@ class ProductViewController: UIViewController {
     }()
     
     
+    let shopLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Shop"
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.textColor = UIColor.gray
+        return label
+    }()
+    
+    
+    
     
     
     
@@ -257,23 +311,63 @@ class ProductViewController: UIViewController {
         productTitle.text =  product.title
         priceLabel.text  = String(product.price)
         descriptionTextView.text = product.description
-
         
         
-       
+        
+        
         let isInternational = product.shippingInfo.internationalDelivery?.available ?? false
         let service = DeliveryEstimationService()
         let message = service.deliveryMessage(for: product.shippingInfo, isInternational: isInternational)
-//        print(message)
+        //        print(message)
         
         
         estimateLabel.text = message
         placeholderLabel.text = product.customizationOptions.first?.instructions
         
-        
-        
+        if let seller =   product.sellerId{
+            switch seller{
+                
+            case .string(let idString):
+                print("idString \(idString)")
+                
+                
+            case .seller(let sellerObject):
+                print("idString \(sellerObject)")
+                self.sellerInfo =  sellerObject
+                switch sellerObject.shopId{
+                    
+                case .shop(let shopOject):
+                    self.shopInfo =  shopOject
+                    shopLabel.text  = shopOject.name
+                   
+                case .string(let idString):
+                    print("idString \(idString)")
+                    
+                case .none:
+                    print("None")
+                }
+                
+            }
+            
+            
+            
+        }
         
     }
+       
+        
+    @objc
+    func handleGotToShop(){
+        print("Got to shop")
+        
+        guard let shopInfo =  self.shopInfo else { return}
+        
+        guard let sellerId = sellerInfo?.id else {return}
+//        ShopViewController(sellerId: <#T##String#>, shopInfo: <#T##Shop#>, )
+        let vc = ShopViewController(sellerId: sellerId, shopInfo: shopInfo,admin: false)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+       
     
     
     // MARK: - Lifecycle methods
@@ -281,7 +375,12 @@ class ProductViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
+        
+        favouriteButton.addTarget(self, action: #selector(handleFavouriteButtno), for: .touchUpInside)
         addToCartButton.addTarget(self, action: #selector(handleAddCart), for: .touchUpInside)
+        shopLabel.isUserInteractionEnabled = true
+        
+        shopLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleGotToShop)))
        
         personalizationView.textView.delegate = self
          placeholderLabel = UILabel()
@@ -312,6 +411,7 @@ class ProductViewController: UIViewController {
         
         guard let variants = self.product.variations else {return }
         self.setupVariantsWithDelegate(variants)
+        fetchProductLikes()
         fecthReviews()
     }
     
@@ -343,6 +443,7 @@ class ProductViewController: UIViewController {
         
 
         contentView.addSubview(imageCollectionView)
+        contentView.addSubview(favouriteButton)
         contentView.addSubview(productTitle)
       
         
@@ -354,8 +455,11 @@ class ProductViewController: UIViewController {
 //        contentView.addSubview(starRatingView)
 //
                 
-        imageCollectionView.anchor( top: contentView.layoutMarginsGuide.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: self.view.frame.width)
-    
+        imageCollectionView.anchor( top: contentView.layoutMarginsGuide.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
+        
+        favouriteButton.anchor( top: nil, left: contentView.leadingAnchor, right: nil, bottom: imageCollectionView.bottomAnchor, paddingTop: 0, paddingLeft: 2,paddingRight: 0, paddingBottom: -2, width: 30, height: 30)
+
+        
         productTitle.anchor( top: imageCollectionView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         let priceStackView  = createStackView(with: [currenyLabel, priceLabel], axis: .horizontal, spacing: 5, distribution: .fillProportionally, alignment: .fill)
@@ -385,7 +489,12 @@ class ProductViewController: UIViewController {
         
         descriptionStackView.anchor( top: estimateLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
-        accordionTableView.anchor( top: descriptionStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        
+        contentView.addSubview(shopLabel)
+        
+        shopLabel.anchor(top: descriptionStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        
+        accordionTableView.anchor( top: shopLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         reviewTable.anchor( top: accordionTableView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: -100, width: nil, height: nil)
         
@@ -401,7 +510,7 @@ class ProductViewController: UIViewController {
     }
     
     
-    func setupVariantsWithDelegate(_ variants: [Variation]) {
+    func setupVariantsWithDelegate(_ variants: [Variant]) {
         // Clear all arranged subviews first
         stackViewVariants.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
@@ -458,6 +567,24 @@ class ProductViewController: UIViewController {
         }
         
     }
+    
+    func fetchProductLikes  (){
+        Service.shared.getLikedProducts(expecting: ApiResponse<[Product]>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let products  =  response.data else {return}
+                print(products)
+                self.productLike = products.map { $0.productId }
+                
+            
+            case .failure(let error):
+                print(error)
+                print ("Error")
+            }
+        }
+    }
     // MARK: - Private methods
     // All other functions that you use within the ViewController
     func createStackView(with views: [UIView], axis: NSLayoutConstraint.Axis = .vertical, spacing: CGFloat = 0, distribution: UIStackView.Distribution = .fill , alignment: UIStackView.Alignment = .fill) -> UIStackView {
@@ -476,7 +603,81 @@ class ProductViewController: UIViewController {
     }
     
     
+    @objc func handleFavouriteButtno(){
+        if isLiked {
+            handledisLike()
+        }else {
+            handleLike()
+        }
+        
+    }
+    
     //MARK: OBJECT C
+    
+     func handledisLike(){
+        print("Unlik Product")
+
+        Service.shared.unlikeProduct(productId: product.productId, expecting: ApiResponse<String>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+
+            case .success(let response):
+                print(response)
+                guard let productId2  = response.data else {return}
+                
+                DispatchQueue.main.async {
+//
+//                    if self.product.productId == productId2 {
+//                        UIView.transition(with: self.favouriteButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+//                              self.favouriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+//                          }, completion: nil)
+//                    }
+//                    self.delegate?.handleUnlike(cell: self)
+                    self.productLike = self.productLike.filter { $0 != productId2 }
+                    
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+       
+
+        
+    }
+    
+     func handleLike(){
+        print("Like Product")
+   
+        Service.shared.likeProduct(productId: product.productId, expecting: ApiResponse<String>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+
+            case .success(let response):
+                print(response)
+                guard let productId2  = response.data else {return}
+                
+                DispatchQueue.main.async {
+                    
+//                    if self.product.productId == productId2 {
+//                        UIView.transition(with: self.favouriteButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
+//                              self.favouriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+//                          }, completion: nil)
+//                    }
+                    self.productLike.append(productId2)
+//                    self.delegate?.handleUnlike(cell: self)
+                    
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+       
+
+        
+    }
+
     
     @objc func handleAddCart(_ sender: UIButton){
      

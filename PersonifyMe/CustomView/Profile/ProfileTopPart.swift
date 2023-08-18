@@ -60,6 +60,7 @@ class ProfileTopPart : UIView {
         
         
         let wisthList =  createImageStacker(imageName: "heart", title: "Wish List")
+        wisthList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
         //Shop
         let shopList =  createImageStacker(imageName: "bag", title: "Shop")
         //Reviews
@@ -111,6 +112,11 @@ class ProfileTopPart : UIView {
         let stackView = StackManager.createStackView(with: [imageView, label], axis: .vertical, spacing: 4, distribution: .fillProportionally, alignment: .center)
     
         return stackView
+    }
+    
+    @objc func handleWishList(){
+        print ("Soemthihng")
+     
     }
     
     

@@ -36,6 +36,8 @@ class DashboardViewController : RestrictedController {
         }
     }
     
+    
+    
     // MARK: - Components
     // Here you add all components
     
@@ -256,13 +258,19 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
           
             self.navigationController?.pushViewController(controller, animated: true)
         case .some(.Listings):
-            return
+            let controller  = ManageListingController()
+          
+            self.navigationController?.pushViewController(controller, animated: true)
         case .some(.Messages):
             return
         case .some(.Reviews):
             return
         case .some(.Shop):
-            return
+            guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
+         
+            let controller  =  ShopViewController(sellerId: seller_id, shopInfo: nil, admin: true)
+            self.navigationController?.pushViewController(controller, animated: true)
+          
         case .some(.MyInfo):
             return
         case .some(.Support):

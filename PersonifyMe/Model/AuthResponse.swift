@@ -24,4 +24,6 @@ struct AuthResponse2 : Codable{
     let verified : Bool
     let token : String
     let refreshToken : String
+    let user_id : String
+    let seller_id : String?
 }

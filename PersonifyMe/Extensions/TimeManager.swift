@@ -78,4 +78,20 @@ class TimeManager {
             
             return dateFormatter.string(from: date)
         }
+    
+    
+    static func openSinceYear(from dateString: String) -> String {
+           let dateFormatter = ISO8601DateFormatter()
+           dateFormatter.formatOptions.insert(.withFractionalSeconds)
+           
+           guard let date = dateFormatter.date(from: dateString) else {
+               return "Invalid date"
+           }
+           
+           let yearFormatter = DateFormatter()
+           yearFormatter.dateFormat = "yyyy"
+           
+           let yearString = yearFormatter.string(from: date)
+           return "Open since \(yearString)"
+       }
 }

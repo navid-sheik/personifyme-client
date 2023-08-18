@@ -128,9 +128,11 @@ class VerifyEmailViewController : UIViewController{
                     return
                 }
                 let verifed = user.verified
+                let user_id = user.user_id
+                let seller_id = user.seller_id
                 if verifed{
                     DispatchQueue.main.async {
-                        AuthManager.setUserDefaults(token: user.token, refresh_token: user.refreshToken, verified: user.verified)
+                        AuthManager.setUserDefaults(token: user.token, refresh_token: user.refreshToken, verified: user.verified, user_id: user_id, seller_id: seller_id)
                         
                         self.dismiss(animated: true)
                     }

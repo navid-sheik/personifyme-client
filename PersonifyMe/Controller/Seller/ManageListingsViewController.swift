@@ -18,7 +18,13 @@ import UIKit
 
 class ManageListingController: UIViewController {
     
-    var product: [Product] = []
+    var products: [Product] = []{
+        didSet{
+            DispatchQueue.main.async {
+                self.productCollectionView.reloadData()
+            }
+        }
+    }
     
     private let cellIdentifierSellerProductCell : String  = "cellIdentifierSellerProductCell"
     // MARK: - Components
@@ -72,6 +78,7 @@ class ManageListingController: UIViewController {
         setUpSearchBar()
         setupCollectionView()
         setupUI()
+        fetchProductLikes()
     }
     
     // MARK: - UI Setup
@@ -158,11 +165,28 @@ class ManageListingController: UIViewController {
     
     // MARK: - Private methods
     // All other functions that you use within the ViewController
+    func fetchProductLikes  (){
+        Service.shared.getSellerProducts(expecting: ApiResponse<[Product]>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let products  =  response.data else {return}
+                print(products)
+                self.products =  products
+                
+            
+            case .failure(let error):
+                print(error)
+                print ("Error")
+            }
+        }
+    }
 }
 
 extension ManageListingController : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return products.count
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -171,13 +195,24 @@ extension ManageListingController : UICollectionViewDelegateFlowLayout, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = productCollectionView.dequeueReusableCell(withReuseIdentifier:cellIdentifierSellerProductCell, for: indexPath) as! ProductCell
+        if  let imageUrl = products[indexPath.row].images.first {
+            cell.mainImage.loadImageUrlString(urlString: imageUrl)
+        }
+        
+        
+
         return cell
     }
     
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let product = products[indexPath.row]
+        let controller = AddListingViewController()
+        controller.product = product
+        navigationController?.pushViewController(controller, animated: true)
+    
+
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

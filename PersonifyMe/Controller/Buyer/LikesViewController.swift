@@ -12,6 +12,8 @@ import UIKit
 
 class LikesViewController : RestrictedController{
     
+
+    
     
     //MARK: Idenfier
     
@@ -21,7 +23,11 @@ class LikesViewController : RestrictedController{
     
     private var products : [Product]?{
         didSet{
-            imageCollectionView.reloadData()
+            
+            DispatchQueue.main.async {
+                self.imageCollectionView.reloadData()
+            }
+           
         }
     }
     
@@ -55,7 +61,7 @@ class LikesViewController : RestrictedController{
         imageCollectionView.dataSource = self
         imageCollectionView.backgroundColor = .systemBackground
         setUpView()
-        
+        fetchProductLikes()
         
     }
     
@@ -80,6 +86,24 @@ class LikesViewController : RestrictedController{
     
     
     //MARK: Helpers
+    
+    func fetchProductLikes  (){
+        Service.shared.getLikedProducts(expecting: ApiResponse<[Product]>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let products  =  response.data else {return}
+                print(products)
+                self.products =  products
+                
+            
+            case .failure(let error):
+                print(error)
+                print ("Error")
+            }
+        }
+    }
 }
 
 
@@ -87,13 +111,17 @@ extension LikesViewController  :  UICollectionViewDelegateFlowLayout, UICollecti
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return  10
+        return  products?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: likesCellIdentifier, for: indexPath) as! ProductLikeCell
         
-        //Assign image and if liked or not to cell 
+        //Assign image and if liked or not to cell
+    
+        cell.product =  products?[indexPath.row]
+        cell.delegate = self
+        
         
         return cell
     }
@@ -121,4 +149,21 @@ extension LikesViewController  :  UICollectionViewDelegateFlowLayout, UICollecti
     
     
 
+}
+extension LikesViewController: ProductLikeCellDelegate{
+    func handleUnlike(cell: CustomCell) {
+        DispatchQueue.main.async {
+            if let indexPath = self.imageCollectionView.indexPath(for: cell) {
+                // Update your data source first
+                self.products?.remove(at: indexPath.item)
+                
+                // Then delete the item from the collection view with an animation
+                self.imageCollectionView.deleteItems(at: [indexPath])
+            }
+        }
+    }
+        
+    
+    
+    
 }

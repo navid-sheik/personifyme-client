@@ -48,18 +48,19 @@ final class Service{
                 completion(.failure(error ?? ServiceError.FailedToGetData))
                 return
             }
-            
+         
             print(error)
             print(httpResponse.statusCode)
-            
+//
             if (200...299).contains(httpResponse.statusCode) {
                 // If status code is in the range 200-299, try to decode the expected result
                 do {
-//                    let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-//                    print(jsonObject)
+                    let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    print(jsonObject)
                     let result = try JSONDecoder().decode(type.self, from: data)
                     completion(.success(result))
                 } catch let error as DecodingError {
+                   
                     print(error)
                     switch error {
                     case .typeMismatch(let context):
@@ -359,10 +360,15 @@ extension Service{
                     
                     let token =  user.token
                     let refreshToken =  user.refreshToken
+                    let user_id = user.user_id
+                    let seller_id = user.seller_id
+                    
+                    
                     
                     print("Refresh token \(token)")
                     print("Refresh token \(refreshToken)")
-                    AuthManager.setUserDefaultsTokens(token: token, refresh_token: refreshToken)
+                    print("Refresh token \(user_id)")
+                    AuthManager.setUserDefaultsTokens(token: token, refresh_token: refreshToken, user_id: user_id, seller_id: seller_id)
                     
                     success = true
                 } catch {
@@ -843,4 +849,268 @@ extension Service{
             
         }
     }
+}
+
+
+extension Service{
+    public func getLikedProducts<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .user, pathComponents: ["likes"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func likeProduct<T:Codable>(productId: String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .user, pathComponents: [ "like", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) { result in
+            completion(result)
+        }
+    }
+    
+    public func unlikeProduct<T:Codable>( productId: String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .user, pathComponents: [ "unlike", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) { result in
+            completion(result)
+        }
+    }
+    
+    
+}
+
+
+
+//Sellers Products
+
+extension Service{
+    public func getSellerProducts<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .seller, pathComponents: ["products"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    
+    
+    public func deleteSellerProducts<T:Codable>(with productId : String , expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .seller, pathComponents: ["products", "delete",  productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func updateProduct<T:Codable>( to productId : String, with  product : ProductListing ,  newImagesToUpload: [String], deletedUrls : [String] ,expecting type : T.Type,  completion : @escaping (Result <T, Error>) -> Void){
+        
+        
+        // Encode product to JSON
+           let productData = try? JSONEncoder().encode(product)
+//
+//            let deletedUrlsData   = try? JSONEncoder().encode(deletedUrls)
+           // Create a dictionary to combine new images array and product JSON object
+           let combinedData: [String: Any] = [
+               "newImages": newImagesToUpload,
+               "delete_urls" :deletedUrls,
+               "product": try! JSONSerialization.jsonObject(with: productData!, options: [])
+           ]
+           
+           // Convert combined data to JSON
+           let jsonData = try? JSONSerialization.data(withJSONObject: combinedData, options: [])
+           
+        let request  =  Request(endpoint: .seller, pathComponents: [ "products", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .set(body: jsonData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) { [weak self] result in
+            guard let _ = self else { return }
+            
+            completion(result)
+            
+            
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+}
+
+
+
+//Shop
+
+extension Service{
+    
+    public func getShop<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+
+        let request = Request(endpoint: .shop, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    public func getShopProducts<T:Codable>(with sellerId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        let body = ["seller_id" : sellerId]
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        
+        let request = Request(endpoint: .shop, pathComponents: ["products"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(body: jsonData)
+            .set(method: .POST)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func getShopNUmberOrders<T:Codable>(with sellerId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .shop, pathComponents: ["orders", "count", sellerId ])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func followShop<T:Codable>(with shopId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .shop, pathComponents: ["follow",  shopId ])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func unfollowShop<T:Codable>(with shopId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .shop, pathComponents: ["unfollow",  shopId ])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    
+    
+    
+    public func updateShop<T:Codable>(with shopData : Shop,  expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        
+        let shopData = try? JSONEncoder().encode(shopData)
+        let request = Request(endpoint: .shop, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .set(body: shopData)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func deactivateShop<T:Codable>(  expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        
+//        let shopData = try? JSONEncoder().encode(shopData)
+        let request = Request(endpoint: .shop, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+//            .set(body: shopData)
+            .build()
+
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func checkShopPriviligies<T:Codable>(with shopId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .shop, pathComponents: ["check", shopId ])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func getShopOfSeller<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .shop, pathComponents: [ ])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    
+  
+    
+    
+    
 }

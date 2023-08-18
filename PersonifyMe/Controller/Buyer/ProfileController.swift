@@ -102,9 +102,25 @@ class ProfileController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+        signOutButton.addTarget(self, action: #selector(handleSignOut), for: .touchUpInside)
         setUpNavigationBar()
         setUpCollectionView()
         setupUI()
+    }
+    
+    @objc func handleSignOut(){
+        print("Sign out")
+        Service.shared.logout(expecting: ApiResponse<String>.self) { [weak self] result in
+            switch result{
+            case .success(_):
+                print("Success in logout")
+                AuthManager.clearUserDefaults()
+                AlertManager.showLogoutAlert(on: self!)
+            case .failure(let error):
+                ErrorManager.handleServiceError(error, on: self)
+            }
+            
+        }
     }
     
     // MARK: - UI Setup
@@ -191,6 +207,9 @@ class ProfileController: UIViewController {
     
     @objc func handleSetting(){
         print("Setting ")
+        
+        let vc = SettingViewController()
+        self.present(vc, animated: true)
     }
     
     // MARK: - Navigation
