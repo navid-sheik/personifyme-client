@@ -19,7 +19,16 @@ class SearchResultViewController: UIViewController {
     
     
     
-    
+    var products : [Product]?{
+        didSet{
+            guard let products =  products else {return}
+            DispatchQueue.main.async {
+                self.productCollectionView.reloadData()
+                self.totalItemslabel.text = "Total - \(products.count) Items"
+         
+            }
+        }
+    }
     
     private let cellIdentifierProductSearch : String  = "cellIdentifierProductSearch"
     var textSearchBar : String
@@ -91,7 +100,28 @@ class SearchResultViewController: UIViewController {
         setUpSearch()
         setupCollectionView()
         setupUI()
+        fetchSearchResult()
 //        simulateDownload()
+    }
+    
+    
+    func fetchSearchResult(){
+        self.showLoading()
+        Service.shared.getSearchResult(with: textSearchBar, expecting: ApiResponse<SearchResult>.self) { [weak self] result in
+            guard let self = self else {return}
+            self.hideLoading()
+            switch result {
+              
+                
+            case .success(let response):
+                guard let products = response.data?.products else {return}
+                self.products =  products
+            
+                   
+            case .failure(_):
+                print("Error in fetching ")
+            }
+        }
     }
     
     // MARK: - UI Setup
@@ -147,12 +177,15 @@ class SearchResultViewController: UIViewController {
     }
     func simulateDownload() {
             DispatchQueue.global().async {
-                for _ in 1...100 {
+                for _ in 1...20 {
                     sleep(1)
                     self.progress.completedUnitCount += 1
                 }
             }
         }
+    
+    
+    
     
     
     // MARK: - IBActions
@@ -182,9 +215,7 @@ class SearchResultViewController: UIViewController {
     // MARK: - Private methods
     // All other functions that you use within the ViewController
     
-    func fetchQueryResult(){
-        Service.shared
-    }
+   
 }
 
 
@@ -209,7 +240,7 @@ extension SearchResultViewController :  UISearchBarDelegate{
 
 extension SearchResultViewController : UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return products?.count ?? 0
     }
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -218,13 +249,25 @@ extension SearchResultViewController : UICollectionViewDelegateFlowLayout, UICol
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = productCollectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifierProductSearch, for: indexPath) as! ProductCell
+        if let productUrl  =  products?[indexPath.row].images.first{
+            cell.mainImage.loadImageUrlString(urlString: productUrl )
+
+        }
         return cell
     }
     
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath){
+   
+            guard let product =  products?[indexPath.row] else {return}
+            let controller  = ProductViewController(product:  product)
+            
+            navigationController?.pushViewController(controller, animated: true)
+            
+            
+            
+        
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

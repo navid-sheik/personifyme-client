@@ -59,7 +59,7 @@ class HomeViewController: UIViewController {
     
     
     let searchBar = UISearchBar()
-    var searchResultsController: LikesViewController!
+    var searchResultsController: SearchesQueryController!
   
 
    
@@ -470,7 +470,15 @@ extension HomeViewController : UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
  
         // Update the search results
-        performSearch(with: searchText)
+        
+        if !searchText.isEmpty {
+            self.searchResultsController.updateContent(with: searchText)
+        }else {
+            self.searchResultsController.updateContent(with: "")
+        }
+        
+      
+    
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -487,7 +495,9 @@ extension HomeViewController : UISearchBarDelegate{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
       
+        print ()
         let controller = SearchResultViewController(textSearchBar: searchBar.text ?? "")
+        
         self.searchResultsController.view.frame.origin.x = self.searchResultsController.view.frame.width
         self.searchBar.text = ""
    
@@ -507,7 +517,8 @@ extension HomeViewController : UISearchBarDelegate{
     func presentSearch() {
 
             if searchResultsController == nil{
-                searchResultsController =  LikesViewController()
+                searchResultsController =  SearchesQueryController()
+                searchResultsController.delegate = self
     //            menuController.delegate = self
                 //view.insertSubview(menuController.view, aboveSubview: centerController.view)
                 searchResultsController.view.frame.origin.x = self.searchResultsController.view.frame.width
@@ -540,6 +551,21 @@ extension HomeViewController : UISearchBarDelegate{
         UIView.animate(withDuration: 0.3, animations: {
             self.searchResultsController.view.frame.origin.x =  self.searchResultsController.view.frame.width
 
+        })
+    }
+    func dismissSearch2() {
+        // Animate the searchResultsController's view offscreen (to the right)
+        UIView.animate(withDuration: 0.3, animations: {
+            self.searchResultsController.view.frame.origin.x = self.view.frame.width
+        }, completion: { finished in
+            // Optionally, remove the searchResultsController's view from the view hierarchy
+            // and notify it that it was removed from its parent view controller
+            self.searchResultsController.view.removeFromSuperview()
+            self.searchResultsController.removeFromParent()
+            
+            // If you're planning to create a new instance of searchResultsController
+            // the next time you present the search, set it to nil here
+            self.searchResultsController = nil
         })
     }
     
@@ -703,3 +729,18 @@ class Header : UICollectionReusableView {
 
 
 
+
+
+extension HomeViewController : SearchesQueryControllerDelegate{
+    func didSelectedQuery(query: String) {
+        searchBar.resignFirstResponder()
+        let controller = SearchResultViewController(textSearchBar: query )
+        self.searchResultsController.view.frame.origin.x = self.searchResultsController.view.frame.width
+        self.searchBar.text = ""
+   
+        self.navigationController?.pushViewController(controller, animated: false )
+        
+    }
+    
+    
+}

@@ -95,6 +95,10 @@
 		6D5900172A747D4200400F80 /* StripePayments in Frameworks */ = {isa = PBXBuildFile; productRef = 6D5900162A747D4200400F80 /* StripePayments */; };
 		6D5900192A747D4200400F80 /* StripePaymentsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 6D5900182A747D4200400F80 /* StripePaymentsUI */; };
 		6D59001C2A748D5600400F80 /* ConnectOnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D59001B2A748D5600400F80 /* ConnectOnboardViewController.swift */; };
+		6D649AE92A8FE53100A79009 /* SearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D649AE82A8FE53100A79009 /* SearchResults.swift */; };
+		6D649AEB2A8FECBF00A79009 /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D649AEA2A8FECBF00A79009 /* ViewControllerExtension.swift */; };
+		6D649AED2A8FEF5000A79009 /* SearchesQueryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D649AEC2A8FEF5000A79009 /* SearchesQueryController.swift */; };
+		6D649AEF2A8FF02800A79009 /* SearchQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D649AEE2A8FF02800A79009 /* SearchQuery.swift */; };
 		6D6A96612A7C2B280042C39F /* GlobalArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A96602A7C2B280042C39F /* GlobalArrays.swift */; };
 		6D6A96642A7C30050042C39F /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A96632A7C30050042C39F /* File.swift */; };
 		6D6A96662A7C30100042C39F /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D6A96652A7C30100042C39F /* ImageExtensions.swift */; };
@@ -284,6 +288,10 @@
 		6D4899772A8DE26C000C606F /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
 		6D5900072A73FC1D00400F80 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		6D59001B2A748D5600400F80 /* ConnectOnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectOnboardViewController.swift; sourceTree = "<group>"; };
+		6D649AE82A8FE53100A79009 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
+		6D649AEA2A8FECBF00A79009 /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
+		6D649AEC2A8FEF5000A79009 /* SearchesQueryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchesQueryController.swift; sourceTree = "<group>"; };
+		6D649AEE2A8FF02800A79009 /* SearchQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQuery.swift; sourceTree = "<group>"; };
 		6D6A96602A7C2B280042C39F /* GlobalArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalArrays.swift; sourceTree = "<group>"; };
 		6D6A96632A7C30050042C39F /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		6D6A96652A7C30100042C39F /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
@@ -688,6 +696,7 @@
 				6D4810D32A832E8100D5B6B8 /* OrderConfirmation.swift */,
 				6DF81F292A83ED680063FDEA /* BalanceViewController.swift */,
 				6DC9612B2A8838E800D2B94D /* CategoryMenuController.swift */,
+				6D649AEC2A8FEF5000A79009 /* SearchesQueryController.swift */,
 			);
 			path = Buyer;
 			sourceTree = "<group>";
@@ -797,6 +806,7 @@
 				6D10E72B2A7DF561000C4398 /* TimeManager.swift */,
 				6D11D4312A80916900B81C88 /* NavigationController.swift */,
 				6DC9612F2A887A5A00D2B94D /* DropDownTextfield.swift */,
+				6D649AEA2A8FECBF00A79009 /* ViewControllerExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -825,6 +835,8 @@
 				6D33EA2C2A8B1B490004E9B2 /* Order.swift */,
 				6DCE8B6F2A8C3D57000C4D1F /* OrderItem.swift */,
 				6D4899772A8DE26C000C606F /* Shop.swift */,
+				6D649AEE2A8FF02800A79009 /* SearchQuery.swift */,
+				6D649AE82A8FE53100A79009 /* SearchResults.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1233,6 +1245,7 @@
 				6DC961322A8882DE00D2B94D /* VariantProductTextView.swift in Sources */,
 				6D127FC32A7EA754003DBD16 /* CustomHeaderView.swift in Sources */,
 				6D6A96642A7C30050042C39F /* File.swift in Sources */,
+				6D649AEF2A8FF02800A79009 /* SearchQuery.swift in Sources */,
 				6D127FCD2A7F23BC003DBD16 /* ZeroInset.swift in Sources */,
 				6D6A966C2A7C81B90042C39F /* ProductCellImage.swift in Sources */,
 				6DD390ED2A709C7C00C61808 /* HomeViewController.swift in Sources */,
@@ -1267,6 +1280,7 @@
 				6DD390F22A709ED800C61808 /* AuthHeaderView.swift in Sources */,
 				6D6A96612A7C2B280042C39F /* GlobalArrays.swift in Sources */,
 				6D59001C2A748D5600400F80 /* ConnectOnboardViewController.swift in Sources */,
+				6D649AEB2A8FECBF00A79009 /* ViewControllerExtension.swift in Sources */,
 				6DA19BB32A85D777006C5EF3 /* AddVariantController.swift in Sources */,
 				6DBFEA7F2A730726001D6C53 /* BecomeSellerViewController.swift in Sources */,
 				6D024C022A76FC1600E678EB /* ApiErrorResponse.swift in Sources */,
@@ -1295,6 +1309,7 @@
 				6D024C002A76FB2800E678EB /* ApiResponse.swift in Sources */,
 				6D127FC52A7EC019003DBD16 /* CategoryLabelCell.swift in Sources */,
 				6D137C622A789E0300711889 /* LabeledTextField.swift in Sources */,
+				6D649AE92A8FE53100A79009 /* SearchResults.swift in Sources */,
 				6DBFEA4E2A729F80001D6C53 /* Anchors.swift in Sources */,
 				6D137C412A78380B00711889 /* CustomCell.swift in Sources */,
 				6D137C442A78385400711889 /* CustomImageView.swift in Sources */,
@@ -1318,6 +1333,7 @@
 				6DE944742A818653005C6C3F /* OrderBuyerCell.swift in Sources */,
 				6D2D92262A6DF54F005AE6E6 /* AppDelegate.swift in Sources */,
 				6DD1A0A82A79541800666AAA /* CustomSelectableView.swift in Sources */,
+				6D649AED2A8FEF5000A79009 /* SearchesQueryController.swift in Sources */,
 				6D33EA2B2A8A9F7D0004E9B2 /* PaymentMethodView.swift in Sources */,
 				6D10E7302A7E0093000C4398 /* ProductLikeCell.swift in Sources */,
 				6D137C482A78387A00711889 /* InsetLabel.swift in Sources */,

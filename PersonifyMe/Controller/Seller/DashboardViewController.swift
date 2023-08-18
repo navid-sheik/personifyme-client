@@ -262,7 +262,7 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
           
             self.navigationController?.pushViewController(controller, animated: true)
         case .some(.Messages):
-            return
+            return 
         case .some(.Reviews):
             return
         case .some(.Shop):

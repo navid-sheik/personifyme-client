@@ -22,5 +22,6 @@ enum Endpoint : String {
     case cart
     case user
     case shop
+    case search
   
 }

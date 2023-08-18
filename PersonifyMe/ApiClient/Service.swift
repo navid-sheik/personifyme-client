@@ -1113,4 +1113,49 @@ extension Service{
     
     
     
+    
+}
+extension Service{
+    public func getSearchResult<T:Codable>( with searchData: String,  expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .search, pathComponents: [ "perform"], queryParaments: [URLQueryItem(name: "search", value: searchData)])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+    public func getPopularSearches<T:Codable>(  expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .search, pathComponents: [ "all"] )
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func getSearchFiltered<T:Codable>( with searchData: String,  expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+//        let body = ["seller_id" : sellerId]
+//        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//
+        let request = Request(endpoint: .search, pathComponents: [ "filter"], queryParaments: [URLQueryItem(name: "search", value: searchData)])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
 }
