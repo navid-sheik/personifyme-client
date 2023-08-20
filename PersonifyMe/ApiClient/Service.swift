@@ -365,6 +365,7 @@ extension Service{
                     
                     
                     
+                    
                     print("Refresh token \(token)")
                     print("Refresh token \(refreshToken)")
                     print("Refresh token \(user_id)")
@@ -1150,6 +1151,109 @@ extension Service{
 //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
 //
         let request = Request(endpoint: .search, pathComponents: [ "filter"], queryParaments: [URLQueryItem(name: "search", value: searchData)])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+}
+
+//Stripe Payment
+
+extension Service{
+    public func getStripePayouts<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+    //
+        let request = Request(endpoint: .payments, pathComponents: [ "payouts"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+
+
+    public func getStripeBanlance<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+    //
+        let request = Request(endpoint: .payments, pathComponents: [ "balance"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+
+    
+}
+
+extension Service{
+    public func getCurrentDetails<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+    //
+        let request = Request(endpoint: .users, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func updateCurrentUser<T:Codable>(with userData : User, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .users, pathComponents: [])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .PUT)
+            .set(body: userData)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+}
+
+
+//OnBoarding
+
+extension Service{
+    
+    public func getSellerOnBoardingStatus<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .seller, pathComponents: ["stripe", "status"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func getOnBoardingUpdateLink<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .seller, pathComponents: ["stripe", "request-new-link"])
             .add(headerField: "Content-Type", value: "application/json")
             .set(method: .GET)
             .build()

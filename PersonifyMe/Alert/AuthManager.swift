@@ -22,7 +22,7 @@ class AuthManager {
         
     }
     
-    public static func setUserDefaultsTokens (token : String , refresh_token : String, user_id: String , seller_id : String? ){
+    public static func setUserDefaultsTokens (token : String , refresh_token : String, user_id: String? , seller_id : String? ){
         UserDefaults.standard.set(token, forKey: "token")
         UserDefaults.standard.set(refresh_token, forKey: "refresh_token")
         UserDefaults.standard.set(user_id, forKey: "user_id")

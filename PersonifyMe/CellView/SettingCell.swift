@@ -10,11 +10,26 @@ import UIKit
 
 protocol SettingTableViewCellDelegate: AnyObject {
     func switchValueChanged(for cell: SettingTableViewCell, with settingOption: SettingOption, isOn: Bool)
-    func editButtonTapped(for cell: SettingTableViewCell, with settingOption: SettingOption)
+    func editButtonTapped(for cell: SettingTableViewCell, with settingOption: SettingOption, value : String?)
 }
 
+
+ 
 class SettingTableViewCell: UITableViewCell {
     static let reuseIdentifier = "SettingTableViewCell"
+    
+    var isEnabled: Bool = false {
+         didSet {
+             if isEnabled {
+                 enableTextField()
+             } else {
+                 disableTextField()
+             }
+         }
+     }
+    
+    var value : String?
+
     
     weak var delegate: SettingTableViewCellDelegate?
     
@@ -25,14 +40,25 @@ class SettingTableViewCell: UITableViewCell {
         return label
     }()
     
-    let subtitleLabel: UILabel = {
-           let label = UILabel()
-           label.font = UIFont.systemFont(ofSize: 12)
-           label.textColor = .gray
-        label.text = "Somethign"
-           label.translatesAutoresizingMaskIntoConstraints = false
-           return label
-       }()
+    var  textField : UITextField = {
+        let textField = UITextField()
+//        let spacer  =  UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 0))
+        textField.translatesAutoresizingMaskIntoConstraints = false
+//        textField.leftView =  spacer
+        textField.leftViewMode =  .always
+        textField.textColor =  .lightGray
+        textField.keyboardAppearance =  .dark
+        textField.backgroundColor =  UIColor(white: 1, alpha: 0.1)
+        textField.placeholder = "Option value"
+        textField.font = UIFont.systemFont(ofSize: 14)
+        textField.textColor = UIColor.gray
+        textField.layer.cornerRadius = 2
+        textField.layer.masksToBounds = true
+  
+//        textField.layer.borderWidth = 1
+//        textField.layer.borderColor = UIColor.lightGray.cgColor
+        return textField
+    }()
     
     let switchControl: UISwitch = {
         let switchControl = UISwitch()
@@ -58,7 +84,7 @@ class SettingTableViewCell: UITableViewCell {
     
     func setupUI() {
         contentView.addSubview(titleLabel)
-        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(textField)
         contentView.addSubview(switchControl)
         contentView.addSubview(editButton)
         
@@ -67,7 +93,7 @@ class SettingTableViewCell: UITableViewCell {
         let width =  contentView.frame.width / 4
         
         
-        let stack = StackManager.createStackView(with: [titleLabel, subtitleLabel], axis: .vertical , spacing: 10, distribution: .fillProportionally, alignment: .leading)
+        let stack = StackManager.createStackView(with: [titleLabel, textField], axis: .vertical , spacing: 10, distribution: .fillProportionally, alignment: .leading)
         
         addSubview(stack)
         stack.anchor( top: nil, left: contentView.leadingAnchor, right: nil, bottom: nil , paddingTop: 5, paddingLeft: 10,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
@@ -94,14 +120,19 @@ class SettingTableViewCell: UITableViewCell {
     
     func configure(with settingOption: SettingOption) {
         titleLabel.text = settingOption.description
-        subtitleLabel.text = settingOption.customValue
+        textField.text = settingOption.customValue
+        self.value =  settingOption.customValue
         switchControl.isHidden = true
         editButton.isHidden = true
+        textField.isHidden = true
         
         if settingOption.isSwitchable {
             switchControl.isHidden = false
+            
         } else if settingOption.isSelectable {
             editButton.isHidden = false
+            textField.isHidden = false
+      
         }
         
         currentSettingOption = settingOption
@@ -115,8 +146,36 @@ class SettingTableViewCell: UITableViewCell {
     }
     
     @objc func editButtonTapped() {
-        if let settingOption = currentSettingOption, settingOption.isSelectable {
-            delegate?.editButtonTapped(for: self , with: settingOption)
-        }
+        
+        
+        isEnabled.toggle()
+        guard let value =  self.value else { return }
+//        if value != textField.text{
+            if let settingOption = currentSettingOption, settingOption.isSelectable {
+                delegate?.editButtonTapped(for: self , with: settingOption, value: self.value as String?)
+            }
+//        }
+        
     }
+    
+    func enableTextField() {
+            textField.isEnabled = true
+            textField.becomeFirstResponder()
+            editButton.setTitle("Done", for: .normal)
+        }
+        
+    // Function to disable the text field
+    func disableTextField() {
+        
+        if let text =  textField.text  ,  text != "" {
+            self.value =  text
+        }else {
+            textField.text = self.value
+        
+        }
+        textField.isEnabled = false
+        textField.resignFirstResponder()
+        editButton.setTitle("Edit", for: .normal)
+    }
+    
 }

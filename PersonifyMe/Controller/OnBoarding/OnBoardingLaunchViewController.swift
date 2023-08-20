@@ -18,11 +18,17 @@ import Foundation
 
 
 import UIKit
+import SafariServices
 
+protocol OnBoardingLaunchViewControllerDelegate: class {
+    func updateTabController(onBoardingData: OnBoardingData)
+}
 class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate {
     
     // MARK: - Components
     // Here you add all components
+    
+    weak var delegate : OnBoardingLaunchViewControllerDelegate?
     
     
     public let identifierBoarding = "OnBoardingLaunchViewController"
@@ -297,13 +303,15 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
 //                    }
                 
                     if success == "success" {
-                            DispatchQueue.main.async {
-                                
-                                let stripeLinkVC = OnBoardingLinkViewController()
-                                
-                                self.navigationController?.pushViewController(stripeLinkVC, animated: true)
-                                
-                            }
+//                            DispatchQueue.main.async {
+//                                
+//                                let stripeLinkVC = OnBoardingLinkViewController()
+//                                
+//                                self.navigationController?.pushViewController(stripeLinkVC, animated: true)
+//                                
+//                            }
+                            self.showSeller()
+                        
                         
                     }
                 
@@ -324,6 +332,45 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
     
     // MARK: - Private methods
     // All other functions that you use within the ViewController
+    
+    func showSeller() {
+        print("Handle Become Seller")
+        Service.shared.sendVerificationStripeLink(expecting: ApiResponse<String>.self) { [weak self]  result in
+            guard let self = self else { return }
+            switch result{
+                
+            
+            case .success(let response):
+                print("Success")
+                print(response)
+                let success  = response.status
+               
+                
+                if (success ==  "success"){
+                    DispatchQueue.main.async {
+                        guard let stripeLink = response.data else { return }
+                        
+                        
+                        guard let url = URL(string: stripeLink) else { return }
+                        
+                        let safariViewController = SFSafariViewController(url: url)
+                        safariViewController.delegate = self
+//                        let navigationController = UINavigationController(rootViewController: safariViewController)
+                        
+
+                        self.present(safariViewController, animated: true)
+                    }
+                    
+                }else {
+                    AlertManager.showUnknownFetchingUserError(on: self)
+                }
+              
+            case .failure(let error):
+                print("Error")
+                print(error)
+            }
+        }
+    }
 }
 
 extension OnBoardingLaunchViewController : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
@@ -400,4 +447,54 @@ extension OnBoardingLaunchViewController: UIPickerViewDelegate, UIPickerViewData
      }
     
    
+}
+
+
+extension OnBoardingLaunchViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        // the user may have closed the SFSafariViewController instance before a redirect
+        // occurred. Sync with your backend to confirm the correct state
+        print("Finished")
+        Service.shared.getSellerOnBoardingStatus(expecting: ApiResponse<OnBoardingData>.self) { [weak self] result in
+            switch result{
+                
+                
+            case .success(let response):
+                guard let infoData = response.data else {return}
+                DispatchQueue.main.async {  [weak self]  in
+              
+                    self?.delegate?.updateTabController(onBoardingData: infoData)
+                   
+                   
+                    
+                }
+                
+            case .failure(_):
+                print("Error")
+                
+            }
+            
+        }
+            
+            
+            
+        
+        
+       
+
+     
+    
+              
+        
+    }
+    
+   
+//    
+//    func navigateToController(){
+//        let dashBoardVC  =  DashboardViewController()
+//        self.navigationController?.pushViewController(dashBoardVC, animated: true)
+//        
+//        
+//    }
+    
 }

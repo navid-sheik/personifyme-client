@@ -13,7 +13,7 @@ class VerificationStatusView :  UIView {
     
     let label : UILabel   =  {
         let label  = UILabel ()
-        label.text = "Verified"
+        label.text = ""
         label.font  = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment =  .left
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -45,8 +45,6 @@ class VerificationStatusView :  UIView {
         button.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .lightGray
-        
-        
         
         return button
         

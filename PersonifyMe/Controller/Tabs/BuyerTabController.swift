@@ -14,6 +14,7 @@ protocol CartUpdateDelegate : class{
 }
 
 class BuyerTabController: UITabBarController {
+    
     var sellerConroller : RestrictedController =  OnBoardingLaunchViewController()
     
  
@@ -81,8 +82,8 @@ class BuyerTabController: UITabBarController {
     }
     
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         print("disappeared")
         Service.shared.checkSellerStatus(expecting: SellerResponse.self) { [weak self] result in
             switch result{
@@ -92,30 +93,17 @@ class BuyerTabController: UITabBarController {
                 print(data)
                 let hasStartedOnboarding =  data.result.hasStartedOnboarding
                 
-                let hasCompletedOnboarding =  data.result.hasCompletedOnboarding
-                
-                
+//                let hasCompletedOnboarding =  data.result.hasCompletedOnboarding
+//
+//
                 print(hasStartedOnboarding)
                 
                 
                 if (hasStartedOnboarding){
-                    DispatchQueue.main.async { [weak self]  in
-                        let vc = OnBoardingLinkViewController(hasStartedOnboarding: true)
-                        vc.navigationItem.largeTitleDisplayMode = .automatic
-                        let nav = UINavigationController(rootViewController: vc)
-                        nav.tabBarItem = UITabBarItem(title: "Seller",
-                                                      image: UIImage(systemName: "dollarsign.square"),
-                                                      tag: 3)
-                        nav.navigationBar.prefersLargeTitles = true
-                        self?.viewControllers?[2] = nav
-                        
-                    }
                     
-                }
-                
-                if (hasStartedOnboarding && hasCompletedOnboarding){
                     DispatchQueue.main.async {  [weak self]  in
-                        let vc = DashboardViewController()
+                        let vc = DashboardViewController(alreadyFetchedInfo: false)
+                    
                         vc.navigationItem.largeTitleDisplayMode = .automatic
                         let nav = UINavigationController(rootViewController: vc)
                         nav.tabBarItem = UITabBarItem(title: "Seller",
@@ -147,8 +135,10 @@ class BuyerTabController: UITabBarController {
         let profileVC =  ProfileController()
         let layout  = UICollectionViewFlowLayout()
         
-        let becomeSellerVC = sellerConroller
+       
         
+        let becomeSellerVC = sellerConroller
+    
         
         
         homeVC.navigationItem.largeTitleDisplayMode = .automatic
@@ -158,11 +148,17 @@ class BuyerTabController: UITabBarController {
         cartVC.navigationItem.largeTitleDisplayMode = .automatic
         
         
+        var nav3 = UINavigationController(rootViewController: becomeSellerVC)
+        if let onBoardingVC = becomeSellerVC as? OnBoardingLaunchViewController {
+            onBoardingVC.delegate = self
+            nav3 = UINavigationController(rootViewController: onBoardingVC)
+            
+        }
         
         
         let nav1 = UINavigationController(rootViewController: homeVC)
         let nav2 = UINavigationController(rootViewController: likesVC)
-        let nav3 = UINavigationController(rootViewController: becomeSellerVC)
+       
         let nav4 = UINavigationController(rootViewController: profileVC)
         let nav5 = UINavigationController(rootViewController: cartVC)
         
@@ -273,4 +269,54 @@ extension BuyerTabController: CartUpdateDelegate{
 }
 
 
+
+extension BuyerTabController: OnBoardingLaunchViewControllerDelegate{
+    func updateTabController(onBoardingData: OnBoardingData) {
+        DispatchQueue.main.async {
+            // Step 0: Switch to another tab if the user is currently on the tab that's going to be replaced
+            if self.selectedIndex == 2 {
+                
+                // Capture a snapshot of the current view
+                if let snapshot = self.selectedViewController?.view.snapshotView(afterScreenUpdates: false) {
+                    self.view.addSubview(snapshot)
+
+                    // Switch the index to change the tab
+                    self.selectedIndex = 0
+
+                    // Animate the snapshot view out
+                    UIView.animate(withDuration: 0.3, animations: {
+                        snapshot.alpha = 0
+                    }, completion: { _ in
+                        snapshot.removeFromSuperview()
+                    })
+                }
+            }
+
+            // Step 1: Create the new ViewController
+            let vc = DashboardViewController(alreadyFetchedInfo: true)
+            vc.onBoardingInfo = onBoardingData
+            vc.navigationItem.largeTitleDisplayMode = .automatic
+            let nav = UINavigationController(rootViewController: vc)
+            nav.tabBarItem = UITabBarItem(title: "Seller", image: UIImage(systemName: "dollarsign.square"), tag: 3)
+            nav.navigationBar.prefersLargeTitles = true
+
+            // Step 2: Replace the old ViewController with the new one in the TabBarController
+            var vcs = self.viewControllers  // Get the current list of view controllers
+            vcs?[2] = nav  // Replace the one you want to remove with the new one
+            self.setViewControllers(vcs, animated: false)  // Update without animation
+
+            // Step 3: Optionally, switch to the new tab programmatically with animation
+            UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                self.selectedIndex = 2
+            }, completion: nil)
+        }
+    }
+
+
+
+
+}
+    
+    
+    
 

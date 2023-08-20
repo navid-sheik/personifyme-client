@@ -85,6 +85,10 @@
 		6D4810D22A8305E100D5B6B8 /* SettiongOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810D12A8305E100D5B6B8 /* SettiongOption.swift */; };
 		6D4810D42A832E8100D5B6B8 /* OrderConfirmation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4810D32A832E8100D5B6B8 /* OrderConfirmation.swift */; };
 		6D4899782A8DE26C000C606F /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4899772A8DE26C000C606F /* Shop.swift */; };
+		6D4BEFE12A9154B0004FA729 /* StripePayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4BEFE02A9154B0004FA729 /* StripePayout.swift */; };
+		6D4BEFE32A9162BD004FA729 /* StripeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4BEFE22A9162BD004FA729 /* StripeManager.swift */; };
+		6D4BEFE52A91B28A004FA729 /* OnBoarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4BEFE42A91B28A004FA729 /* OnBoarding.swift */; };
+		6D4BEFE72A91E3B6004FA729 /* AccountLinkOnBoarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4BEFE62A91E3B6004FA729 /* AccountLinkOnBoarding.swift */; };
 		6D5900082A73FC1D00400F80 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5900072A73FC1D00400F80 /* Controller.swift */; };
 		6D59000B2A747D4200400F80 /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 6D59000A2A747D4200400F80 /* Stripe */; };
 		6D59000D2A747D4200400F80 /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 6D59000C2A747D4200400F80 /* StripeApplePay */; };
@@ -286,6 +290,10 @@
 		6D4810D12A8305E100D5B6B8 /* SettiongOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettiongOption.swift; sourceTree = "<group>"; };
 		6D4810D32A832E8100D5B6B8 /* OrderConfirmation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmation.swift; sourceTree = "<group>"; };
 		6D4899772A8DE26C000C606F /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
+		6D4BEFE02A9154B0004FA729 /* StripePayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripePayout.swift; sourceTree = "<group>"; };
+		6D4BEFE22A9162BD004FA729 /* StripeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeManager.swift; sourceTree = "<group>"; };
+		6D4BEFE42A91B28A004FA729 /* OnBoarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoarding.swift; sourceTree = "<group>"; };
+		6D4BEFE62A91E3B6004FA729 /* AccountLinkOnBoarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountLinkOnBoarding.swift; sourceTree = "<group>"; };
 		6D5900072A73FC1D00400F80 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		6D59001B2A748D5600400F80 /* ConnectOnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectOnboardViewController.swift; sourceTree = "<group>"; };
 		6D649AE82A8FE53100A79009 /* SearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResults.swift; sourceTree = "<group>"; };
@@ -817,6 +825,7 @@
 				6D137C3D2A78377600711889 /* Api */,
 				6D137C3C2A78376D00711889 /* Cell */,
 				6D2879192A71BD8000FDA177 /* AuthResponse.swift */,
+				6D4BEFE02A9154B0004FA729 /* StripePayout.swift */,
 				6D28791B2A71C45800FDA177 /* ErrorResponse.swift */,
 				6DBFEA522A72D532001D6C53 /* User.swift */,
 				6D0401F12A734A6400347870 /* SuccessResponse.swift */,
@@ -837,6 +846,8 @@
 				6D4899772A8DE26C000C606F /* Shop.swift */,
 				6D649AEE2A8FF02800A79009 /* SearchQuery.swift */,
 				6D649AE82A8FE53100A79009 /* SearchResults.swift */,
+				6D4BEFE42A91B28A004FA729 /* OnBoarding.swift */,
+				6D4BEFE62A91E3B6004FA729 /* AccountLinkOnBoarding.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -846,6 +857,7 @@
 			children = (
 				6DC961332A888BC400D2B94D /* DeliveryEstimationService.swift */,
 				6DC02BD22A89E22D001BCD91 /* NumberFormatterService.swift */,
+				6D4BEFE22A9162BD004FA729 /* StripeManager.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -1243,6 +1255,7 @@
 				6DCE8B742A8C74E4000C4D1F /* AddTrackingController.swift in Sources */,
 				6D137C562A78629200711889 /* AddListingViewController.swift in Sources */,
 				6DC961322A8882DE00D2B94D /* VariantProductTextView.swift in Sources */,
+				6D4BEFE32A9162BD004FA729 /* StripeManager.swift in Sources */,
 				6D127FC32A7EA754003DBD16 /* CustomHeaderView.swift in Sources */,
 				6D6A96642A7C30050042C39F /* File.swift in Sources */,
 				6D649AEF2A8FF02800A79009 /* SearchQuery.swift in Sources */,
@@ -1320,6 +1333,7 @@
 				6DD19DA92A75BFA6004F02B5 /* CountryPickerView.swift in Sources */,
 				6DBFEA582A72D60C001D6C53 /* ObservableObject.swift in Sources */,
 				6D2879112A718EB800FDA177 /* BuyerTabController.swift in Sources */,
+				6D4BEFE72A91E3B6004FA729 /* AccountLinkOnBoarding.swift in Sources */,
 				6DE944762A818D31005C6C3F /* OrderDetailsController.swift in Sources */,
 				6DD19DA72A75B149004F02B5 /* PageModel.swift in Sources */,
 				6DE944702A8157C1005C6C3F /* ManagerOrderHeader.swift in Sources */,
@@ -1336,6 +1350,7 @@
 				6D649AED2A8FEF5000A79009 /* SearchesQueryController.swift in Sources */,
 				6D33EA2B2A8A9F7D0004E9B2 /* PaymentMethodView.swift in Sources */,
 				6D10E7302A7E0093000C4398 /* ProductLikeCell.swift in Sources */,
+				6D4BEFE52A91B28A004FA729 /* OnBoarding.swift in Sources */,
 				6D137C482A78387A00711889 /* InsetLabel.swift in Sources */,
 				6D11D42C2A80124800B81C88 /* CartHeader.swift in Sources */,
 				6D4810CE2A82FE3600D5B6B8 /* SettingViewController.swift in Sources */,
@@ -1369,6 +1384,7 @@
 				6D137C522A78483200711889 /* VerificationStatusView.swift in Sources */,
 				6DBFEA782A730563001D6C53 /* ShopViewController.swift in Sources */,
 				6D6A966A2A7C7CE40042C39F /* ProductViewController.swift in Sources */,
+				6D4BEFE12A9154B0004FA729 /* StripePayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

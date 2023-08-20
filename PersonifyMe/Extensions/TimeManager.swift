@@ -94,4 +94,16 @@ class TimeManager {
            let yearString = yearFormatter.string(from: date)
            return "Open since \(yearString)"
        }
+    
+    static func formatStripeDate(_ stripeDate: Int) -> String {
+           // Convert the Unix timestamp to a Date object
+           let date = Date(timeIntervalSince1970: TimeInterval(stripeDate))
+           
+           // Create a DateFormatter to format the Date object
+           let dateFormatter = DateFormatter()
+           dateFormatter.dateFormat = "d MMM, HH:mm" // 13 Jul, 02:02 format
+           
+           // Return the formatted date string
+           return dateFormatter.string(from: date)
+       }
 }

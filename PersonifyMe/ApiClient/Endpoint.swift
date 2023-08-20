@@ -23,5 +23,7 @@ enum Endpoint : String {
     case user
     case shop
     case search
+    case payments
+    case users
   
 }

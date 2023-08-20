@@ -15,26 +15,92 @@ import Foundation
 
 
 import UIKit
+import SafariServices
 
+
+enum StatusSeller {
+    case Verified
+    case Pending
+    case Unverified
+    
+    var imageString : String {
+        switch self {
+        case .Verified:
+            return "checkmark.circle.fill"
+        case .Pending:
+            return "clock.fill"
+        case .Unverified:
+            return "xmark.circle.fill"
+        }
+    }
+    
+    var title : String {
+        switch self {
+        case .Verified:
+            return "Verified"
+        case .Pending:
+            return "Pending"
+        case .Unverified:
+            return "Unverified (Action Required)"
+        }
+    }
+    
+}
 class DashboardViewController : RestrictedController {
+    
+    var status : StatusSeller = .Unverified
+    
+    
+    var onBoardingInfo : OnBoardingData?{
+        didSet{
+            
+            DispatchQueue.main.async {
+                
+                guard let info =  self.onBoardingInfo else {return}
+                if info.payouts_enabled && info.charges_enabled && info.requirements.currently_due.isEmpty == true{
+                    //Verified
+                    self.status =  .Verified
+                    self.verificationStatus.label.text =  self.status.title
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                }else if  (info.requirements.pending_verification.isEmpty == false) && (info.requirements.currently_due.isEmpty == true){
+                    //Pending
+                    self.status =  .Pending
+           
+                    self.verificationStatus.displayInfoVerificationButton.isHidden =  true
+                    self.verificationStatus.label.text =  self.status.title
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                }else{
+                    //Unverified
+                    self.status =  .Unverified
+                    
+                    self.verificationStatus.label.text =  "\(self.status.title)" 
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                }
+            }
+            
+           
+         
+        }
+        
+    }
     
     let identifierMenuCeller = "sellerCellMenuIdentifier"
     
     let padding: CGFloat = 10
     let spacing: CGFloat = 5
     
-    var stripeRequirements : StripeStatusResponse?{
-        didSet{
-            DispatchQueue.main.async {[weak self] in
-                if let verifed =  self?.stripeRequirements?.isVerified {
-                    self?.label.text =   verifed ? "Verified"  : "Pending"
-                }
-              
-            }
-           
-            
-        }
-    }
+//    var stripeRequirements : StripeStatusResponse?{
+//        didSet{
+//            DispatchQueue.main.async {[weak self] in
+//                if let verifed =  self?.stripeRequirements?.isVerified {
+//                    self?.label.text =   verifed ? "Verified"  : "Pending"
+//                }
+//
+//            }
+//
+//
+//        }
+//    }
     
     
     
@@ -101,11 +167,21 @@ class DashboardViewController : RestrictedController {
 //        super.viewWillAppear(animated)
 //
 //    }
+    var alreadyFetchedInfo : Bool
     
+    init(alreadyFetchedInfo: Bool) {
+        self.alreadyFetchedInfo = alreadyFetchedInfo
+        super.init(nibName: nil, bundle: nil)
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.checkStripeStatus()
+//        self.checkStripeStatus()
+        
+        verificationStatus.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(updateOnBoardingLink)))
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Dashboard"
         view.backgroundColor = .systemBackground
@@ -118,6 +194,10 @@ class DashboardViewController : RestrictedController {
         }
 
         setupUI()
+        if !alreadyFetchedInfo{
+            fetchStatus()
+        }
+//
     }
     
     
@@ -162,41 +242,87 @@ class DashboardViewController : RestrictedController {
    
     
     
+    func fetchStatus (){
+        Service.shared.getSellerOnBoardingStatus(expecting: ApiResponse<OnBoardingData>.self) { [weak self]result in
+            guard let self =  self else {return}
+            
+            switch result{
+                
+            case .success(let response):
+                guard let onBoardingInfo = response.data else {return}
+                self.onBoardingInfo = onBoardingInfo
+            case .failure(let error):
+                print("Error")
+            }
+        }
+    }
+    
+    func getOnBoardingLinkNew(){
+        Service.shared.getOnBoardingUpdateLink(expecting: ApiResponse<AccountLink>.self) { [weak self]result in
+            guard let self =  self else {return}
+            
+            switch result{
+                
+            case .success(let response):
+                guard let linkdata = response.data else {return}
+                guard let url = URL(string: linkdata.url) else { return }
+                
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.delegate = self
+                DispatchQueue.main.async {
+//                    let navigationController = UINavigationController(rootViewController: safariViewController)
+                    
+
+                    self.present(safariViewController, animated: true)
+                }
+               
+                
+            case .failure(_):
+                print("Error")
+            }
+                
+ 
+        }
+    }
+    
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
-    
+    @objc func updateOnBoardingLink(){
+        print("Show ")
+        getOnBoardingLinkNew()
+    }
     // MARK: - Navigation
     // Segue preparations and related stuff
     
     // MARK: - Private methods
     // All other functions that you use within the ViewController
     
-    func checkStripeStatus (){
-        Service.shared.statusStripeAccount(expecting: ApiResponse<StripeStatusResponse>.self) { [weak self ] result in
-            guard let self =  self else {return}
-            switch result{
-                
-            case .success(let response):
-                let success  =  response.status
-                guard let stripeData  =  response.data else {
-                    print ("Not data available")
-                    return
-                }
-                self.stripeRequirements = stripeData
-                
-                
-                
-            case .failure(let error):
-                print(error)
-                print("Error displaying for verification for verification")
-            }
-            
-            
-        }
-
-        
-    }
+//    func checkStripeStatus (){
+//        Service.shared.statusStripeAccount(expecting: ApiResponse<StripeStatusResponse>.self) { [weak self ] result in
+//            guard let self =  self else {return}
+//            switch result{
+//
+//            case .success(let response):
+//                let success  =  response.status
+//                guard let stripeData  =  response.data else {
+//                    print ("Not data available")
+//                    return
+//                }
+//                self.stripeRequirements = stripeData
+//
+//
+//
+//            case .failure(let error):
+//                print(error)
+//                print("Error displaying for verification for verification")
+//            }
+//
+//
+//        }
+//
+//
+//    }
 }
 
 
@@ -262,6 +388,9 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
           
             self.navigationController?.pushViewController(controller, animated: true)
         case .some(.Messages):
+            let controller  =  BalanceViewController()
+            
+            self.navigationController?.pushViewController(controller, animated: true)
             return 
         case .some(.Reviews):
             return
@@ -283,6 +412,53 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
     
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
 //        return CGSize(width: view.frame.width, height: 50)
+//    }
+    
+}
+extension DashboardViewController: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        // the user may have closed the SFSafariViewController instance before a redirect
+        // occurred. Sync with your backend to confirm the correct state
+        print("Finished")
+        Service.shared.getSellerOnBoardingStatus(expecting: ApiResponse<OnBoardingData>.self) { [weak self] result in
+            switch result{
+                
+                
+            case .success(let response):
+                guard let infoData = response.data else {return}
+              
+                self?.onBoardingInfo = infoData
+                    
+                   
+                    
+            
+                
+            case .failure(_):
+                print("Error")
+                
+            }
+            
+        }
+            
+            
+            
+        
+        
+       
+
+     
+    
+              
+        
+    }
+    
+   
+//
+//    func navigateToController(){
+//        let dashBoardVC  =  DashboardViewController()
+//        self.navigationController?.pushViewController(dashBoardVC, animated: true)
+//
+//
 //    }
     
 }

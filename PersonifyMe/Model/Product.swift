@@ -17,6 +17,9 @@ enum SellerIdentifier: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         
+        // Debugging
+        print("Debug container: \(container)")
+        
         // Try to decode as a String
         if let idString = try? container.decode(String.self) {
             self = .string(idString)
@@ -28,6 +31,9 @@ enum SellerIdentifier: Codable {
             self = .seller(sellerObject)
             return
         }
+        
+        // Debugging
+        print("Failed to decode either as String or Seller object.")
         
         throw DecodingError.typeMismatch(SellerIdentifier.self,
                                          DecodingError.Context(codingPath: decoder.codingPath,

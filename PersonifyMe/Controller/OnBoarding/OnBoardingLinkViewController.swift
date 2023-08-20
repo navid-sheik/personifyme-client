@@ -144,7 +144,7 @@ extension OnBoardingLinkViewController: SFSafariViewControllerDelegate {
         print("Finished")
        
         
-        navigateToController()
+//        navigateToController()
      
     
               
@@ -153,11 +153,11 @@ extension OnBoardingLinkViewController: SFSafariViewControllerDelegate {
     
    
     
-    func navigateToController(){
-        let dashBoardVC  =  DashboardViewController()
-        self.navigationController?.pushViewController(dashBoardVC, animated: true)
-        
-        
-    }
-    
+//    func navigateToController(){
+//        let dashBoardVC  =  DashboardViewController()
+//        self.navigationController?.pushViewController(dashBoardVC, animated: true)
+//
+//
+//    }
+//
 }

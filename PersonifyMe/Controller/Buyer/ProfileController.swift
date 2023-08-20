@@ -12,6 +12,22 @@ import UIKit
 
 class ProfileController: UIViewController {
     
+    var user : User? {
+        didSet{
+            DispatchQueue.main.async {
+                guard let user = self.user else {return}
+                self.topPart.fullNameLabel.text = user.name
+                self.topPart.countryLabel.text =  user.country
+                self.topPart.emailLabel.text =  user.email
+                if let imageUlr  =  user.image{
+                    self.topPart.mainImage.loadImageUrlString(urlString: imageUlr)
+                }
+             
+            }
+          
+        }
+    }
+    
     //MARK: -IDENTIFIER
     
     let shippingCellIdentifier = "shippingCellIdentifier"
@@ -106,6 +122,7 @@ class ProfileController: UIViewController {
         setUpNavigationBar()
         setUpCollectionView()
         setupUI()
+        fecthUserDetails()
     }
     
     @objc func handleSignOut(){
@@ -167,6 +184,21 @@ class ProfileController: UIViewController {
     }
     
     
+    func fecthUserDetails(){
+        Service.shared.getCurrentDetails(expecting: ApiResponse<User>.self) { [weak self] result in
+            
+            guard let self = self else {return}
+            switch result{
+                
+            case .success(let response):
+                guard let user = response.data else {return}
+                self.user = user
+            case .failure(_):
+                print("Failure getting the suer in the profile controller ")
+            }
+        }
+    }
+    
     private func setUpNavigationBar (){
         //IMAGE BAR BUTTON
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -207,8 +239,11 @@ class ProfileController: UIViewController {
     
     @objc func handleSetting(){
         print("Setting ")
+        guard let user  = user  else {return}
         
-        let vc = SettingViewController()
+        let vc = SettingViewController(user: user )
+        vc.delegate = self
+
         self.present(vc, animated: true)
     }
     
@@ -314,5 +349,31 @@ extension ProfileController : UICollectionViewDataSource, UICollectionViewDelega
           return CGSize(width: collectionView.frame.width, height: collectionView.frame.width)
             
       }
+    
+}
+
+
+extension ProfileController : SettingViewControllerDelegate{
+    func updateUser(with updatedUser: User) {
+        print("The update user")
+       
+        Service.shared.updateCurrentUser(with: updatedUser, expecting: ApiResponse<User>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+                
+            case .success(let response):
+                guard let responseUser = response.data else {return}
+                
+                self.user = responseUser
+                
+            case .failure(_):
+                print("Updating the user")
+            }
+        }
+        
+      
+        
+    }
+    
     
 }

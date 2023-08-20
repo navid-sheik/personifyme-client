@@ -16,6 +16,13 @@ class BalanceViewController: UIViewController {
     
     let payoutCellIdenfieri : String = "payoutCellIdenfieri"
     
+    var stripePayouts : [StripePayoutDetail] = []{
+        didSet{
+            self.collectionView.reloadData()
+            
+        }
+    }
+    
     // MARK: - Components
     // Here you add all components
     let label : UILabel  =  {
@@ -129,6 +136,8 @@ class BalanceViewController: UIViewController {
         
         setupCollectionView()
         setupUI()
+        fetchBalance()
+        fetchHistory()
     }
     
     
@@ -179,6 +188,53 @@ class BalanceViewController: UIViewController {
     }
     
     
+    func fetchBalance(){
+        Service.shared.getStripeBanlance(expecting: ApiResponse<Int>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+                
+                
+            case .success(let response):
+                guard let balance = response.data else {return}
+                
+                DispatchQueue.main.async {
+                    
+                    self.balanceValue.text = "$\(StripeManager.convertStripeAmountToDouble(balance))"
+                
+                }
+            case .failure(let error):
+                
+                print("Failed to get the balaence")
+                print(error)
+            }
+        }
+    }
+    
+    
+    
+    func fetchHistory (){
+        Service.shared.getStripePayouts(expecting: ApiResponse<StripePayout>.self) { [weak self] result in
+            guard let self = self else {return}
+            switch result{
+                
+                
+            case .success(let response):
+                guard let payout = response.data else {return}
+                
+                DispatchQueue.main.async {
+                    self.stripePayouts =  payout.payouts
+                    self.availableValue.text =  "\(StripeManager.convertStripeAmountToDouble(payout.totalPendingPayouts))"
+                    self.payoutValue.text =  "\(StripeManager.convertStripeAmountToDouble(payout.totalBalancePaidOut))"
+                    
+                
+                }
+            case .failure(let error):
+                
+                print("Failed to get the balaence")
+                print(error)
+            }
+        }
+    }
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
     
@@ -192,7 +248,7 @@ class BalanceViewController: UIViewController {
 
 extension BalanceViewController : UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return stripePayouts.count
         
     }
     
@@ -200,6 +256,9 @@ extension BalanceViewController : UICollectionViewDataSource, UICollectionViewDe
             
         //User NOrmal cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: payoutCellIdenfieri, for: indexPath) as! PayoutHistoryCell
+        cell.payout = stripePayouts[indexPath.row]
+        
+        
         return cell
             
     }

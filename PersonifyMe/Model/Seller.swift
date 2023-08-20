@@ -43,7 +43,7 @@ struct Seller: Codable {
         case id = "_id"
         case userId
         case stripeAccountID = "stripe_account_id"
-        case isVerified = "is_verified"
+        case isVerified = "is_verifed"
         case hasStartedOnboarding, hasCompletedOnboarding
         case originCountry = "origin_country"
         case shopId
