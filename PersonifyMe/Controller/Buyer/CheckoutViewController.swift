@@ -515,6 +515,8 @@ class CheckoutViewController :UIViewController{
                 let clientSecret = response.paymentIntent
                let publishableKey = response.publishableKey
                 let payment_id =  response.payment_intent_id
+                let ephemeralKey =  response.ephemeralKey
+                let customerId =  response.customer
                 DispatchQueue.main.async {
                     self.paymentView.isUserInteractionEnabled = true
                     self.paymentIntentClientSecret = clientSecret
@@ -527,9 +529,13 @@ class CheckoutViewController :UIViewController{
                     
                     // MARK: Create a PaymentSheet.FlowController instance
                     var configuration = PaymentSheet.Configuration()
-                    configuration.merchantDisplayName = "Example, Inc."
+                    configuration.merchantDisplayName = "PersonifyMe, Inc."
                     configuration.applePay = .init(
                         merchantId: "com.foo.example", merchantCountryCode: "US")
+                    if let ephemeralKey =  ephemeralKey, let customerId = customerId{
+                        configuration.customer = .init(id: customerId, ephemeralKeySecret: ephemeralKey)
+                    }
+               
                     
                     configuration.billingDetailsCollectionConfiguration.name = .automatic
                     configuration.billingDetailsCollectionConfiguration.email = .automatic
@@ -698,16 +704,16 @@ class CheckoutViewController :UIViewController{
         guard let pay_id = self.paymentIntentId else {return}
         let addressObject = Address(line1: address.address.line1, line2: address.address.line2, country: address.address.country, postalCode: address.address.postalCode, city: address.address.city, state: address.address.state, name: address.name, phone : address.phone)
         let order  =  Order(orderId: nil, userId: nil, shippingDetails: addressObject, transactionId: pay_id, orderTotal: nil, shippingCost: nil, createdAt: nil, updatedAt: nil)
-        Service.shared.createNewOrder(order, expecting: ApiResponse<Order>.self) { [weak self]  result in
+        Service.shared.createNewOrder(order, expecting: ApiResponse<OrderConfirmationSuccess>.self) { [weak self]  result in
             guard let self = self else {return}
             switch result{
                 
             case .success(let order):
                 print("Sucess")
-                guard let order =  order.data else {return}
+                guard let orderData =  order.data else {return}
                 DispatchQueue.main.async {
-                    let vc = OrderConfirmation()
-                    vc.order  = order
+                    let vc = OrderConfirmation(orderTotal: orderData.order, orderItems: orderData.orderItems)
+                   
                     vc.delegate = self.delegate
                     self.navigationController?.pushViewController(vc, animated: true)
                 }

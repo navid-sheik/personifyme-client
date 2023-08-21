@@ -86,7 +86,7 @@ class ManageListingController: UIViewController {
     private func setupCollectionView() {
         productCollectionView.delegate = self
         productCollectionView.dataSource = self
-        productCollectionView.register(ProductCell.self, forCellWithReuseIdentifier: cellIdentifierSellerProductCell)
+        productCollectionView.register(ProduceCellSeller.self, forCellWithReuseIdentifier: cellIdentifierSellerProductCell)
     }
     
     
@@ -194,12 +194,10 @@ extension ManageListingController : UICollectionViewDelegateFlowLayout, UICollec
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = productCollectionView.dequeueReusableCell(withReuseIdentifier:cellIdentifierSellerProductCell, for: indexPath) as! ProductCell
-        if  let imageUrl = products[indexPath.row].images.first {
-            cell.mainImage.loadImageUrlString(urlString: imageUrl)
-        }
+        let cell = productCollectionView.dequeueReusableCell(withReuseIdentifier:cellIdentifierSellerProductCell, for: indexPath) as! ProduceCellSeller
+        cell.product =  products[indexPath.row]
         
-        
+        cell.delegate = self
 
         return cell
     }
@@ -274,4 +272,37 @@ extension ManageListingController : UISearchBarDelegate{
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
+}
+
+extension ManageListingController :  ProduceCellSellerDelegate{
+    func statusProduct(isApproved: StatusSellerListingEnum, with message: String) {
+        // Create the alert controller
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        
+        // Add an 'OK' button to the alert
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        
+        switch isApproved {
+        case .Approved:
+            // Show approved message alert
+            // Your code here
+            alertController.title = "Approved"
+            
+        case .Rejected:
+            // Show rejected message alert
+            // Your code here
+            alertController.title = "Rejected"
+            
+        case .Pending:
+            // Show pending message alert
+            // Your code here
+            alertController.title = "Pending"
+        }
+        
+        // Present the alert controller
+        // Replace 'self' with the view controller on which you want to present the alert
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
 }

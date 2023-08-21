@@ -30,6 +30,21 @@ class   ShopViewController : UIViewController {
         }
     }
     
+    var reviews : [Review] = []{
+        didSet{
+            DispatchQueue.main.async {
+                
+                let average = ReviewManager.calculateAverageRating(from: self.reviews)
+                self.starRatingView.setRating(average)
+                self.averageReview.text =   "(\(average))"
+                self.totalReview.text   =  "(\(self.reviews.count))"
+               
+            }
+            
+        }
+    }
+
+    
     private  var isAdmin : Bool
     
     private var shopInfo : Shop?{
@@ -93,8 +108,9 @@ class   ShopViewController : UIViewController {
         return label
     }()
     private let starRatingView: StarRatingView = {
-        let ratingView = StarRatingView(starMode: .interactive)
+        let ratingView = StarRatingView(starMode: .display)
         ratingView.setRating(5)
+        ratingView.isUserInteractionEnabled = false
             ratingView.translatesAutoresizingMaskIntoConstraints = false
             
             return ratingView
@@ -272,6 +288,8 @@ class   ShopViewController : UIViewController {
     }
     
     
+    var reviewStackView : UIStackView!
+    
      
     
     
@@ -341,6 +359,7 @@ class   ShopViewController : UIViewController {
         setupCollectionView()
         configureShopInfoUI()
         setupUI()
+        reviewStackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showAllReviews)))
         performFetch()
     }
     
@@ -352,6 +371,7 @@ class   ShopViewController : UIViewController {
     func performFetch (){
         fetchProducts()
         fetchNumberOrders()
+        fetchShopReviews()
     }
     
     
@@ -397,6 +417,29 @@ class   ShopViewController : UIViewController {
             }
         }
     }
+    
+ 
+        
+        
+    func fetchShopReviews(){
+
+        Service.shared.getSellerReviews( with: self.sellerId,  expecting: ApiResponse<[Review]>.self) { [weak self] result  in
+            guard let self = self else{return}
+            switch result{
+                
+                
+                
+            case .success(let response):
+                guard let reviews = response.data else {return}
+                
+                self.reviews =  reviews
+            case .failure(_):
+                print("Failing to get reviews")
+            }
+        }
+    }
+
+        
     
  
     
@@ -471,7 +514,7 @@ class   ShopViewController : UIViewController {
 
         starRatingView.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4).isActive = true
 
-        let reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .fill)
+        reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .fill)
 
         view.addSubview(reviewStackView)
         reviewStackView.anchor(top: view.layoutMarginsGuide.topAnchor, left: shopImage.trailingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
@@ -564,6 +607,12 @@ class   ShopViewController : UIViewController {
 
         self.sendEmail(to: shopInfo!.emailSupport, with: subject, and: message)
         
+    }
+    
+    @objc func showAllReviews(){
+        
+        let vc =  AllReviewController(typeReview: .shop, reviews: self.reviews, sellerId: nil)
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func sendEmail(to email: String, with subject: String, and body: String) {

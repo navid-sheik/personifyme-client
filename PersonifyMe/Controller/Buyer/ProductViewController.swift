@@ -67,6 +67,10 @@ class ProductViewController: UIViewController {
     var reviews : [Review] = []{
         didSet{
             DispatchQueue.main.async {
+                let average = ReviewManager.calculateAverageRating(from: self.reviews)
+                self.starRatingView.setRating(average)
+                self.averageReview.text =   "(\(average))"
+                self.totalReview.text   =  "(\(self.reviews.count))"
                 self.reviewTable.reloadData()
                 self.reviewTable.layoutIfNeeded()
             }
@@ -131,14 +135,14 @@ class ProductViewController: UIViewController {
         let button  =  CustomButton(title: "ADD TO CART"  ,  hasBackground : true, fontType: .medium)
         return button
     }()
-    
-    
-    private let starRatingView: StarRatingView = {
-        let ratingView = StarRatingView(starMode: .interactive)
-            ratingView.translatesAutoresizingMaskIntoConstraints = false
-            
-            return ratingView
-        }()
+//
+//
+//    private let starRatingView: StarRatingView = {
+//        let ratingView = StarRatingView(starMode: .interactive)
+//            ratingView.translatesAutoresizingMaskIntoConstraints = false
+//
+//            return ratingView
+//        }()
    
     var accordionTableView: ExpandableTableViewV2 = {
         let tableView = ExpandableTableViewV2(frame: .zero, style: .plain)
@@ -279,6 +283,35 @@ class ProductViewController: UIViewController {
     
     
     
+    private let averageReview : UILabel = {
+        let label  = UILabel()
+        label.lineBreakMode = .byWordWrapping
+        label.text  = "5.0"
+        label.textAlignment = .center
+        label.font =  UIFont.systemFont(ofSize: 13)
+        label.textAlignment = .right
+        return label
+    }()
+    
+    private  let totalReview  : UILabel =  {
+        let label  =  UILabel()
+        label.text  = "(2.4k)"
+        label.font =  UIFont.systemFont(ofSize: 13)
+        label.sizeToFit()
+        return label
+    }()
+    private let starRatingView: StarRatingView = {
+        let ratingView = StarRatingView(starMode: .display)
+        ratingView.isUserInteractionEnabled = false
+        ratingView.setRating(5)
+            ratingView.translatesAutoresizingMaskIntoConstraints = false
+            
+            return ratingView
+        }()
+    
+    var reviewStackView : UIStackView!
+    
+    
     
     
     
@@ -291,7 +324,9 @@ class ProductViewController: UIViewController {
     
     init(product: Product) {
         self.product = product
+  
         if  product.images.count > 0 {
+            
             self.images = product.images
         
         }
@@ -375,6 +410,7 @@ class ProductViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
         navigationController?.navigationBar.prefersLargeTitles = false
+     
         
         favouriteButton.addTarget(self, action: #selector(handleFavouriteButtno), for: .touchUpInside)
         addToCartButton.addTarget(self, action: #selector(handleAddCart), for: .touchUpInside)
@@ -411,6 +447,7 @@ class ProductViewController: UIViewController {
         
         guard let variants = self.product.variations else {return }
         self.setupVariantsWithDelegate(variants)
+        reviewStackView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showAllReviews)))
         fetchProductLikes()
         fecthReviews()
     }
@@ -453,9 +490,23 @@ class ProductViewController: UIViewController {
         contentView.addSubview(accordionTableView)
 
 //        contentView.addSubview(starRatingView)
+        
+        starRatingView.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4).isActive = true
+
+        averageReview.sizeToFit()
+//        totalReview.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        totalReview.sizeToFit()
+
+        reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .center)
+
+        contentView.addSubview(reviewStackView)
+        reviewStackView.anchor(top: contentView.topAnchor, left: nil, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5, paddingRight: -5, paddingBottom: 0, width: nil, height: nil)
+        let minimumHeightConstraint = reviewStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 20)
+        minimumHeightConstraint.isActive = true
+
 //
                 
-        imageCollectionView.anchor( top: contentView.layoutMarginsGuide.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
+        imageCollectionView.anchor( top: reviewStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
         
         favouriteButton.anchor( top: nil, left: contentView.leadingAnchor, right: nil, bottom: imageCollectionView.bottomAnchor, paddingTop: 0, paddingLeft: 2,paddingRight: 0, paddingBottom: -2, width: 30, height: 30)
 
@@ -602,6 +653,12 @@ class ProductViewController: UIViewController {
         
     }
     
+    
+    @objc func  showAllReviews(){
+        print(self.reviews)
+        let vc  = AllReviewController(typeReview: .product, reviews: self.reviews, sellerId: nil)
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     @objc func handleFavouriteButtno(){
         if isLiked {
@@ -899,6 +956,7 @@ extension ProductViewController :  UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header  =  ReviewProductHeader()
         header.totalReview =  self.reviews.count
+        header.averageReview =   ReviewManager.calculateAverageRating(from: self.reviews)
         header.delegate = self
         return header
     }

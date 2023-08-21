@@ -29,6 +29,14 @@ class ReviewProductHeader: UIView {
         }
     }
     
+    var averageReview : Double?{
+        didSet{
+            guard let averageReview = averageReview else {return }
+            self.averageRatingReview.text = "\(averageReview) out of 5"
+            self.starRatingView.setRating(averageReview)
+        }
+    }
+    
     
     
     

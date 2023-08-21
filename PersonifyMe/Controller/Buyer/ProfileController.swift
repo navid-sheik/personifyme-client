@@ -12,6 +12,15 @@ import UIKit
 
 class ProfileController: UIViewController {
     
+    
+    var paymentMethods : [PaymentMethod] = []{
+        didSet{
+            DispatchQueue.main.async {
+                self.collectionViewPayment.reloadData()
+            }
+        }
+    }
+    
     var user : User? {
         didSet{
             DispatchQueue.main.async {
@@ -118,11 +127,13 @@ class ProfileController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+        topPart.delegate = self
         signOutButton.addTarget(self, action: #selector(handleSignOut), for: .touchUpInside)
         setUpNavigationBar()
         setUpCollectionView()
         setupUI()
         fecthUserDetails()
+        fetchPaymentMethod()
     }
     
     @objc func handleSignOut(){
@@ -233,6 +244,20 @@ class ProfileController: UIViewController {
                                         
     }
     
+    func fetchPaymentMethod (){
+        Service.shared.getSavedPaymentMethods(expecting: ApiResponse<[PaymentMethod]>.self) { [weak self]  result in
+            guard let self =  self else {return}
+            switch result{
+                
+            case .success(let response ):
+                guard let methods  = response.data else {return}
+                self.paymentMethods = methods
+            case .failure(_):
+                print("Erorr getting payment")
+            }
+        }
+    }
+    
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
@@ -284,7 +309,7 @@ extension ProfileController : UICollectionViewDataSource, UICollectionViewDelega
           if collectionView == collectionViewShipping {
               return 10
           }else if  collectionView == collectionViewPayment {
-              return 10
+              return paymentMethods.count
           }
             return 10
         
@@ -297,7 +322,10 @@ extension ProfileController : UICollectionViewDataSource, UICollectionViewDelega
             
         }else if  collectionView == collectionViewPayment {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: paymentCellIdentifier, for: indexPath) as! ProfilePaymentCell
-
+             let paymethod  = paymentMethods[indexPath.row]
+            cell.paymentMethod =  paymethod
+        
+          
             return cell
         }
         
@@ -373,6 +401,28 @@ extension ProfileController : SettingViewControllerDelegate{
         
       
         
+    }
+    
+    
+}
+
+extension ProfileController: ProfileTopPartDelegate{
+    func didTapWishList() {
+        print("Tap")
+    }
+    
+    func didTapShop() {
+        print("Tap")
+    }
+    
+    func didTapReviews() {
+        print("Tap")
+        let vc =  AllReviewController(typeReview: .user_logged, reviews: nil, sellerId: nil)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didTapMessage() {
+        print("Tap")
     }
     
     

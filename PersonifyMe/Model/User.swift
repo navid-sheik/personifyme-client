@@ -22,6 +22,7 @@ struct User: Codable {
     let createdAt: String?
     let updatedAt: String?
     let sellerId: String?
+    let stripeCustomerId : String?
     let likes: [String]
     let shopFollowed: [String]
 
@@ -40,5 +41,7 @@ struct User: Codable {
         case sellerId = "seller_id"
         case likes
         case shopFollowed = "shopFollowed"
+        case stripeCustomerId  = "stripe_customer_id"
+        
     }
 }

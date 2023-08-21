@@ -129,7 +129,7 @@ class BuyerTabController: UITabBarController {
     
     private func setUpTabs() {
         let homeVC = HomeViewController()
-        let likesVC = LikesViewController()
+        let likesVC = ModeratorViewController()
         let cartVC = CartViewController()
         cartVC.delegate = self
         let profileVC =  ProfileController()

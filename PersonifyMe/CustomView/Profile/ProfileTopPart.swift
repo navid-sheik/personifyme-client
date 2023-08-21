@@ -9,7 +9,15 @@ import Foundation
 import UIKit
 
 
+protocol ProfileTopPartDelegate :class {
+    func didTapWishList ()
+    func didTapShop()
+    func didTapReviews()
+    func didTapMessage()
+}
 class ProfileTopPart : UIView {
+    weak var delegate : ProfileTopPartDelegate?
+    
     
     
     //MARK: - PROPERTIES
@@ -63,10 +71,14 @@ class ProfileTopPart : UIView {
         wisthList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
         //Shop
         let shopList =  createImageStacker(imageName: "bag", title: "Shop")
+        
+        shopList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
         //Reviews
         let reviewList =  createImageStacker(imageName: "star", title: "Reviews")
+        reviewList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hadleUserReview)))
         //Messages
         let messageList =  createImageStacker(imageName: "message", title: "Messages")
+        messageList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
         
         let stackView = StackManager.createStackView(with: [wisthList, shopList, reviewList, messageList], axis: .horizontal, spacing: 0, distribution: .fillEqually, alignment: .center)
         
@@ -97,6 +109,8 @@ class ProfileTopPart : UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+   
     private func createImageStacker (imageName : String, title : String) -> UIStackView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: imageName)
@@ -117,6 +131,10 @@ class ProfileTopPart : UIView {
     @objc func handleWishList(){
         print ("Soemthihng")
      
+    }
+    
+    @objc func hadleUserReview(){
+        delegate?.didTapReviews()
     }
     
     

@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct SuccessResponse : Codable{
-    let success : Bool
-    let message : String
+struct OrderConfirmationSuccess : Codable{
+    let order : Order
+    let orderItems : [OrderItem]
+
 }
 

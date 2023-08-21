@@ -51,6 +51,7 @@ class DashboardViewController : RestrictedController {
     var status : StatusSeller = .Unverified
     
     
+
     var onBoardingInfo : OnBoardingData?{
         didSet{
             
@@ -393,13 +394,17 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
             self.navigationController?.pushViewController(controller, animated: true)
             return 
         case .some(.Reviews):
+            guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
+            let controller  =  AllReviewController(typeReview: .seller, reviews: nil, sellerId: seller_id)
+            
+            self.navigationController?.pushViewController(controller, animated: true)
             return
         case .some(.Shop):
             guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
          
             let controller  =  ShopViewController(sellerId: seller_id, shopInfo: nil, admin: true)
             self.navigationController?.pushViewController(controller, animated: true)
-          
+           
         case .some(.MyInfo):
             return
         case .some(.Support):

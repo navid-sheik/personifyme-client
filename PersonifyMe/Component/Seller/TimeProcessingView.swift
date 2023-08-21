@@ -55,13 +55,7 @@ class TimeProcessingView: UIView{
         
     }()
     
-    let separator : UIView = {
-        let view  = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor =  .lightGray
-        return view
-    }()
-    
+  
     
     
     

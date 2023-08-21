@@ -25,5 +25,6 @@ enum Endpoint : String {
     case search
     case payments
     case users
+    case moderators
   
 }

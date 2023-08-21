@@ -104,6 +104,8 @@ struct Product: Codable {
     let variations: [Variant]? // Optional, as there may not be variations
     let shippingInfo: ShippingInfo
     let returnPolicy, shippingPolicy: Bool
+    let isApproved: Bool
+    let moderationMessage: String?
     let createdAt, updatedAt: String?
 
     enum CodingKeys: String, CodingKey {
@@ -113,6 +115,8 @@ struct Product: Codable {
         case price
         case quantity
         case categoryId = "category_id"
+        case isApproved = "isApproved"
+        case moderationMessage = "moderationMessage"
         case customizationOptions = "customizationOptions"
         case sold, images, status
         case isDeleted = "isDeleted"

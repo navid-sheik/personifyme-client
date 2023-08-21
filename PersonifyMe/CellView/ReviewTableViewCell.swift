@@ -14,7 +14,7 @@ class ReviewTableViewCell : UITableViewCell {
     
     var review : Review?{
         didSet{
-            guard let  username = review?.username else {return }
+            guard let  username = review?.user_info.name else {return }
             guard let rating = review?.rating else {return }
             guard let text = review?.text else {return }
             guard let dateCreated = review?.updatedAt else {return }
@@ -22,17 +22,19 @@ class ReviewTableViewCell : UITableViewCell {
             self.starRatingView.setRating(Double(rating))
             self.reviewTetxt.text = text
             self.dateLabel.text =  "Reviewed on \(TimeManager.timeAgo(from: dateCreated))"
-        
+            if let imageUrl  =  review?.user_info.image {
+                self.mainImage.loadImageUrlString(urlString: imageUrl)
+            }
             
         }
     }
     
-    var profileUserimage : String?{
-        didSet{
-            guard let profileUserimageString  = profileUserimage else {return}
-            mainImage.loadImageUrlString(urlString: profileUserimageString)
-        }
-    }
+//    var profileUserimage : String?{
+//        didSet{
+//            guard let profileUserimageString  = profileUserimage else {return}
+//            mainImage.loadImageUrlString(urlString: profileUserimageString)
+//        }
+//    }
     
    
      

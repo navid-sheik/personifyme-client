@@ -19,10 +19,15 @@ class ProductCell :  CustomCell{
         return imageView
     }()
     
+
+    
+    
     override func setUpCell() {
         //stylingCell()
         contentView.addSubview(mainImage)
         mainImage.anchor(top: topAnchor, left: leadingAnchor, right: trailingAnchor, bottom: bottomAnchor, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        
+        
     }
     
     

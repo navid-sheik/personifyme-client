@@ -105,6 +105,8 @@ struct OrderCheckout : Codable{
     var paymentIntent: String
     var publishableKey:String
     var payment_intent_id : String
+    var customer : String?
+    var ephemeralKey: String?
     
     
     

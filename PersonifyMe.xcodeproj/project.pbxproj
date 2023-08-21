@@ -11,7 +11,7 @@
 		6D024C002A76FB2800E678EB /* ApiResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D024BFF2A76FB2700E678EB /* ApiResponse.swift */; };
 		6D024C022A76FC1600E678EB /* ApiErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D024C012A76FC1600E678EB /* ApiErrorResponse.swift */; };
 		6D024C042A77002700E678EB /* TokenResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D024C032A77002700E678EB /* TokenResponse.swift */; };
-		6D0401F22A734A6400347870 /* SuccessResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0401F12A734A6400347870 /* SuccessResponse.swift */; };
+		6D0401F22A734A6400347870 /* OrderConfirmationSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0401F12A734A6400347870 /* OrderConfirmationSuccess.swift */; };
 		6D057E8D2A7A8C2F00F79A47 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D057E8C2A7A8C2F00F79A47 /* Product.swift */; };
 		6D057E8F2A7B0E3000F79A47 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D057E8E2A7B0E3000F79A47 /* Category.swift */; };
 		6D057E912A7B0E3E00F79A47 /* Review.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D057E902A7B0E3E00F79A47 /* Review.swift */; };
@@ -174,6 +174,13 @@
 		6DD390F02A709EC800C61808 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390EF2A709EC800C61808 /* CustomTextField.swift */; };
 		6DD390F22A709ED800C61808 /* AuthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390F12A709ED800C61808 /* AuthHeaderView.swift */; };
 		6DD390F42A709F6D00C61808 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD390F32A709F6D00C61808 /* WebViewController.swift */; };
+		6DD4D0422A92A64A0063CAC3 /* ReviewAdminViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D0412A92A64A0063CAC3 /* ReviewAdminViewCell.swift */; };
+		6DD4D0442A92BF980063CAC3 /* ReviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D0432A92BF980063CAC3 /* ReviewManager.swift */; };
+		6DD4D0462A92C6130063CAC3 /* ModeratorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D0452A92C6130063CAC3 /* ModeratorViewController.swift */; };
+		6DD4D0492A92D1F10063CAC3 /* ModerationCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D0482A92D1F10063CAC3 /* ModerationCellView.swift */; };
+		6DD4D04B2A92E39D0063CAC3 /* ProduceCellSeller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D04A2A92E39D0063CAC3 /* ProduceCellSeller.swift */; };
+		6DD4D04D2A92FBDE0063CAC3 /* SavedStripePayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD4D04C2A92FBDE0063CAC3 /* SavedStripePayment.swift */; };
+		6DDD55292A928145004ED76D /* AllReviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DDD55282A928145004ED76D /* AllReviewController.swift */; };
 		6DE9446E2A81528A005C6C3F /* OrderBuyerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE9446D2A81528A005C6C3F /* OrderBuyerController.swift */; };
 		6DE944702A8157C1005C6C3F /* ManagerOrderHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE9446F2A8157C1005C6C3F /* ManagerOrderHeader.swift */; };
 		6DE944722A81592D005C6C3F /* ManageOrderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE944712A81592D005C6C3F /* ManageOrderCell.swift */; };
@@ -212,7 +219,7 @@
 		6D024BFF2A76FB2700E678EB /* ApiResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiResponse.swift; sourceTree = "<group>"; };
 		6D024C012A76FC1600E678EB /* ApiErrorResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiErrorResponse.swift; sourceTree = "<group>"; };
 		6D024C032A77002700E678EB /* TokenResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponse.swift; sourceTree = "<group>"; };
-		6D0401F12A734A6400347870 /* SuccessResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessResponse.swift; sourceTree = "<group>"; };
+		6D0401F12A734A6400347870 /* OrderConfirmationSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmationSuccess.swift; sourceTree = "<group>"; };
 		6D057E8C2A7A8C2F00F79A47 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		6D057E8E2A7B0E3000F79A47 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		6D057E902A7B0E3E00F79A47 /* Review.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Review.swift; sourceTree = "<group>"; };
@@ -370,6 +377,13 @@
 		6DD390EF2A709EC800C61808 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		6DD390F12A709ED800C61808 /* AuthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHeaderView.swift; sourceTree = "<group>"; };
 		6DD390F32A709F6D00C61808 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		6DD4D0412A92A64A0063CAC3 /* ReviewAdminViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAdminViewCell.swift; sourceTree = "<group>"; };
+		6DD4D0432A92BF980063CAC3 /* ReviewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewManager.swift; sourceTree = "<group>"; };
+		6DD4D0452A92C6130063CAC3 /* ModeratorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeratorViewController.swift; sourceTree = "<group>"; };
+		6DD4D0482A92D1F10063CAC3 /* ModerationCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModerationCellView.swift; sourceTree = "<group>"; };
+		6DD4D04A2A92E39D0063CAC3 /* ProduceCellSeller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProduceCellSeller.swift; sourceTree = "<group>"; };
+		6DD4D04C2A92FBDE0063CAC3 /* SavedStripePayment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedStripePayment.swift; sourceTree = "<group>"; };
+		6DDD55282A928145004ED76D /* AllReviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllReviewController.swift; sourceTree = "<group>"; };
 		6DE9446D2A81528A005C6C3F /* OrderBuyerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBuyerController.swift; sourceTree = "<group>"; };
 		6DE9446F2A8157C1005C6C3F /* ManagerOrderHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagerOrderHeader.swift; sourceTree = "<group>"; };
 		6DE944712A81592D005C6C3F /* ManageOrderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageOrderCell.swift; sourceTree = "<group>"; };
@@ -491,6 +505,7 @@
 		6D137C422A78384400711889 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
+				6DD4D0482A92D1F10063CAC3 /* ModerationCellView.swift */,
 				6D720DA62A8EF54000CA0ED1 /* Shop */,
 				6D33EA272A8A954E0004E9B2 /* Checkout */,
 				6D4810C02A82AF1500D5B6B8 /* Profile */,
@@ -510,6 +525,7 @@
 				6D11D4332A80956300B81C88 /* ReusableProgressBar.swift */,
 				6DE944832A81BA98005C6C3F /* OrderInfoProductView.swift */,
 				6DC961312A8882DE00D2B94D /* VariantProductTextView.swift */,
+				6DD4D0412A92A64A0063CAC3 /* ReviewAdminViewCell.swift */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -720,6 +736,7 @@
 				6D137C552A78629200711889 /* AddListingViewController.swift */,
 				6DCE8B732A8C74E4000C4D1F /* AddTrackingController.swift */,
 				6D720DA42A8EEEDF00CA0ED1 /* SettingsShopController.swift */,
+				6DDD55282A928145004ED76D /* AllReviewController.swift */,
 			);
 			path = Seller;
 			sourceTree = "<group>";
@@ -815,6 +832,7 @@
 				6D11D4312A80916900B81C88 /* NavigationController.swift */,
 				6DC9612F2A887A5A00D2B94D /* DropDownTextfield.swift */,
 				6D649AEA2A8FECBF00A79009 /* ViewControllerExtension.swift */,
+				6DD4D0432A92BF980063CAC3 /* ReviewManager.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -828,7 +846,7 @@
 				6D4BEFE02A9154B0004FA729 /* StripePayout.swift */,
 				6D28791B2A71C45800FDA177 /* ErrorResponse.swift */,
 				6DBFEA522A72D532001D6C53 /* User.swift */,
-				6D0401F12A734A6400347870 /* SuccessResponse.swift */,
+				6D0401F12A734A6400347870 /* OrderConfirmationSuccess.swift */,
 				6DD19DAC2A75D8EF004F02B5 /* PromoModel.swift */,
 				6DD19DB02A75E577004F02B5 /* OnBoardingResponse.swift */,
 				6DD19DB62A760039004F02B5 /* SellerResponse.swift */,
@@ -848,6 +866,7 @@
 				6D649AE82A8FE53100A79009 /* SearchResults.swift */,
 				6D4BEFE42A91B28A004FA729 /* OnBoarding.swift */,
 				6D4BEFE62A91E3B6004FA729 /* AccountLinkOnBoarding.swift */,
+				6DD4D04C2A92FBDE0063CAC3 /* SavedStripePayment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -865,6 +884,7 @@
 		6DD390E32A708C9900C61808 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				6DD4D0472A92C6220063CAC3 /* Mods */,
 				6D137C5E2A788FE100711889 /* Helper */,
 				6DD19D9E2A75A522004F02B5 /* OnBoarding */,
 				6DBFEA7D2A7305EC001D6C53 /* Auth */,
@@ -902,6 +922,7 @@
 				6D4810CF2A83052500D5B6B8 /* SettingCell.swift */,
 				6DF81F2B2A83F7C80063FDEA /* PayoutHistoryCell.swift */,
 				6DC961292A87EDE200D2B94D /* VariantCell.swift */,
+				6DD4D04A2A92E39D0063CAC3 /* ProduceCellSeller.swift */,
 			);
 			path = CellView;
 			sourceTree = "<group>";
@@ -933,6 +954,14 @@
 				6DD1A0AB2A799C9F00666AAA /* NumberPickerView.swift */,
 			);
 			path = Component;
+			sourceTree = "<group>";
+		};
+		6DD4D0472A92C6220063CAC3 /* Mods */ = {
+			isa = PBXGroup;
+			children = (
+				6DD4D0452A92C6130063CAC3 /* ModeratorViewController.swift */,
+			);
+			path = Mods;
 			sourceTree = "<group>";
 		};
 		6DE944792A81A5CD005C6C3F /* OrderDetails */ = {
@@ -1221,6 +1250,7 @@
 				6D10E72C2A7DF561000C4398 /* TimeManager.swift in Sources */,
 				6DBFEA692A730419001D6C53 /* BuyersOrdersViewController.swift in Sources */,
 				6D137C5D2A78872700711889 /* CreateListingDelegate.swift in Sources */,
+				6DD4D04D2A92FBDE0063CAC3 /* SavedStripePayment.swift in Sources */,
 				6D2879182A7192DC00FDA177 /* Endpoint.swift in Sources */,
 				6D33EA292A8A959C0004E9B2 /* AddressCheckoutView .swift in Sources */,
 				6D137C602A788FF700711889 /* CategoryMenuContronller.swift in Sources */,
@@ -1245,6 +1275,7 @@
 				6DD1A0AA2A79906B00666AAA /* TimeProcessingView.swift in Sources */,
 				6DD390EB2A709C5800C61808 /* ForgotPasswordViewController.swift in Sources */,
 				6DD19DAD2A75D8EF004F02B5 /* PromoModel.swift in Sources */,
+				6DD4D0462A92C6130063CAC3 /* ModeratorViewController.swift in Sources */,
 				6DD19DB12A75E577004F02B5 /* OnBoardingResponse.swift in Sources */,
 				6D127FC92A7ECC7C003DBD16 /* SearchHomeView.swift in Sources */,
 				6DAE93A02A7742B000AF3F25 /* ErrorManager.swift in Sources */,
@@ -1257,6 +1288,7 @@
 				6DC961322A8882DE00D2B94D /* VariantProductTextView.swift in Sources */,
 				6D4BEFE32A9162BD004FA729 /* StripeManager.swift in Sources */,
 				6D127FC32A7EA754003DBD16 /* CustomHeaderView.swift in Sources */,
+				6DD4D04B2A92E39D0063CAC3 /* ProduceCellSeller.swift in Sources */,
 				6D6A96642A7C30050042C39F /* File.swift in Sources */,
 				6D649AEF2A8FF02800A79009 /* SearchQuery.swift in Sources */,
 				6D127FCD2A7F23BC003DBD16 /* ZeroInset.swift in Sources */,
@@ -1268,6 +1300,7 @@
 				6DC9612E2A8848E500D2B94D /* VariantProductViewField.swift in Sources */,
 				6DD19DB32A75E829004F02B5 /* OnBoardingLinkViewController.swift in Sources */,
 				6D720DAA2A8F1CF900CA0ED1 /* ShopSelectableTextFiled .swift in Sources */,
+				6DD4D0442A92BF980063CAC3 /* ReviewManager.swift in Sources */,
 				6DBFEA532A72D532001D6C53 /* User.swift in Sources */,
 				6D137C592A7863D400711889 /* SettingSellerMenuDelegate.swift in Sources */,
 				6D137C462A78386800711889 /* NoResultMessage.swift in Sources */,
@@ -1282,7 +1315,7 @@
 				6D11D4302A803C9300B81C88 /* CheckoutController2.swift in Sources */,
 				6DC961342A888BC400D2B94D /* DeliveryEstimationService.swift in Sources */,
 				6D4810D02A83052500D5B6B8 /* SettingCell.swift in Sources */,
-				6D0401F22A734A6400347870 /* SuccessResponse.swift in Sources */,
+				6D0401F22A734A6400347870 /* OrderConfirmationSuccess.swift in Sources */,
 				6D4810C22A82BE3800D5B6B8 /* ProfileTopPart.swift in Sources */,
 				6D6A966E2A7C89FB0042C39F /* VariantField.swift in Sources */,
 				6DCE8B702A8C3D57000C4D1F /* OrderItem.swift in Sources */,
@@ -1342,6 +1375,7 @@
 				6DBFEA5C2A72FC5D001D6C53 /* RestrictedController.swift in Sources */,
 				6DD390E62A708D9C00C61808 /* LoginViewController.swift in Sources */,
 				6D137C5B2A786FD100711889 /* ImageListingCell.swift in Sources */,
+				6DD4D0492A92D1F10063CAC3 /* ModerationCellView.swift in Sources */,
 				6DE9447B2A81A5E0005C6C3F /* OrderStatusCell.swift in Sources */,
 				6D6A96702A7C9A9C0042C39F /* ReviewTableViewCell.swift in Sources */,
 				6DE944742A818653005C6C3F /* OrderBuyerCell.swift in Sources */,
@@ -1369,6 +1403,7 @@
 				6D137C3B2A78375700711889 /* SellerMenuCell.swift in Sources */,
 				6DAE939E2A773F8000AF3F25 /* AuthManager.swift in Sources */,
 				6D057E8D2A7A8C2F00F79A47 /* Product.swift in Sources */,
+				6DD4D0422A92A64A0063CAC3 /* ReviewAdminViewCell.swift in Sources */,
 				6DE9447D2A81A5EB005C6C3F /* OrderProductCell.swift in Sources */,
 				6D2D92282A6DF54F005AE6E6 /* SceneDelegate.swift in Sources */,
 				6D057E932A7B0E5E00F79A47 /* Seller.swift in Sources */,
@@ -1383,6 +1418,7 @@
 				6DE9447F2A81A600005C6C3F /* OrderInfoCell.swift in Sources */,
 				6D137C522A78483200711889 /* VerificationStatusView.swift in Sources */,
 				6DBFEA782A730563001D6C53 /* ShopViewController.swift in Sources */,
+				6DDD55292A928145004ED76D /* AllReviewController.swift in Sources */,
 				6D6A966A2A7C7CE40042C39F /* ProductViewController.swift in Sources */,
 				6D4BEFE12A9154B0004FA729 /* StripePayout.swift in Sources */,
 			);

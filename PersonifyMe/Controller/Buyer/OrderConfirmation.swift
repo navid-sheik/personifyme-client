@@ -19,11 +19,22 @@ import UIKit
 class OrderConfirmation: UIViewController {
     
     weak var delegate: CartViewControllerDelegate?
-    var order : Order?{
+    var order : Order{
         didSet{
             print("The order is ready")
+          
+            
         }
     }
+    
+    var orderItems : [OrderItem]{
+        didSet{
+            print("Teh order item")
+            self.tableView.reloadData()
+        }
+        
+    }
+    
     
     
     let productCellIdentifier : String = "productCellIdentifier"
@@ -153,27 +164,27 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
     }()
     
     
-    
-    let billingAddressLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Billing Address"
-        label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
-        return label
-    }()
-    
-    
-    let billingAddressValue : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Navid Sheikh \n86 Ferenz Road,E61LL\n London United Kingdom,\n+447405341412"
-        label.font = UIFont.boldSystemFont(ofSize: 10)
-        label.textColor = UIColor.gray
-        label.numberOfLines = 0
-        return label
-    }()
-    
+//
+//    let billingAddressLabel : UILabel = {
+//        let label = UILabel()
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.text = "Billing Address"
+//        label.font = UIFont.boldSystemFont(ofSize: 12)
+//        label.textColor = UIColor.gray
+//        return label
+//    }()
+//
+//
+//    let billingAddressValue : UILabel = {
+//        let label = UILabel()
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.text = "Navid Sheikh \n86 Ferenz Road,E61LL\n London United Kingdom,\n+447405341412"
+//        label.font = UIFont.boldSystemFont(ofSize: 10)
+//        label.textColor = UIColor.gray
+//        label.numberOfLines = 0
+//        return label
+//    }()
+//
     
     
     
@@ -203,6 +214,17 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         
     }()
     
+    init(orderTotal : Order, orderItems : [OrderItem]) {
+        self.order = orderTotal
+        self.orderItems = orderItems
+        super.init(nibName: nil, bundle: nil)
+
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     
     
@@ -219,8 +241,18 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         continueShopping.isEnabled = true
         setNavigationBar()
         setUpTableView()
+        populateData()
         setupUI()
+        
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.isHidden =  true
+    }
+    
+    
+    
+    
     
     func setNavigationBar (){
             navigationController?.navigationBar.isHidden =  true
@@ -232,6 +264,26 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
      
         tableView.register(SingleOrderProduct.self, forCellReuseIdentifier: productCellIdentifier)
         
+    }
+    private func populateData (){
+        print(order.orderTotal)
+        if let orderTotal = order.orderTotal{
+            self.totalValue.text = "$\(StripeManager.convertStripeAmountToDouble(Int(orderTotal)) )"
+        }
+        
+        if let shippingCost = order.shippingCost{
+            self.shippingValue.text = "$\(StripeManager.convertStripeAmountToDouble(Int(shippingCost)) )"
+        }
+        
+        if let shippingCost = order.shippingCost, let orderTotal = order.orderTotal{
+            let subTotal = orderTotal - shippingCost
+            self.subTotalValue.text = "$\(StripeManager.convertStripeAmountToDouble(Int(subTotal)) )"
+        }
+      
+//
+//            self.shippingValue.text = "\(order.shippingCost)"
+//            self.subTotalValue.text = "\(order.orderTotal)"
+        self.shippingAddressValue.text = order.shippingDetails?.formattedAddress()
     }
     
     
@@ -306,11 +358,11 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         
         let shippingAddressStack = StackManager.createStackView(with: [shippingAddressLabel,shippingAddressValue] , axis: .vertical, spacing: 10, distribution: .fillProportionally, alignment: .fill)
         
-        let billingAddressStack = StackManager.createStackView(with: [billingAddressLabel,billingAddressValue] , axis: .vertical, spacing: 10, distribution: .fillProportionally, alignment: .fill)
+//        let billingAddressStack = StackManager.createStackView(with: [billingAddressLabel,billingAddressValue] , axis: .vertical, spacing: 10, distribution: .fillProportionally, alignment: .fill)
+//
         
         
-        
-        let addressStack = StackManager.createStackView(with: [shippingAddressStack,billingAddressStack] , axis: .horizontal, spacing: 10, distribution: .fillProportionally, alignment: .fill)
+        let addressStack = StackManager.createStackView(with: [shippingAddressStack] , axis: .horizontal, spacing: 10, distribution: .fillProportionally, alignment: .fill)
         
         
         contentView.addSubview(customINformationLabel)
@@ -373,12 +425,27 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
 
 extension OrderConfirmation : UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return orderItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell  = tableView.dequeueReusableCell(withIdentifier: productCellIdentifier) as! SingleOrderProduct
         cell.selectionStyle = .none
+        let orderItem  =  orderItems[indexPath.row]
+        cell.productTitleLabel.text = orderItem.product.title
+        cell.priceLabel.text = "$\(orderItem.product.price)"
+        cell.variantLabel.text = orderItem.variant?.map { $0.value }.joined(separator:", ")
+        cell.quantityLabel.text =  "x\(orderItem.quantity)"
+        if let imageUrl =  orderItem.product.images.first  {
+            cell.productImageView.loadImageUrlString(urlString: imageUrl)
+        }
+        if let personalizationText  = orderItem.customizationOptions?.first{
+            cell.personalizationLabel.text = "Text: \(personalizationText )"
+
+        }
+        
+       
+        
         return cell
     }
     

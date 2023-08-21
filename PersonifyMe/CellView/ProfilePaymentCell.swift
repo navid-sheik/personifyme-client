@@ -11,6 +11,15 @@ import UIKit
 class ProfilePaymentCell: CustomCell {
     
     
+    var paymentMethod : PaymentMethod?{
+        didSet{
+            guard let paymentMethod = paymentMethod else {return}
+            cardNumber.text = "***\(paymentMethod.card.last4)"
+            paymentExpire.text = "Expires on \(paymentMethod.card.expMonth)/\(paymentMethod.card.expYear)"
+        
+        }
+    }
+    
     let cardNumber : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,7 +50,7 @@ class ProfilePaymentCell: CustomCell {
     let editButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "pencil.circle.fill"), for: .normal)
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         button.tintColor = UIColor.systemGreen
         return button
     }()

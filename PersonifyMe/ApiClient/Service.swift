@@ -1263,3 +1263,130 @@ extension Service{
         }
     }
 }
+
+
+
+//Reviews
+
+extension Service{
+    
+    public func getUserLoggedInReviews<T:Codable>( expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .reviews, pathComponents: ["user", "current"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func getSellerReviews<T:Codable>( with sellerId: String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .reviews, pathComponents: ["shop", sellerId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func deleteReview<T:Codable>( with reviewId: String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    //        let body = ["seller_id" : sellerId]
+    //        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+//        let userData = try? JSONEncoder().encode(userData)
+
+        let request = Request(endpoint: .reviews, pathComponents: [reviewId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .DELETE)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+}
+
+
+
+
+
+//Moderatiion
+
+extension Service{
+    
+    public func getAllUniverifiedProducts<T:Codable>(expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+      
+        
+        let request = Request(endpoint: .moderators, pathComponents: ["products"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func approveItem<T:Codable>(with productId : String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+      
+        
+        let request = Request(endpoint: .moderators, pathComponents: ["approve", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .POST)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    public func dissaproveItem<T:Codable>(with productId : String, and moderationMessage: String, expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+        let body = ["message" : moderationMessage]
+        let jsonData = try? JSONSerialization.data(withJSONObject: body)
+        
+        let request = Request(endpoint: .moderators, pathComponents: ["disapprove", productId])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(body: jsonData)
+            .set(method: .POST)
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+    
+    
+}
+
+
+//Payment Method
+
+
+
+extension Service{
+    public func getSavedPaymentMethods<T:Codable>(expecting type: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+      
+        
+        let request = Request(endpoint: .users, pathComponents: ["payment-methods"])
+            .add(headerField: "Content-Type", value: "application/json")
+            .set(method: .GET)
+           
+            .build()
+        
+        Service.shared.execute(request, expecting: T.self) {  result in
+            completion(result)
+        }
+    }
+}
