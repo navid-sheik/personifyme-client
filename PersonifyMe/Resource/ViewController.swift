@@ -19,7 +19,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        print("Something ")
+      
         
         let url  = URL(string: "http://localhost:4050/")!
         let task  = URLSession.shared.dataTask(with: url){ (data, response, error) in

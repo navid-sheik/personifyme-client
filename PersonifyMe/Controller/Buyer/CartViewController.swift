@@ -14,10 +14,15 @@ import UIKit
 
 protocol CartViewControllerDelegate: AnyObject {
     func emptyCart()
+   
 }
 
 
 extension CartViewController:CartViewControllerDelegate {
+
+   
+
+
     func emptyCart() {
         Service.shared.clearCart(expecting: ApiResponse<String>.self) { [weak self] result in
             guard let self = self else { return }
@@ -30,16 +35,18 @@ extension CartViewController:CartViewControllerDelegate {
                     self.subTotaValue.text =  "$\( NumberFormatterService.formatToTwoDecimalPlaces(subTotal) )"
                     self.tableViewProducts.reloadData()
                 }
-           
+
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
             }
         }
     }
-    
-    
+
+
+
+
 }
-class CartViewController: UIViewController {
+class CartViewController: RestrictedController {
     
     
     // MARK: - Identifier
@@ -50,13 +57,58 @@ class CartViewController: UIViewController {
     // MARK: - VAriables
     var cart : Cart?{
         didSet{
-            guard let cart = cart else {return }
-            self.configureCell(cart)
+            guard let cart = cart else {
+                if  emptyCartView == nil {
+                    emptyCartView =  EmptyCartView()
+                    self.view.addSubview(emptyCartView!)
+                    self.view.bringSubviewToFront(emptyCartView!)
+                    emptyCartView?.translatesAutoresizingMaskIntoConstraints = false
+                    emptyCartView?.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+                    emptyCartView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+                    emptyCartView?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+                    emptyCartView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+                    emptyCartView?.delegate = self
+                
+                    
+                    
+                }
+                return
+            }
+            if cart.items.isEmpty{
+               
+                
+                if  emptyCartView == nil {
+                    emptyCartView =  EmptyCartView()
+                    self.view.addSubview(emptyCartView!)
+                    self.view.bringSubviewToFront(emptyCartView!)
+                    emptyCartView?.translatesAutoresizingMaskIntoConstraints = false
+                    emptyCartView?.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+                    emptyCartView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+                    emptyCartView?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+                    emptyCartView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+                    emptyCartView?.delegate = self
+                
+                    
+                    
+                }
+            }else {
+                
+                if emptyCartView != nil {
+                    emptyCartView?.removeFromSuperview()
+                    emptyCartView = nil
+                }
+                self.configureCell(cart)
+             
+            }
+            
             self.tableViewProducts.reloadData()
+            
         }
     }
     
-  
+    
+    var emptyCartView : EmptyCartView?
+    
     // MARK: - Components
     // Here you add all components
     let tableViewProducts:  DynamicTableView = {
@@ -72,7 +124,7 @@ class CartViewController: UIViewController {
         let label = UILabel()
         label.text = "Subtotal"
         label.font = UIFont.systemFont(ofSize: 24)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         
         return label
     }()
@@ -81,7 +133,7 @@ class CartViewController: UIViewController {
         let label = UILabel()
         label.text = "$0.00"
         label.font = UIFont.systemFont(ofSize: 24)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     let checkoutButton : CustomButton = {
@@ -113,17 +165,85 @@ class CartViewController: UIViewController {
     }()
     
     
+    
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
-        checkoutButton.addTarget(self, action: #selector(handleCheckOut), for: .touchUpInside)
         setNavigationBar()
-        setTableView()
-        setupUI()
+        
         
     }
     
+    override func setupAuthenticatedUI() {
+        super.setupAuthenticatedUI()
+        
+        if (self.cart == nil){
+            fetchCartData()
+        }
+        
+      
+        
+        checkoutButton.addTarget(self, action: #selector(handleCheckOut), for: .touchUpInside)
+        setTableView()
+        setupUI()
+        
+        if (self.cart == nil){
+            if  emptyCartView == nil {
+                emptyCartView =  EmptyCartView()
+                self.view.addSubview(emptyCartView!)
+                self.view.bringSubviewToFront(emptyCartView!)
+                emptyCartView?.translatesAutoresizingMaskIntoConstraints = false
+                emptyCartView?.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+                emptyCartView?.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+                emptyCartView?.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+                emptyCartView?.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+                emptyCartView?.delegate = self
+            
+                
+                
+            }
+        }
+        
+        
+        
+    }
+    
+    
+    override func teardownAuthenticatedUI() {
+        self.cart = nil
+        super.teardownAuthenticatedUI()
+       
+    }
+    
+    override func setUpUIImpletation (){
+        
+        if authenticationRequiredView == nil {
+            authenticationRequiredView = EmptyNoAuthCartView()
+        }
+        if let authView = authenticationRequiredView as? EmptyNoAuthCartView {
+            authView.delegate = self
+            self.view.addSubview(authView)
+            authView.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                authView.topAnchor.constraint(equalTo: self.view.topAnchor),
+                authView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+                authView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+                authView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            ])
+            
+            self.view.bringSubviewToFront(authView)
+        }
+        
+        
+        
+    
+        
+    
+        
+    }
+     
     
     
     // MARK: - UI Setup
@@ -192,14 +312,14 @@ class CartViewController: UIViewController {
     }
     
     private func setNavigationBar (){
-        navigationController?.navigationBar.prefersLargeTitles = false
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .systemBackground
-//        appearance.shadowColor = UIColor.clear
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.compactAppearance = appearance
+        navigationItem.largeTitleDisplayMode =  .always
+//        let appearance = UINavigationBarAppearance()
+//        appearance.configureWithOpaqueBackground()
+//        appearance.backgroundColor = .systemBackground
+////        appearance.shadowColor = UIColor.clear
+//        navigationController?.navigationBar.standardAppearance = appearance
+//        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+//        navigationController?.navigationBar.compactAppearance = appearance
         
         navigationItem.title =  "Your Cart"
         
@@ -208,6 +328,44 @@ class CartViewController: UIViewController {
     func configureCell (_ cart: Cart){
         let subTotal  =  cart.totalPrice
         subTotaValue.text =  "$\( NumberFormatterService.formatToTwoDecimalPlaces(subTotal) )"
+    }
+    
+    
+    func fetchCartData(){
+
+            // This is run on the background queue
+            Service.shared.fetchCart(expecting: ApiResponse<Cart>.self) { [weak self] result in
+                guard let self = self else {return}
+                switch result {
+                case .success(let response ):
+                    guard let cart = response.data else {return}
+                    print(cart)
+                    
+                    
+                    DispatchQueue.main.async {
+                        // Once the background task is finished, this code will run on the main queue
+                        
+                        // Access the CartViewController and update the cart
+             
+            
+                            self.cart = cart
+                        self.delegate?.fetchCartAgain(cart: cart)
+                        
+                            
+//                            self.updateCartTag(cart.items.count)
+                        
+                    }
+                case .failure(let error):
+                    
+                    print(error)
+                    
+                 
+                    
+                }
+                
+            }
+            
+        
     }
     
     // MARK: - IBActions
@@ -258,17 +416,17 @@ extension CartViewController : UITableViewDelegate, UITableViewDataSource{
         return 1
     }
     
+//
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let headerView = tableView.dequeueReusableHeaderFooterView(
+//            withIdentifier: headerTableViewCellIdentifier) as! CartHeader
+//        return headerView
+//    }
+//
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = tableView.dequeueReusableHeaderFooterView(
-            withIdentifier: headerTableViewCellIdentifier) as! CartHeader
-        return headerView
-    }
-    
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return  40
-    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return  40
+//    }
     
     
     
@@ -352,3 +510,39 @@ extension CartViewController: CartViewCellDelegate{
 }
 
 
+
+extension CartViewController :  EmptyNoAuthCartViewDelegate{
+    func didTapCartSignIn() {
+        super.presentLoginScreen()
+    }
+    
+ 
+    
+    
+}
+
+
+
+extension CartViewController :  EmptyCartViewDelegate{
+    func showSeeMore() {
+        if let tabBarController = self.navigationController?.tabBarController as? BuyerTabController {
+            // Capture the currently displayed view controller
+            guard let fromView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Switch the tab
+            tabBarController.selectedIndex = 0
+
+            // Capture the view controller that will be displayed
+            guard let toView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Perform the animation
+            UIView.transition(from: fromView, to: toView, duration: 0.3, options: [.transitionCrossDissolve], completion: nil)
+        }
+    }
+    
+    
+}

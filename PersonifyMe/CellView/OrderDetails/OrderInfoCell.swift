@@ -29,7 +29,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Order Info"
         label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
      
         return label
     }()
@@ -39,7 +39,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Address"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -49,7 +49,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text =  "Navid Sheikh \n+447405341412 \n 86 Ferenz Road \n London, GB, E3 2NT"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -59,7 +59,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Order ID"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -69,7 +69,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "124668490690707"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -78,7 +78,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Order placed on"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -88,7 +88,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Mar 31, 2023 15:37"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -99,7 +99,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Payment method"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -108,7 +108,7 @@ class  OrderInfoCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Credit/Debit Card"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -128,7 +128,7 @@ class  OrderInfoCell : UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =  DesignConstants.secondaryColor
         setUpCell()
     }
     
@@ -177,7 +177,7 @@ class  OrderInfoCell : UITableViewCell{
         
         addSubview(messageButton)
         
-        messageButton.anchor(top:  paymentStackView.bottomAnchor, left: self.leadingAnchor, right: self.trailingAnchor, bottom: self.bottomAnchor, paddingTop: 20, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: 40)
+        messageButton.anchor(top:  paymentStackView.bottomAnchor, left: self.leadingAnchor, right: self.trailingAnchor, bottom: self.bottomAnchor, paddingTop: 20, paddingLeft: 10, paddingRight: -10, paddingBottom: -40, width: nil, height: 40)
         
         
     

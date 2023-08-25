@@ -35,7 +35,7 @@ class OrderBuyerSell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "My Shop"
         label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 1
         return label
     }()
@@ -187,7 +187,18 @@ class OrderBuyerSell : UITableViewCell{
         self.variantLabel.text = variantOptions
         guard let imageString  = self.orderItem?.product.images.first else {return}
         self.productImageView.loadImageUrlString(urlString: imageString)
-        
+        switch orderItem.status{
+            
+            
+        case .Processing:
+            trackOrder.isHidden =  true
+        case .Shipped:
+            trackOrder.isHidden =  false
+        case .Delivered:
+            trackOrder.isHidden =  false 
+        default:
+            return
+        }
     }
     
     

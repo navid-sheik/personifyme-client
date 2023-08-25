@@ -29,15 +29,14 @@ class CustomTextField : UITextField {
     init(fieldType : TextFieldType,_ text : String? = "") {
         self.fieldType = fieldType
         super.init(frame: .zero)
-        self.backgroundColor =  .secondarySystemBackground
+        self.backgroundColor =  DesignConstants.secondaryColor
         self.layer.cornerRadius =  4
         
         self.returnKeyType =  .done
         self.autocorrectionType = .no
         self.autocapitalizationType = .none
-        
         self.leftViewMode = .always
-        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 4, height: 0))
+        self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
         self.translatesAutoresizingMaskIntoConstraints = false
         
         

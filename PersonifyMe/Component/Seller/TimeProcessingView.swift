@@ -20,7 +20,7 @@ class TimeProcessingView: UIView{
     
     let minTextField :  UITextField = {
         let textField  = UITextField()
-        textField.backgroundColor =  .secondarySystemBackground
+        textField.backgroundColor =  DesignConstants.secondaryColor
         textField.layer.cornerRadius =  4
         textField.text =  "1"
         
@@ -38,7 +38,7 @@ class TimeProcessingView: UIView{
     
     let maxTextfield :  UITextField = {
         let textField  = UITextField()
-        textField.backgroundColor =  .secondarySystemBackground
+        textField.backgroundColor =  DesignConstants.secondaryColor
         textField.layer.cornerRadius =  4
         textField.text =  "3"
         textField.textAlignment = .center

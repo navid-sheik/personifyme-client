@@ -219,7 +219,9 @@ class CheckoutViewController :UIViewController{
     private var addressDetails: AddressViewController.AddressDetails?
     
     private var addressConfiguration: AddressViewController.Configuration {
-        return AddressViewController.Configuration(additionalFields: .init(phone: .optional))
+        var appearance = PaymentSheet.Appearance()
+        appearance.colors.primary = DesignConstants.primaryColor ?? UIColor.black
+        return AddressViewController.Configuration(additionalFields: .init(phone: .optional), appearance: appearance)
     }
     
     
@@ -235,7 +237,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Checkout"
         label.font = UIFont.boldSystemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -245,7 +247,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Shipping"
         label.font = UIFont.systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -266,7 +268,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Payment"
         label.font = UIFont.systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -289,7 +291,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Order Summary"
         label.font = UIFont.systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     let tableOrderSummary : DynamicTableView = {
@@ -321,7 +323,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Subtotal"
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -331,7 +333,7 @@ class CheckoutViewController :UIViewController{
         label.textAlignment = .right
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -341,7 +343,7 @@ class CheckoutViewController :UIViewController{
         
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -351,7 +353,7 @@ class CheckoutViewController :UIViewController{
         label.textAlignment = .right
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -361,7 +363,7 @@ class CheckoutViewController :UIViewController{
         label.text = "Tax"
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -371,7 +373,7 @@ class CheckoutViewController :UIViewController{
         label.textAlignment = .right
         label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor =  .lightGray
+        label.textColor =  DesignConstants.textColor
         return label
     }()
     
@@ -416,6 +418,7 @@ class CheckoutViewController :UIViewController{
         navigationItem.title = "Place Your Order"
         
         let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(handleDonePressed))
+        doneButton.tintColor = DesignConstants.primaryColor
         
         // Set the button to the right side of the navigation bar
         self.navigationItem.rightBarButtonItem = doneButton
@@ -529,9 +532,13 @@ class CheckoutViewController :UIViewController{
                     
                     // MARK: Create a PaymentSheet.FlowController instance
                     var configuration = PaymentSheet.Configuration()
+                    
+                    var appearance = PaymentSheet.Appearance()
+                    appearance.colors.primary = DesignConstants.primaryColor ?? UIColor.black
+                    configuration.appearance = appearance
                     configuration.merchantDisplayName = "PersonifyMe, Inc."
                     configuration.applePay = .init(
-                        merchantId: "com.foo.example", merchantCountryCode: "US")
+                        merchantId: "personify.me.com", merchantCountryCode: "US")
                     if let ephemeralKey =  ephemeralKey, let customerId = customerId{
                         configuration.customer = .init(id: customerId, ephemeralKeySecret: ephemeralKey)
                     }
@@ -659,7 +666,7 @@ class CheckoutViewController :UIViewController{
     }
     
     func updateBUtton(){
-        if let paymentOption = self.paymentSheetFlowController.paymentOption {
+        if let paymentOption = self.paymentSheetFlowController.paymentOption , let details  = addressDetails  {
             // Assuming the paymentOption has properties cardImage and lastFourDigits, you'd extract them here.
             // Adjust as per your actual paymentOption structure.
             let selectedCardImage = paymentOption.image // Example property

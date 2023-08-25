@@ -21,7 +21,14 @@ protocol AddTrackingControllerDelegate : class {
 class AddTrackingController: UIViewController {
     
     weak var delegate : AddTrackingControllerDelegate?
-    var order : OrderItem?
+    var order : OrderItem?{
+        didSet{
+            if let exstingTrackingObject =  order?.tracking {
+                self.carrier.text  =  exstingTrackingObject.carrier
+                self.trackingNumber.text  =  exstingTrackingObject.trackingNumber
+            }
+        }
+    }
     
     var indexPath : IndexPath?
     
@@ -44,9 +51,9 @@ class AddTrackingController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "ADD TRACKING"
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = UIFont.boldSystemFont(ofSize: 18)
         label.textAlignment = .center
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -132,6 +139,8 @@ class AddTrackingController: UIViewController {
     
     // MARK: - Properties
     // All properties and variables you need in your ViewController
+    
+  
     init() {
       
         super.init(nibName: nil, bundle: nil)
@@ -149,6 +158,7 @@ class AddTrackingController: UIViewController {
         updateButton.addTarget(self, action: #selector(handleUpdateButton), for: .touchUpInside)
         
         cancelBUtton.addTarget(self, action: #selector(handleClosePop), for: .touchUpInside)
+       
         
         setupUI()
     }
@@ -183,7 +193,7 @@ class AddTrackingController: UIViewController {
         
         
         
-        titleLabel.anchor( top: self.viewContainer.topAnchor, left:  self.viewContainer.leadingAnchor, right:  self.viewContainer.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10 ,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        titleLabel.anchor( top: self.viewContainer.topAnchor, left:  self.viewContainer.leadingAnchor, right:  self.viewContainer.trailingAnchor, bottom: nil, paddingTop: 25, paddingLeft: 10 ,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         carrier.anchor( top: self.titleLabel.bottomAnchor, left:  self.viewContainer.leadingAnchor, right:  self.viewContainer.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10 ,paddingRight: -10, paddingBottom: 0, width: nil, height: 40)
         
@@ -234,15 +244,14 @@ class AddTrackingController: UIViewController {
         let tracking = Tracking(tracking: trackingInfo)
         
         guard let orderId = order?.orderId else { return }
-        
+//        print(tracking)
         Service.shared.uploadTrackingNumber(to: orderId, with: tracking, expecting: ApiResponse<OrderItem>.self) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
                 guard let newOrder = response.data else { return }
-                print("Success")
-                
+    
                 DispatchQueue.main.async {
                     // Notify delegate of the updated values
                     self.delegate?.updateValue(courierName: carrier, trackingNumber: trackingNumber, order: newOrder, indexPath: self.indexPath)
@@ -299,5 +308,8 @@ extension AddTrackingController : UITextViewDelegate{
         textView.resignFirstResponder()
         return true
     }
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+
+    }
 }

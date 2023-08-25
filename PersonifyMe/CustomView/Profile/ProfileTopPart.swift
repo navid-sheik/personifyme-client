@@ -36,21 +36,21 @@ class ProfileTopPart : UIView {
     let  fullNameLabel : UILabel = {
         let label = UILabel()
         label.text = "Navid Sheikh"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
     let  countryLabel : UILabel = {
         let label = UILabel()
         label.text = "United Kingdom"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
     let  emailLabel : UILabel = {
         let label = UILabel()
         label.text = "navidsheikh54@gmail.com"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
@@ -61,7 +61,7 @@ class ProfileTopPart : UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.backgroundColor =  DesignConstants.secondaryColor
         
 
     
@@ -72,13 +72,13 @@ class ProfileTopPart : UIView {
         //Shop
         let shopList =  createImageStacker(imageName: "bag", title: "Shop")
         
-        shopList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
+        shopList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleShop)))
         //Reviews
         let reviewList =  createImageStacker(imageName: "star", title: "Reviews")
         reviewList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hadleUserReview)))
         //Messages
         let messageList =  createImageStacker(imageName: "message", title: "Messages")
-        messageList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleWishList)))
+        messageList.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleMessage)))
         
         let stackView = StackManager.createStackView(with: [wisthList, shopList, reviewList, messageList], axis: .horizontal, spacing: 0, distribution: .fillEqually, alignment: .center)
         
@@ -113,9 +113,9 @@ class ProfileTopPart : UIView {
    
     private func createImageStacker (imageName : String, title : String) -> UIStackView {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: imageName)
+        imageView.image = UIImage(systemName: imageName)?.withRenderingMode(.alwaysTemplate)
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .gray
+        imageView.tintColor = DesignConstants.primaryColor
         imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
         
@@ -129,7 +129,7 @@ class ProfileTopPart : UIView {
     }
     
     @objc func handleWishList(){
-        print ("Soemthihng")
+        delegate?.didTapWishList()
      
     }
     
@@ -137,5 +137,11 @@ class ProfileTopPart : UIView {
         delegate?.didTapReviews()
     }
     
+    @objc func handleShop(){
+        
+    }
+    @objc func handleMessage(){
+        print ("Upcoming")
+    }
     
 }

@@ -9,8 +9,9 @@ import Foundation
 import UIKit
 
 
+
 class RegisterController :  UIViewController {
-    
+    var completionHandler: ((Bool) -> Void)?
     
     // MARK: - Variables
     private let headerView = AuthHeaderView()
@@ -53,10 +54,21 @@ class RegisterController :  UIViewController {
         return button
     }()
     
+    private let backButton  :  UIButton =  {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        button.tintColor = DesignConstants.primaryColor
+        return button
+    }()
+    
+    
+    
     private let termsLabel : UITextView = {
         let tv = UITextView()
         
-        let attributedString = NSMutableAttributedString(string: "By registering, I conf irm I accept PersonifyMe’s Terms & Conditions,  have read the Privacy Policy,  and  at least 18 years old.")
+        
+        let attributedString = NSMutableAttributedString(string: "By registering, I confirm I accept PersonifyMe’s Terms & Conditions, have read the Privacy Policy.")
         attributedString.addAttribute(.link, value: "terms://termsAndConditions", range: (attributedString.string as NSString).range(of: "Terms & Conditions") )
         attributedString.addAttribute(.link, value: "privacy://privacyPolicy", range: (attributedString.string as NSString).range(of: "Privacy Policy") )
         
@@ -73,6 +85,7 @@ class RegisterController :  UIViewController {
         tv.textAlignment = .center
         tv.font = UIFont.systemFont(ofSize: 14)
         tv.isUserInteractionEnabled = true
+        tv.isEditable = false
 
    
    
@@ -118,6 +131,9 @@ class RegisterController :  UIViewController {
         self.usernameTextField.delegate = self
         self.nameTextField.delegate = self
         
+        self.navigationController?.navigationBar.isHidden = true
+        self.navigationController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DONE", style: .done, target: self, action: nil)
+        
         
         setUpViews()
     
@@ -133,6 +149,8 @@ class RegisterController :  UIViewController {
         
         
         
+        
+        
         view.addSubview(headerView)
         view.addSubview(nameTextField)
         view.addSubview(emailTextField)
@@ -142,29 +160,35 @@ class RegisterController :  UIViewController {
         view.addSubview(termsLabel)
         view.addSubview(signUp)
         view.addSubview(loginLabel)
+        view.addSubview(backButton)
+        
+        backButton.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, left: self.view.leadingAnchor, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: 40, height: 40)
         
         
-//
+
         
-        headerView.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 220)
+        let width  = self.view.frame.width * 0.8
+        headerView.anchor(top: backButton.bottomAnchor, left: nil, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: width, height: 100)
+        headerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         
-        nameTextField.anchor(top: headerView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        nameTextField.anchor(top: headerView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 30, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
-        emailTextField.anchor(top: nameTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        emailTextField.anchor(top: nameTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
-        usernameTextField.anchor(top: emailTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        usernameTextField.anchor(top: emailTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
-        passwordTextField.anchor(top: usernameTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        passwordTextField.anchor(top: usernameTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
-        passwordTextField2.anchor(top: passwordTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
-        
-        termsLabel.anchor(top: passwordTextField2.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 8, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 70)
-        
-        signUp.anchor(top: termsLabel.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        passwordTextField2.anchor(top: passwordTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
         
+        signUp.anchor(top: passwordTextField2.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 25, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
         
-        loginLabel.anchor(top: signUp.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 20, paddingRight: -20, paddingBottom: -20, width: nil, height: nil)
+        termsLabel.anchor(top: signUp.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
+        
+        
+        
+        loginLabel.anchor(top: nil, left: view.leadingAnchor, right: view.trailingAnchor, bottom: self.view.safeAreaLayoutGuide.bottomAnchor, paddingTop: 0, paddingLeft: 20, paddingRight: -20, paddingBottom: -20, width: nil, height: nil)
         
         
         
@@ -267,9 +291,13 @@ class RegisterController :  UIViewController {
                     DispatchQueue.main.async {
                         if verifed {
                             AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified, user_id: user_id, seller_id: seller_id)
+                            NotificationCenter.default.post(name: .userDidLogin, object: nil)
+                            strongSelf.completionHandler?(true)
                             strongSelf.dismiss(animated: true, completion: nil)
+                        
                         }else{
                             let vc = VerifyEmailViewController(email: email)
+                            vc.completionHandler = self?.completionHandler
                             strongSelf.navigationController?.pushViewController(vc, animated: true)
                             return
                         }
@@ -287,6 +315,12 @@ class RegisterController :  UIViewController {
         print("Login Label Tapped")
         self.navigationController?.popViewController(animated: true)
     }
+    
+    @objc func backButtonTapped(){
+        print("Back Button Tapped")
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
 }
 
@@ -319,6 +353,12 @@ extension RegisterController : UITextFieldDelegate{
 
         return true
     }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
 }
 
 

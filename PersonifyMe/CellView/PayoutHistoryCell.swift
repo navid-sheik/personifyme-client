@@ -17,9 +17,11 @@ class PayoutHistoryCell : CustomCell{
         didSet{
             guard let payout =  payout else {return}
             if payout.status == "paid"{
-                self.statusIcon.image = UIImage(systemName: "checkmark.circle")
+                self.statusIcon.image = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+                self.statusIcon.tintColor =  DesignConstants.primaryColor
             }else{
-                self.statusIcon.image = UIImage(systemName: "clock.fill")
+                self.statusIcon.image = UIImage(systemName: "clock.fill")?.withRenderingMode(.alwaysTemplate)
+                self.statusIcon.tintColor =  DesignConstants.primaryColor
             
             }
             if  let currecyCountry = GlobalArrays.currencySymbols[payout.currency.uppercased()]{
@@ -78,7 +80,7 @@ class PayoutHistoryCell : CustomCell{
     
     override func setUpCell() {
         contentView.addSubview(statusIcon)
-        statusIcon.anchor(top: nil, left: self.leadingAnchor, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 10, paddingRight: 0, paddingBottom: 0, width: 20, height: 20)
+        statusIcon.anchor(top: nil, left: self.leadingAnchor, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 10, paddingRight: 0, paddingBottom: 0, width: 24, height: 24)
         statusIcon.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         
         

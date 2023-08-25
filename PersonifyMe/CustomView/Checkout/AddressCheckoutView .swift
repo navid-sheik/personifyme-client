@@ -15,7 +15,8 @@ class AddressCheckoutView : UIView {
     private let plusButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.setImage(UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
         button.isSelected = false
         button.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         return button
@@ -32,8 +33,8 @@ class AddressCheckoutView : UIView {
     private let chevronImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: "chevron.right") // using SF Symbols for chevron
-        imageView.tintColor = .gray
+        imageView.image = UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = DesignConstants.primaryColor
         return imageView
     }()
     

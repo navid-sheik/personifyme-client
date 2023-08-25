@@ -22,7 +22,7 @@ class  OrderStatusPersonalization : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Personalization"
         label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -33,7 +33,7 @@ class  OrderStatusPersonalization : UITableViewCell{
 //        label.layer.borderColor =  UIColor.gray.cgColor
 //        label.layer.cornerRadius = 4
 //        label.layer.masksToBounds = true
-        
+        label.backgroundColor =  DesignConstants.secondaryColor
         label.isEditable = false
         label.text = ""
         label.textAlignment = .left
@@ -51,7 +51,7 @@ class  OrderStatusPersonalization : UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =   DesignConstants.secondaryColor
         setUpCell()
     }
     

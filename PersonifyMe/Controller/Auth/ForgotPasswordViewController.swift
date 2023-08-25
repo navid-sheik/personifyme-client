@@ -23,6 +23,15 @@ class ForgotPasswordController: UIViewController {
         return button
     }()
     
+    private let backButton  :  UIButton =  {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
+
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,21 +48,31 @@ class ForgotPasswordController: UIViewController {
         self.view.addSubview(headerView)
         self.view.addSubview(emailTextField)
         self.view.addSubview(resetPasswordButton)
+        self.view.addSubview(backButton)
         
         resetPasswordButton.addTarget(self, action: #selector(resetPasswordButtonTapped), for: .touchUpInside)
         
-        
-        
-        headerView.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 220)
-        
-        
-        emailTextField.anchor(top: headerView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 60)
-        
-        
-        resetPasswordButton.anchor(top: emailTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 60)
+        backButton.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, left: self.view.leadingAnchor, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: 40, height: 40)
         
         
         
+        let width  = self.view.frame.width * 0.8
+        headerView.anchor( top: backButton.bottomAnchor, left: nil, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: width, height: 100)
+        
+        headerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        emailTextField.anchor(top: headerView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
+        
+        
+        resetPasswordButton.anchor(top: emailTextField.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 20, paddingRight: -20, paddingBottom: 0, width: nil, height: 45)
+        
+        
+        
+    }
+    
+    @objc func backButtonTapped(){
+        print("Back Button Tapped")
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc private func resetPasswordButtonTapped(){
@@ -78,6 +97,12 @@ class ForgotPasswordController: UIViewController {
                 ErrorManager.handleServiceError(error, on: self)
             }
         }
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+
     }
     
     

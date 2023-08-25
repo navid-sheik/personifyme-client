@@ -55,7 +55,7 @@ class LabeledTextView: UIView, UITextViewDelegate {
 //        textView.layer.borderWidth = 1.0 // This sets the border width
 //        textView.layer.borderColor = UIColor.lightGray.cgColor // This sets the border color
         textView.textContainerInset = UIEdgeInsets(top: 8, left: 2, bottom: 8, right: 2)
-        let lighterGray = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+        let lighterGray = DesignConstants.secondaryColor
         textView.backgroundColor = lighterGray
 
 

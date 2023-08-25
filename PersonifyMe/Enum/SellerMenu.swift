@@ -31,7 +31,7 @@ enum SellerMenu : Int, CustomStringConvertible, CaseIterable {
         case .Listings:
             return "Listings"
         case .Messages:
-            return "Messages"
+            return "Balance"
         case .Reviews:
             return "Reviews"
         case .ListItem:
@@ -55,7 +55,7 @@ enum SellerMenu : Int, CustomStringConvertible, CaseIterable {
         case .Listings:
             return "pencil"
         case .Messages:
-            return "message.fill"
+            return "dollarsign.circle.fill"
         
         case .Reviews:
             return  "star.fill"

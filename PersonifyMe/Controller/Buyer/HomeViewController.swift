@@ -21,7 +21,9 @@ class HomeViewController: UIViewController {
     //MARK: ARRAYS
     
     var allproducts  =  [Product]()
+    var popularSearches =   [SearchQuery]()
     
+   
     
     
     
@@ -190,6 +192,7 @@ class HomeViewController: UIViewController {
          
         group.enter()
         fetchAllProducts()
+        fetchPopularSearches()
         
         group.leave()
         
@@ -225,6 +228,24 @@ class HomeViewController: UIViewController {
     }
     
     
+    func fetchPopularSearches (){
+        print("Print popualar searches ")
+        Service.shared.getPopularSearches(expecting: ApiResponse<[SearchQuery]>.self) { [weak self]  result in
+            guard let self  = self else {return}
+            switch result {
+                
+            case .success(let response):
+                guard let searchqueries  = response.data else {return}
+                self.popularSearches = searchqueries
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            case .failure(_):
+                print("Error fetching")
+            }
+        }
+        
+    }
     
     @objc private func didTapLogout(){
         Service.shared.logout(expecting: ApiResponse<String>.self) { [weak self] result in
@@ -262,8 +283,8 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
       
-//        collectionView.refreshControl = UIRefreshControl()
-//        collectionView.refreshControl?.addTarget(self, action: #selector(refreshingData), for: .valueChanged)
+        collectionView.refreshControl = UIRefreshControl()
+        collectionView.refreshControl?.addTarget(self, action: #selector(refreshingData), for: .valueChanged)
     }
     
     
@@ -581,16 +602,17 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
         if section == 0 {
             return 1
         }else if section == 1{
-            return allproducts.count
+            return min(allproducts.count, 3)
         }
         else if section == 2{
-            return 1
+            return allproducts.count > 0 ? 1 : 0
         }
         else if section == 3{
-            return 6
+            return max(0, allproducts.count - 3)
+            
         }
-        else if section == 3{
-            return 10
+        else if section == 4{
+            return popularSearches.count
         }
         return 10
 
@@ -601,7 +623,7 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
         
         if indexPath.section == 0 {
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: bannerIdentifierCell, for: indexPath) as! BannerCell
-            cell.mainImage.image =  UIImage(named: "placeholder")
+            cell.mainImage.image =  UIImage(named: "template2")
             return cell
         }else if   indexPath.section == 1{
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: cellNewArrivalsIdentifier, for: indexPath) as! ProductCell
@@ -616,15 +638,23 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
         else  if   indexPath.section == 2  {
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: cellNewArrivalsIdentifier, for: indexPath) as! ProductCell
             //        cell.tagName.text =  featuredIngredients[indexPath.row].strIngredient
+            
+            if allproducts.count > 0 {
+                       let lastElement = allproducts[allproducts.count - 1]
+                       cell.mainImage.loadImageUrlString(urlString: lastElement.images[0])
+                   }
             return cell
         }else if indexPath.section == 3{
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: cellNewArrivalsIdentifier, for: indexPath) as! ProductCell
             //        cell.tagName.text =  featuredIngredients[indexPath.row].strIngredient
+            
+            let product = allproducts[indexPath.row + 3]
+            cell.mainImage.loadImageUrlString(urlString: product.images[0])
             return cell
         }
         else if indexPath.section == 4{
             let cell  =  collectionView.dequeueReusableCell(withReuseIdentifier: tagCellIdenfier, for: indexPath) as! TagCell
-            cell.tagName.text =  "Something"
+            cell.tagName.text =  popularSearches[indexPath.row].query
             return cell
         }
         else {
@@ -678,7 +708,20 @@ extension HomeViewController :  UICollectionViewDataSource, UICollectionViewDele
             
             
             
+        }else if indexPath.section == 2{
+            let controller  = ProductViewController(product:  allproducts[allproducts.count - 1])
+            
+            navigationController?.pushViewController(controller, animated: true)
+            
+            
+        }else if indexPath.section == 3{
+            let controller  = ProductViewController(product:  allproducts[indexPath.row + 3])
+            
+            navigationController?.pushViewController(controller, animated: true)
+            
+            
         }
+        
     }
     
     

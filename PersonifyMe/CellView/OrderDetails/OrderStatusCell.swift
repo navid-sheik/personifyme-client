@@ -21,7 +21,7 @@ class  OrderStatusCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Status: Shipped"
         label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -30,7 +30,7 @@ class  OrderStatusCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Click the table view cell and in the attributes inspector under Table View Cell, change the drop down next "
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -40,7 +40,7 @@ class  OrderStatusCell : UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =  DesignConstants.secondaryColor
         setUpCell()
     }
     

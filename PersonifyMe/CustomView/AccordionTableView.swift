@@ -121,8 +121,11 @@ extension ExpandableTableView {
         headerView.contentView.backgroundColor = UIColor.systemGreen
         headerView.textLabel?.textColor = UIColor.white
 
-        let imageView = UIImageView(image: UIImage(systemName: sections[section].isExpanded ? "chevron.up" : "chevron.down"))
+        let imageView = UIImageView(image: UIImage(systemName: sections[section].isExpanded ? "chevron.up" : "chevron.down")?.withRenderingMode(.alwaysTemplate).withTintColor(DesignConstants.primaryColor!))
+        
+
         imageView.frame = CGRect(x: self.frame.size.width - 32, y: 13, width: 18, height: 18)
+        imageView.tintColor = DesignConstants.primaryColor
         headerView.addSubview(imageView)
         
         headerView.tag = section
@@ -212,13 +215,15 @@ class TextViewCell: UITableViewCell {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.masksToBounds = true
         textView.text = "Great things"
-        textView.textAlignment = .left
+        textView.textAlignment = .justified
         textView.textContainer.lineFragmentPadding = 0
         textView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         textView.font = UIFont.systemFont(ofSize: 14)
         textView.sizeToFit()
-        textView.isScrollEnabled = false
-        textView.isUserInteractionEnabled = false
+        textView.isScrollEnabled = true
+        textView.isUserInteractionEnabled = true
+        textView.isEditable = false
+   
         return textView
     }()
     
@@ -233,7 +238,7 @@ class TextViewCell: UITableViewCell {
     
     private func setupTextView() {
         contentView.addSubview(textView)
-        textView.anchor( top: topAnchor, left: leadingAnchor, right: trailingAnchor, bottom: bottomAnchor, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        textView.anchor( top: topAnchor, left: leadingAnchor, right: trailingAnchor, bottom: bottomAnchor, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
     
        
     }
@@ -327,7 +332,7 @@ class ExpandableTableViewV2: DynamicTableView, UITableViewDelegate, UITableViewD
             return UITableView.automaticDimension
         
         }
-        return 150
+        return 200
     }
     
     

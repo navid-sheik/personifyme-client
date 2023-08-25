@@ -56,7 +56,8 @@ class VariantCell: UITableViewCell {
     
     var addBUtton : UIButton = {
         let button =  UIButton()
-        button.setImage(UIImage(systemName:  "plus" ), for: .normal)
+        button.setImage(UIImage(systemName:  "plus" )?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -70,7 +71,7 @@ class VariantCell: UITableViewCell {
         let label = UILabel()
         label.text = "Options"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.lightGray
+        label.textColor = DesignConstants.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -79,7 +80,7 @@ class VariantCell: UITableViewCell {
         let label = UILabel()
         label.text = "Variant Name"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.lightGray
+        label.textColor = DesignConstants.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         label.sizeToFit()
         return label

@@ -25,7 +25,7 @@ class ProfilePaymentCell: CustomCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "***3875"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor =  DesignConstants.primaryColor
         return label
     }()
     
@@ -34,15 +34,15 @@ class ProfilePaymentCell: CustomCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Expires on 1/27"
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor =  DesignConstants.primaryColor
         return label
     }()
     
     let typeCard : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "creditcard.fill"), for: .normal)
-        button.tintColor = UIColor.systemGreen
+        button.setImage(UIImage(systemName: "creditcard.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
         return button
     }()
     
@@ -50,8 +50,8 @@ class ProfilePaymentCell: CustomCell {
     let editButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-        button.tintColor = UIColor.systemGreen
+        button.setImage(UIImage(systemName: "ellipsis")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
         return button
     }()
     
@@ -67,7 +67,7 @@ class ProfilePaymentCell: CustomCell {
     
     override func setUpCell() {
         super.setUpCell()
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =  DesignConstants.secondaryColor
         
         
         editButton.widthAnchor.constraint(equalToConstant: 30).isActive = true

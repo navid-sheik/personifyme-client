@@ -23,6 +23,11 @@ class   ShopViewController : UIViewController {
            
            
             DispatchQueue.main.async {
+                if self.products.isEmpty {
+                      self.productCollectionView.setEmptyMessage("You have 0 active listing")
+                  } else {
+                      self.productCollectionView.restore()
+                  }
                 self.shopProductsValue.text = "\(self.products.count)"
                 self.resultLabel.text =  "Results - \(self.products.count) items"
                 self.productCollectionView.reloadData()
@@ -36,7 +41,7 @@ class   ShopViewController : UIViewController {
                 
                 let average = ReviewManager.calculateAverageRating(from: self.reviews)
                 self.starRatingView.setRating(average)
-                self.averageReview.text =   "(\(average))"
+                self.averageReview.text =   "\(average)"
                 self.totalReview.text   =  "(\(self.reviews.count))"
                
             }
@@ -378,6 +383,8 @@ class   ShopViewController : UIViewController {
     private func fetchProducts  (){
         print(self.sellerId)
         
+     
+        
         Service.shared.getShopProducts(with: self.sellerId, expecting: ApiResponse<[Product]>.self) { [weak self] result in
             guard let self = self else {return}
         
@@ -496,7 +503,11 @@ class   ShopViewController : UIViewController {
         }
     }
     private func setUpNavigationBar(){
-        let rightButton  =  UIBarButtonItem(image: UIImage(systemName: "ellipsis"), style: .plain, target: self, action: #selector(didTapRightButton))
+        navigationItem.largeTitleDisplayMode =  .never
+        let rightButton  =  UIBarButtonItem(image: UIImage(systemName: "ellipsis")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(didTapRightButton))
+        
+        rightButton.tintColor = DesignConstants.primaryColor
+        
         self.navigationItem.rightBarButtonItem = rightButton
     }
     
@@ -514,10 +525,14 @@ class   ShopViewController : UIViewController {
 
         starRatingView.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4).isActive = true
 
-        reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .fill)
+        averageReview.sizeToFit()
+        totalReview.sizeToFit()
+        
+        reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .center)
 
+//        reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .fill)
         view.addSubview(reviewStackView)
-        reviewStackView.anchor(top: view.layoutMarginsGuide.topAnchor, left: shopImage.trailingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        reviewStackView.anchor(top: view.layoutMarginsGuide.topAnchor, left: shopImage.trailingAnchor, right: nil, bottom: nil, paddingTop: 10, paddingLeft: 5, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
 
         let productStack = StackManager.createStackViewWithLabels(with: [shopProductsValue, shopProducts])
         let orderStack = StackManager.createStackViewWithLabels(with: [shopOrdersValue, shopOrders])
@@ -541,7 +556,7 @@ class   ShopViewController : UIViewController {
         descriptionShopLabel.anchor(top: shopNameLabel.bottomAnchor, left: view.leadingAnchor, right: nil, bottom: nil, paddingTop: 8, paddingLeft: 10, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
 
         view.addSubview(separator)
-        separator.anchor(top: descriptionShopLabel.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10, paddingRight: 0, paddingBottom: 0, width: nil, height: 1)
+        separator.anchor(top: descriptionShopLabel.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: 1)
 
         view.addSubview(resultLabel)
         resultLabel.anchor(top: separator.bottomAnchor, left: view.leadingAnchor, right: nil, bottom: nil, paddingTop: 20, paddingLeft: 10, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
@@ -556,17 +571,25 @@ class   ShopViewController : UIViewController {
     
     
     @objc  func didTapFollowButton(){
-     
-        
-        guard let user_id  = UserDefaults.standard.object(forKey: "user_id") as? String else {return}
-        if ((shopInfo?.followers?.contains(user_id)) == true){
-            self.unfollowShop()
-    
+        performActionOrAuthorize { success in
+            if success {
+                guard let user_id  = UserDefaults.standard.object(forKey: "user_id") as? String else {return}
+                if ((self.shopInfo?.followers?.contains(user_id)) == true){
+                    self.unfollowShop()
             
-        }else {
-            self.followShop()
+                    
+                }else {
+                    self.followShop()
+                }
+                
+            }else {
+                print("Something wrong")
+            }
+        
         }
         
+        
+       
         
         
         
@@ -706,9 +729,13 @@ extension ShopViewController : UICollectionViewDelegateFlowLayout, UICollectionV
     }
     
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let product = products[indexPath.row]
+        let vc = ProductViewController(product: product)
+        self.navigationController?.pushViewController(vc, animated: true)
+    
+
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -8,8 +8,21 @@
 import Foundation
 import UIKit
 
+protocol  ProfileOrdersDelegate : class {
+    func didTapProduced()
+    func didTapToBeShipped()
+    func didTapDelivered()
+    func didTapRefund()
+}
+
+
+
 
 class ProfileOrders : UIView {
+    
+    weak var delegate : ProfileOrdersDelegate?
+    
+    
     
     
     //MARK: - PROPERTIES
@@ -18,7 +31,7 @@ class ProfileOrders : UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "My Orders"
-        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textColor = UIColor.black
         return label
     }()
@@ -29,7 +42,7 @@ class ProfileOrders : UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.backgroundColor =  DesignConstants.secondaryColor
         
         
         addSubview(ordersLabel)
@@ -40,21 +53,26 @@ class ProfileOrders : UIView {
     
         
         //To be shipped
-        let produced =  createImageStacker(imageName: "shippingbox.fill", title: "In Production")
+        let produced =  createImageStacker(imageName: "shippingbox", title: "In Production")
+        produced.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleProduced)))
         
         
         //Shipped Carrigae
-        let tobeshipped =  createImageStacker(imageName: "airplane", title: "Shipped")
+        let tobeshipped =  createImageStacker(imageName: "airplane.circle", title: "Shipped")
+        tobeshipped.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleToBeShipped)))
         
         
         //Delivered
         let delivered =  createImageStacker(imageName: "shippingbox", title: "Delivered")
-        
+        delivered.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hadleToBeDelivered)))
         
         
         
         //Refund
         let refund =  createImageStacker(imageName: "shippingbox", title: "Refund")
+        
+        refund.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleToBeRefund)))
+        
         
         
       
@@ -74,9 +92,9 @@ class ProfileOrders : UIView {
     
     private func createImageStacker (imageName : String, title : String) -> UIStackView {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: imageName)
+        imageView.image = UIImage(systemName: imageName)?.withRenderingMode(.alwaysTemplate)
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .gray
+        imageView.tintColor = DesignConstants.primaryColor
         imageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         imageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
         
@@ -88,6 +106,25 @@ class ProfileOrders : UIView {
     
         return stackView
     }
+    
+    
+    @objc func handleProduced(){
+        delegate?.didTapProduced()
+    }
+    
+    @objc func handleToBeShipped(){
+        delegate?.didTapToBeShipped()
+        
+    }
+    @objc func hadleToBeDelivered(){
+        delegate?.didTapDelivered()
+        
+    }
+    @objc func handleToBeRefund(){
+        
+        delegate?.didTapRefund()
+    }
+    
     
     
 }

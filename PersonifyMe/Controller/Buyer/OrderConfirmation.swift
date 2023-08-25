@@ -42,9 +42,9 @@ class OrderConfirmation: UIViewController {
     // Here you add all components
     let thankyouLabel : UILabel = {
         let label = UILabel()
-        label.text = "Thank You"
+        label.text = "Thank you"
         label.font = UIFont.systemFont(ofSize: 30)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.textAlignment = .center
         return label
     }()
@@ -52,10 +52,10 @@ class OrderConfirmation: UIViewController {
     let descriptionLabel : UILabel = {
         let label = UILabel()
         label.text = """
-Hi User, we're getting your order ready to be shipped. We will notify you when it has been sent. Please allow  (*-* days) business days for the production as the item is made especially for you.
+Hi User, we're getting your order ready to be shipped. We will notify you when it has been sent. Please allow 7-10 business days for the production as the item is made especially for you.
 """
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -81,7 +81,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Subtotal:"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -90,7 +90,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$0.00"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -100,7 +100,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Shipping:"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -110,7 +110,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$0.00"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -120,7 +120,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Total:"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -129,7 +129,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$0.00"
         label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -138,7 +138,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Customer Information"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -148,7 +148,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Shipping Address"
         label.font = UIFont.boldSystemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -158,7 +158,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Navid Sheikh \n86 Ferenz Road,E61LL\n London United Kingdom,\n+447405341412"
         label.font = UIFont.boldSystemFont(ofSize: 10)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 0
         return label
     }()
@@ -170,7 +170,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
 //        label.translatesAutoresizingMaskIntoConstraints = false
 //        label.text = "Billing Address"
 //        label.font = UIFont.boldSystemFont(ofSize: 12)
-//        label.textColor = UIColor.gray
+//        label.textColor = DesignConstants.textColor
 //        return label
 //    }()
 //
@@ -180,7 +180,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
 //        label.translatesAutoresizingMaskIntoConstraints = false
 //        label.text = "Navid Sheikh \n86 Ferenz Road,E61LL\n London United Kingdom,\n+447405341412"
 //        label.font = UIFont.boldSystemFont(ofSize: 10)
-//        label.textColor = UIColor.gray
+//        label.textColor = DesignConstants.textColor
 //        label.numberOfLines = 0
 //        return label
 //    }()
@@ -307,7 +307,7 @@ Hi User, we're getting your order ready to be shipped. We will notify you when i
         
         contentView.addSubview(thankyouLabel)
         
-        thankyouLabel.anchor( top: contentView.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 30, paddingLeft: 10 ,paddingRight: 0, paddingBottom: -10, width: nil, height: nil)
+        thankyouLabel.anchor( top: contentView.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 40, paddingLeft: 10 ,paddingRight: 0, paddingBottom: -10, width: nil, height: nil)
         
         contentView.addSubview(descriptionLabel)
         descriptionLabel.anchor( top: thankyouLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)

@@ -21,6 +21,13 @@ class ManageListingController: UIViewController {
     var products: [Product] = []{
         didSet{
             DispatchQueue.main.async {
+                if self.products.isEmpty {
+                      self.productCollectionView.setEmptyMessage("You have 0 active listing")
+                  } else {
+                      self.productCollectionView.restore()
+                  }
+                
+                self.totalItemslabel.text = "Total - \(self.products.count) Items"
                 self.productCollectionView.reloadData()
             }
         }
@@ -33,7 +40,7 @@ class ManageListingController: UIViewController {
         let label = UILabel()
         label.text  =  "Total - 0 Items"
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -47,7 +54,8 @@ class ManageListingController: UIViewController {
     
     let filterButton : UIButton =  {
         let button  =  UIButton()
-        button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
+        button.setImage(UIImage(systemName: "slider.horizontal.3")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor =  DesignConstants.primaryColor
         return button
     }()
     
@@ -94,9 +102,9 @@ class ManageListingController: UIViewController {
         searchBar.delegate = self
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal
-        searchBar.showsBookmarkButton = true
+        searchBar.showsBookmarkButton = false
         
-        searchBar.setImage(UIImage(systemName: "slider.horizontal.3"), for: .bookmark, state: .normal)
+        
 
 
 
@@ -104,7 +112,7 @@ class ManageListingController: UIViewController {
     
     
     private func setUpNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode =  .always
         navigationItem.title = "Listings"
 //        let appearance = UINavigationBarAppearance()
 //        appearance.configureWithOpaqueBackground()
@@ -174,6 +182,7 @@ class ManageListingController: UIViewController {
                 guard let products  =  response.data else {return}
                 print(products)
                 self.products =  products
+            
                 
             
             case .failure(let error):
@@ -206,6 +215,7 @@ extension ManageListingController : UICollectionViewDelegateFlowLayout, UICollec
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let product = products[indexPath.row]
         let controller = AddListingViewController()
+        controller.delegate = self
         controller.product = product
         navigationController?.pushViewController(controller, animated: true)
     
@@ -304,5 +314,21 @@ extension ManageListingController :  ProduceCellSellerDelegate{
         // Replace 'self' with the view controller on which you want to present the alert
         self.present(alertController, animated: true, completion: nil)
     }
+    
+}
+
+
+extension ManageListingController:  UpdateListingDelegate{
+    func deleteItemsWithId(productId: String) {
+        if let index = products.firstIndex(where: { ($0.productId == productId )}) {
+                // Remove the item from data source
+                products.remove(at: index)
+                
+                // Remove the cell from collection view with animation
+                let indexPath = IndexPath(item: index, section: 0)
+                productCollectionView.deleteItems(at: [indexPath])
+            }
+    }
+    
     
 }

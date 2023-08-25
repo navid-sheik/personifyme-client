@@ -37,7 +37,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Balance:"
         label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -48,7 +48,7 @@ class BalanceViewController: UIViewController {
         label.text = "$0.00 USD"
         label.textAlignment =  .right
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -59,7 +59,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Available:"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -69,7 +69,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$0.00 USD"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.textAlignment =  .right
         return label
     }()
@@ -80,7 +80,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Payout:"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -90,7 +90,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$0.00 USD"
         label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.textAlignment =  .right
         return label
     }()
@@ -104,7 +104,7 @@ class BalanceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Payout History"
         label.font = UIFont.systemFont(ofSize: 24)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -131,8 +131,8 @@ class BalanceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
-        navigationItem.title = "Balance"
-        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.title = "Your Account Balance"
+        navigationItem.largeTitleDisplayMode =  .always
         
         setupCollectionView()
         setupUI()
@@ -167,7 +167,7 @@ class BalanceViewController: UIViewController {
         
         let mainStack  = StackManager.createStackView(with: [balanceStack, availableStack, payoutStack], axis: .vertical, spacing: 10, distribution: .fillProportionally, alignment: .fill)
         
-        mainStack.layer.borderColor =  UIColor.gray.cgColor
+        mainStack.layer.borderColor =  DesignConstants.textColor.cgColor
         mainStack.layer.borderWidth = 0.5
         mainStack.layer.cornerRadius =  5
         mainStack.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -175,7 +175,7 @@ class BalanceViewController: UIViewController {
         
         view.addSubview(mainStack)
         
-        mainStack.anchor( top: view.safeAreaLayoutGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        mainStack.anchor( top: view.safeAreaLayoutGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
 
         view.addSubview(payoutHistoryPlaceholder)
@@ -223,8 +223,8 @@ class BalanceViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.stripePayouts =  payout.payouts
-                    self.availableValue.text =  "\(StripeManager.convertStripeAmountToDouble(payout.totalPendingPayouts))"
-                    self.payoutValue.text =  "\(StripeManager.convertStripeAmountToDouble(payout.totalBalancePaidOut))"
+                    self.availableValue.text =  "$\(StripeManager.convertStripeAmountToDouble(payout.totalPendingPayouts))"
+                    self.payoutValue.text =  "$\(StripeManager.convertStripeAmountToDouble(payout.totalBalancePaidOut))"
                     
                 
                 }

@@ -90,9 +90,9 @@ class StarRatingView: UIView {
     
     private var selectedRate: Int = 0
 
-    private var emptyStarImage = UIImage(systemName: "star")
-    private var filledStarImage = UIImage(systemName: "star.fill")
-    private var halfFilledStarImage = UIImage(systemName: "star.leadinghalf.fill")
+    private var emptyStarImage = UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate)
+    private var filledStarImage = UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate)
+    private var halfFilledStarImage = UIImage(systemName: "star.leadinghalf.fill")?.withRenderingMode(.alwaysTemplate)
 
     var rating: Int {
         return selectedRate
@@ -140,6 +140,7 @@ class StarRatingView: UIView {
     private func makeStarIcon() -> UIImageView {
         let imageView = UIImageView(image: emptyStarImage, highlightedImage: filledStarImage)
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor =  DesignConstants.primaryColor
         imageView.isUserInteractionEnabled = true
         return imageView
     }

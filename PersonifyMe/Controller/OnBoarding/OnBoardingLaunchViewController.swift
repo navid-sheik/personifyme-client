@@ -165,6 +165,44 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
         self.view.backgroundColor = .systemBackground
         navigationController?.navigationBar.isHidden =  true
     
+
+    }
+    
+   
+    
+    override func setupAuthenticatedUI() {
+        super.setupAuthenticatedUI()
+        
+        if  let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String{
+            
+            Service.shared.getSellerOnBoardingStatus(expecting: ApiResponse<OnBoardingData>.self) { [weak self] result in
+                switch result{
+                    
+                    
+                case .success(let response):
+                    guard let infoData = response.data else {return}
+                    DispatchQueue.main.async {  [weak self]  in
+                  
+                        self?.delegate?.updateTabController(onBoardingData: infoData)
+                       
+                       
+                        
+                    }
+                    
+                case .failure(_):
+                    print("Seller doesn't existing continue to the onboarding")
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+        
+
+        
+        
         countryTextField.delegate = self
         
 //        pickerContainerView.layer.borderColor = UIColor.black.cgColor
@@ -173,10 +211,22 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
 //        countryPicker.layer.borderWidth = 1
 //        countryPicker.layer.borderColor = UIColor.lightGray.cgColor
 //        countryPicker.layer.cornerRadius = 10
-        setupPickerView()
+//        setupPickerView()
         timer = Timer.scheduledTimer(timeInterval: 30.0, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
         becomeSellerButton.addTarget(self, action: #selector(handleCreatingSellerAccount), for: .touchUpInside)
+       }
+       
+    override func teardownAuthenticatedUI() {
+        super.teardownAuthenticatedUI()
+       // Remove or hide UI elements that should not be visible when not authenticated
+       
+       // For example, remove gesture recognizers, hide certain subviews, etc.
+     
+       
+       // Additional teardown logic as needed
     }
+    
+    
     
 //    override func viewWillAppear(_ animated: Bool) {
 //        super.viewWillAppear(animated)
@@ -237,34 +287,34 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
        
     }
     
-    func setupPickerView() {
-       
-           countryPicker.delegate = self
-        countryPicker.dataSource = self
-
-        
-           pickerContainerView = UIView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: 200))
-           pickerContainerView.backgroundColor = UIColor.systemBackground
-
-        
-        
-           pickerContainerView.addSubview(countryPicker)
-           countryPicker.translatesAutoresizingMaskIntoConstraints = false
-           NSLayoutConstraint.activate([
-            countryPicker.topAnchor.constraint(equalTo: pickerContainerView.topAnchor),
-            countryPicker.leftAnchor.constraint(equalTo: pickerContainerView.leftAnchor),
-            countryPicker.rightAnchor.constraint(equalTo: pickerContainerView.rightAnchor),
-            countryPicker.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor)
-           ])
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                window.addSubview(pickerContainerView)
-                // use the window here
-        }
-           
-         
-       }
-    
+//    func setupPickerView() {
+//
+//           countryPicker.delegate = self
+//        countryPicker.dataSource = self
+//
+//
+//           pickerContainerView = UIView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: 200))
+//           pickerContainerView.backgroundColor = UIColor.systemBackground
+//
+//
+//
+//           pickerContainerView.addSubview(countryPicker)
+//           countryPicker.translatesAutoresizingMaskIntoConstraints = false
+//           NSLayoutConstraint.activate([
+//            countryPicker.topAnchor.constraint(equalTo: pickerContainerView.topAnchor),
+//            countryPicker.leftAnchor.constraint(equalTo: pickerContainerView.leftAnchor),
+//            countryPicker.rightAnchor.constraint(equalTo: pickerContainerView.rightAnchor),
+//            countryPicker.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor)
+//           ])
+//            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//               let window = windowScene.windows.first(where: { $0.isKeyWindow }) {
+//                window.addSubview(pickerContainerView)
+//                // use the window here
+//        }
+//
+//
+//       }
+//
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
@@ -302,14 +352,14 @@ class OnBoardingLaunchViewController: RestrictedController, UITextFieldDelegate 
 //                        return
 //                    }
                 
+                   
+                
                     if success == "success" {
-//                            DispatchQueue.main.async {
-//                                
-//                                let stripeLinkVC = OnBoardingLinkViewController()
-//                                
-//                                self.navigationController?.pushViewController(stripeLinkVC, animated: true)
-//                                
-//                            }
+                            //First time setting the seller id 
+                            if  let seller_info = response.data {
+                                UserDefaults.standard.set(seller_info.seller_id, forKey: "seller_id")
+                            }
+                    
                             self.showSeller()
                         
                         
@@ -417,36 +467,74 @@ extension OnBoardingLaunchViewController{
 
 
 extension OnBoardingLaunchViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-         textField.resignFirstResponder()
-         UIView.animate(withDuration: 0.3, animations: {
-             self.pickerContainerView.frame.origin.y -= self.pickerContainerView.frame.size.height
-         })
-     }
-     
-     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-         if pickerView.isFirstResponder{
-             pickerView.endEditing(true)
-         }
-         countryTextField.text = countries[row].0// Store the country code
-         UIView.animate(withDuration: 0.3, animations: {
-             self.pickerContainerView.frame.origin.y += self.pickerContainerView.frame.size.height
-         })
-     }
-     
-     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-         return countries[row].0  // Show the country name and flag
-     }
-     
-     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-         return 1
-     }
-     
-     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-         return countries.count
-     }
     
-   
+    // Invoked when the view's layout is complete
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // Initialize your pickerContainerView frame here if needed
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+        
+        // Initialize picker and container here
+        let countryPicker = UIPickerView()
+        
+        pickerContainerView = UIView(frame: CGRect(x: 0, y: self.view.frame.size.height, width: self.view.frame.size.width, height: 150))
+        pickerContainerView.backgroundColor = UIColor.systemBackground
+        
+        countryPicker.delegate = self
+        countryPicker.dataSource = self
+        countryPicker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        pickerContainerView.backgroundColor = UIColor.red
+//        countryPicker.backgroundColor = UIColor.green
+        
+        pickerContainerView.addSubview(countryPicker)
+        countryPicker.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            countryPicker.topAnchor.constraint(equalTo: pickerContainerView.topAnchor),
+            countryPicker.bottomAnchor.constraint(equalTo: pickerContainerView.bottomAnchor),
+            countryPicker.leadingAnchor.constraint(equalTo: pickerContainerView.leadingAnchor),
+            countryPicker.trailingAnchor.constraint(equalTo: pickerContainerView.trailingAnchor)
+        ])
+        // Add to the view hierarchy
+        self.view.addSubview(pickerContainerView)
+        
+        
+        animatePicker(show: true)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        countryTextField.text = countries[row].0
+        animatePicker(show: false)
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return countries[row].0
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return countries.count
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func animatePicker(show: Bool) {
+        let height = pickerContainerView.frame.size.height
+        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            guard let self = self else { return }
+            self.pickerContainerView.frame.origin.y += (show ? -height : height)
+        }) { [weak self] (completed) in
+            guard let self = self else { return }
+            if !show {
+                self.pickerContainerView.removeFromSuperview()
+            }
+        }
+    }
 }
 
 

@@ -34,10 +34,10 @@ class SellerMenuCell: CustomCell {
     
     let containingVieww : UIView =  {
         let view  =  UIView()
-        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.layer.borderColor =  DesignConstants.primaryColor?.cgColor
         view.layer.borderWidth =  1
         view.layer.cornerRadius = 2
-      
+
         return view
     }()
     
@@ -47,7 +47,7 @@ class SellerMenuCell: CustomCell {
     
     override func setUpCell() {
         super.setUpCell()
-        
+        containingVieww.backgroundColor  = DesignConstants.secondaryColor
         addSubview(containingVieww)
         
         

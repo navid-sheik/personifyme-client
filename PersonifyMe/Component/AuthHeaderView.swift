@@ -21,7 +21,7 @@ class AuthHeaderView : UIView {
     
     private let imageView : UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
+        imageView.image = UIImage(named: "logomain_black")
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -68,24 +68,28 @@ class AuthHeaderView : UIView {
     
     private func setUpViews (){
         addSubview(imageView)
-        addSubview(titleLabel)
+//        addSubview(titleLabel)
 //        addSubview(subTitleLabel)
         
+        
+        
+        
+        imageView.anchor(top: self.topAnchor, left: self.leadingAnchor, right: self.trailingAnchor, bottom: self.bottomAnchor, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
      
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 30),
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 100),
-            imageView.widthAnchor.constraint(equalToConstant: 100),
-           
-            
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-//            
-//            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
-//            subTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
-            
-        ])
+//        NSLayoutConstraint.activate([
+//            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 30),
+//            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+//            imageView.heightAnchor.constraint(equalToConstant: 100),
+//            imageView.widthAnchor.constraint(equalToConstant: 100),
+//
+//
+//            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
+//            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+////
+////            subTitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
+////            subTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+//
+//        ])
     }
     
     

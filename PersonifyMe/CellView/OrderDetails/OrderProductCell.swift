@@ -8,15 +8,27 @@
 import Foundation
 import UIKit
 
-
+protocol OrderProductCellDelegate : class{
+    func showTrackOrderPage()
+}
 
 class OrderProductCell : UITableViewCell{
+    weak var delegate  :OrderProductCellDelegate?
     var orderItem : OrderItem?{
         didSet{
             guard let orderItem = orderItem else {return}
             self.orderItems = [orderItem]
             DispatchQueue.main.async {
                 self.totalPriceValue.text =  "$\(orderItem.total)"
+                if  let tracking =  orderItem.tracking{
+                    self.trackOrder.setTitle("Track Order", for: .normal)
+                    self.trackOrder.isEnabled = true
+                    
+                }else {
+                    self.trackOrder.setTitle("No Available", for: .normal)
+                    self.trackOrder.isEnabled = false
+
+                }
                 
             }
             
@@ -33,7 +45,7 @@ class OrderProductCell : UITableViewCell{
     let singleOrderProductIdentifier : String = "singleOrderProductIdentifier"
     
     
-
+    
     
     
     let shopLabel : UILabel = {
@@ -41,10 +53,11 @@ class OrderProductCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "My Shop"
         label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 1
         return label
     }()
+    
     
     
    
@@ -54,7 +67,7 @@ class OrderProductCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Total:"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -63,7 +76,7 @@ class OrderProductCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$59.90"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -113,7 +126,8 @@ class OrderProductCell : UITableViewCell{
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor = DesignConstants.secondaryColor
+        self.trackOrder.addTarget(self, action: #selector(showTracking), for: .touchUpInside)
         setUpTableView()
         setupUI()
     }
@@ -165,7 +179,7 @@ class OrderProductCell : UITableViewCell{
         
         
         
-        
+    
         
 //
 //
@@ -178,6 +192,10 @@ class OrderProductCell : UITableViewCell{
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func showTracking (){
+        delegate?.showTrackOrderPage()
     }
     
     

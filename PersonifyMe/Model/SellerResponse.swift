@@ -14,10 +14,17 @@ struct SellerResponse : Codable{
 }
 
 struct SellerResult : Codable {
-    var id: String
+    var seller_id: String
     var hasStartedOnboarding: Bool
     var hasCompletedOnboarding: Bool
   
+    
+    enum CodingKeys: String, CodingKey {
+        case seller_id = "id"
+        case hasStartedOnboarding
+        case hasCompletedOnboarding
+    }
+    
   
     
 }

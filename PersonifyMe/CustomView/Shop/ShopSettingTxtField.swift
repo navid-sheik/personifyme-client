@@ -69,6 +69,7 @@ class ShopSettingTxtField : UIView {
                 textField.isEnabled = false
         
         textField.text = value
+        titleLabel.text =  title
                  
                 setUpView()
            

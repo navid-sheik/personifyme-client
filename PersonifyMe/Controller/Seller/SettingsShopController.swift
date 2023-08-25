@@ -72,10 +72,9 @@ class SettingsShopController: UIViewController {
     let editImaeButton : UIButton =  {
         let button =  UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "pencil"), for: .normal)
+        button.setImage(UIImage(systemName: "pencil")?.withRenderingMode(.alwaysTemplate), for: .normal)
        
-
-        
+        button.tintColor =  DesignConstants.primaryColor
         return button
     }()
     

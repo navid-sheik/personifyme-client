@@ -26,7 +26,7 @@ class ManagerOrderHeader : UITableViewHeaderFooterView {
     
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor = .black
+        self.contentView.backgroundColor = DesignConstants.primaryColor
         
     
         self.addSubview(toBeShipped)

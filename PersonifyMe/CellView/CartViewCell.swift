@@ -48,7 +48,7 @@ class CartViewCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "A Unique Embodiment of Your Personal Style,Crafted with Precision, Simple Kind Something"
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         label.numberOfLines = 2
         return label
     }()
@@ -58,7 +58,7 @@ class CartViewCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "$150.22"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -67,7 +67,7 @@ class CartViewCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Black/Somethign"
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -76,7 +76,7 @@ class CartViewCell : UITableViewCell{
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.text = "Text: My Name is navid"
         textView.font = UIFont.systemFont(ofSize: 12)
-        textView.textColor = UIColor.gray
+        textView.textColor = DesignConstants.textColor
         textView.numberOfLines = 0
         return textView
     }()
@@ -84,7 +84,7 @@ class CartViewCell : UITableViewCell{
     let deleteButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "xmark.square"), for: .normal)
+        button.setImage(UIImage(systemName: "xmark.square")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .systemRed
         return button
     }()
@@ -92,7 +92,7 @@ class CartViewCell : UITableViewCell{
     let addQuantityButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.setImage(UIImage(systemName: "plus")?.withRenderingMode(.alwaysTemplate), for: .normal)
         button.tintColor = .systemBlue
 //        button.backgroundColor = .systemGray4
         return button
@@ -104,7 +104,7 @@ class CartViewCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "1"
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor =  DesignConstants.primaryColor
         label.textAlignment = .center
         return label
     }()
@@ -112,8 +112,8 @@ class CartViewCell : UITableViewCell{
     let removeQuantityButton : UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "minus"), for: .normal)
-        button.tintColor = .systemBlue
+        button.setImage(UIImage(systemName: "minus")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
 //        button.backgroundColor = .systemGray4
         return button
     }()

@@ -109,6 +109,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             } else {
                                 
                                 let navReset = UINavigationController(rootViewController: resetPasswordController)
+                                navReset.modalPresentationStyle = .fullScreen
                                 topController.present(navReset, animated: true, completion: nil)
                             }
                         }

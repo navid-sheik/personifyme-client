@@ -44,15 +44,17 @@ class ReviewProductHeader: UIView {
         let label = UILabel()
         label.text = "Custom Review"
         label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.lightGray
+        label.textColor = DesignConstants.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     let plusButton : UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(systemName:  "plus" ), for: .normal)
+        button.setImage(UIImage(systemName:  "plus" )?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor =  DesignConstants.primaryColor
         button.translatesAutoresizingMaskIntoConstraints = false
+        
         return button
     }()
     
@@ -68,7 +70,7 @@ class ReviewProductHeader: UIView {
         let label = UILabel()
         label.text = "0.0 out of 5"
         label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.lightGray
+        label.textColor = DesignConstants.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -77,7 +79,7 @@ class ReviewProductHeader: UIView {
         let label = UILabel()
         label.text = "Total 0 Reviews"
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.lightGray
+        label.textColor = DesignConstants.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

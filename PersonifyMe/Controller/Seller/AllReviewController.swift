@@ -36,6 +36,22 @@ class AllReviewController: UIViewController {
     var reviews : [Review] = []{
         didSet{
             DispatchQueue.main.async {
+                if self.reviews.isEmpty {
+                    switch self.typeReview{
+                        
+                    case .product:
+                        self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                    case .shop:
+                        self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                    case .user_logged:
+                        self.reviewTable.setEmptyMessage("You have left 0 reviews")
+                    case .seller:
+                        self.reviewTable.setEmptyMessage("You have received  0 reviews")
+                    }
+                     
+                  } else {
+                      self.reviewTable.restore()
+                  }
                 self.reviewTable.reloadData()
                 self.reviewTable.layoutIfNeeded()
             }
@@ -123,11 +139,16 @@ class AllReviewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+        navigationItem.largeTitleDisplayMode =  .never
+        
        
         setUpTableRevieew()
         setupUI()
         fetchReview()
+        
     }
+    
+    
     
 
     
@@ -136,8 +157,44 @@ class AllReviewController: UIViewController {
     func fetchReview(){
         switch typeReview {
         case .product:
+            if self.reviews.isEmpty {
+                switch self.typeReview{
+                    
+                case .product:
+                    self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                case .shop:
+                    self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                case .user_logged:
+                    self.reviewTable.setEmptyMessage("You have left 0 reviews")
+                case .seller:
+                    self.reviewTable.setEmptyMessage("You have received  0 reviews")
+                }
+                 
+              } else {
+                  self.reviewTable.restore()
+              }
+            self.reviewTable.reloadData()
+            self.reviewTable.layoutIfNeeded()
             return
         case .shop:
+            if self.reviews.isEmpty {
+                switch self.typeReview{
+                    
+                case .product:
+                    self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                case .shop:
+                    self.reviewTable.setEmptyMessage("This has received 0 reviews")
+                case .user_logged:
+                    self.reviewTable.setEmptyMessage("You have left 0 reviews")
+                case .seller:
+                    self.reviewTable.setEmptyMessage("You have received  0 reviews")
+                }
+                 
+              } else {
+                  self.reviewTable.restore()
+              }
+            self.reviewTable.reloadData()
+            self.reviewTable.layoutIfNeeded()
             return
         case .user_logged:
             getCurrentUserReviews()
@@ -195,7 +252,6 @@ class AllReviewController: UIViewController {
     private func setupUI() {
         // Set up all UI elements here
         view.addSubview(reviewTable)
-        
         reviewTable.anchor( top: view.safeAreaLayoutGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: view.bottomAnchor, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
         
     }

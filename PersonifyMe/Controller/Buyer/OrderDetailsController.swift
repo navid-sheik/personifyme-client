@@ -136,6 +136,7 @@ class OrderDetailsController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+//        trackOrder.addTarget(self, action: #selector(handleTrackOrder), for: .touchUpInside)
         setUpTableView()
         setupUI()
         
@@ -210,7 +211,7 @@ class OrderDetailsController: UIViewController {
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
-    
+
     // MARK: - Navigation
     // Segue preparations and related stuff
     
@@ -255,6 +256,8 @@ extension OrderDetailsController : UITableViewDelegate, UITableViewDataSource{
               let cell = tableView.dequeueReusableCell(withIdentifier: productinfoCellIdentifier, for: indexPath) as! OrderProductCell
               cell.orderItem = orderItem
               // configure your cell if needed
+          
+              cell.delegate = self
               return cell
           }else if indexPath.section == 2 {
            let cell = tableView.dequeueReusableCell(withIdentifier: orderPersonalizationCellIdentifier, for: indexPath) as! OrderStatusPersonalization
@@ -264,6 +267,7 @@ extension OrderDetailsController : UITableViewDelegate, UITableViewDataSource{
               cell.personalization.text = "\(personalizationText )"
   
           }
+              
            return cell
        }else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: orderInfoCellIdentifier, for: indexPath) as! OrderInfoCell
@@ -298,6 +302,20 @@ extension OrderDetailsController : UITableViewDelegate, UITableViewDataSource{
         return emptyView
     }
 
+    
+    
+}
+
+extension OrderDetailsController :  OrderProductCellDelegate{
+    func showTrackOrderPage() {
+        print("Showing trackign")
+        guard let orderItem = self.orderItem else {return}
+        
+        let vc  = TrackingBuyerController(order: orderItem)
+        vc.modalPresentationStyle = .overCurrentContext
+        self.definesPresentationContext = true
+        self.present(vc, animated: true, completion: nil)
+    }
     
     
 }

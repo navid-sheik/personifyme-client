@@ -14,6 +14,8 @@ class LoginViewController : UIViewController{
     // MARK: - Variables
 //    private let viewMOdel = LoginViewModel()
     
+    var completionHandler: ((Bool) -> Void)?
+    
     
     private let headerView = AuthHeaderView()
     
@@ -37,13 +39,26 @@ class LoginViewController : UIViewController{
         return button
     }()
     
+    private let backButton  :  UIButton =  {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        button.tintColor = DesignConstants.primaryColor
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
+
+    
+
+    
     private let forgetPasswordLabel : UILabel = {
         let label = UILabel()
         label.text = "Forget Password?"
-        label.textColor = .systemBlue
+        label.textColor = DesignConstants.primaryColor
         label.textAlignment = .center
-        label.font = UIFont(name: "HelveticaNeue-Bold", size: 16)
+        label.font = UIFont.systemFont(ofSize: 14)
         label.isUserInteractionEnabled = true
+
    
    
         return label
@@ -53,7 +68,7 @@ class LoginViewController : UIViewController{
         let label = UILabel()
         let attributedString1 = NSAttributedString(string: "Don't have an account? ", attributes: [NSAttributedString.Key.foregroundColor : UIColor.black , NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize, weight: .light)])
 
-        let attributedString2 = NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.foregroundColor : UIColor.systemBlue, NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
+        let attributedString2 = NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.foregroundColor :  DesignConstants.primaryColor, NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)])
 
         let combinedAttributedString = NSMutableAttributedString()
         combinedAttributedString.append(attributedString1)
@@ -65,7 +80,7 @@ class LoginViewController : UIViewController{
     
         label.textAlignment = .center
        
-        label.font = UIFont(name: "HelveticaNeue-Bold", size: 16)
+        label.font = UIFont.systemFont(ofSize: 14)
         return label
     }()
     
@@ -80,7 +95,7 @@ class LoginViewController : UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.isHidden = true
+//        self.navigationController?.navigationBar.isHidden = true
         self.navigationController?.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "DONE", style: .done, target: self, action: nil)
         view.backgroundColor =  .systemBackground
         
@@ -106,7 +121,8 @@ class LoginViewController : UIViewController{
         view.addSubview(loginButton)
         view.addSubview(forgetPasswordLabel)
         view.addSubview(signUpLabel)
-        
+        view.addSubview(backButton)
+ 
         
         
         
@@ -119,7 +135,7 @@ class LoginViewController : UIViewController{
         
         
       
-      
+        backButton.translatesAutoresizingMaskIntoConstraints =  false
         headerView.translatesAutoresizingMaskIntoConstraints = false
         emailTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -139,39 +155,51 @@ class LoginViewController : UIViewController{
         
         
         
-        
+        let width  = self.view.frame.width * 0.8
         
         NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor, constant: 0),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            headerView.heightAnchor.constraint(equalToConstant: 270),
+            backButton.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            backButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            backButton.widthAnchor.constraint(equalToConstant: 40),
             
             
-            emailTextField.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 20),
+            
+            
+            
+            headerView.topAnchor.constraint(equalTo: self.backButton.bottomAnchor, constant: 0),
+//            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+//            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            headerView.widthAnchor.constraint(equalToConstant: width),
+            headerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: 100),
+            
+            
+            emailTextField.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 30),
             emailTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             emailTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            emailTextField.heightAnchor.constraint(equalToConstant: 50),
+            emailTextField.heightAnchor.constraint(equalToConstant: 45),
             
             passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
             passwordTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             passwordTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            passwordTextField.heightAnchor.constraint(equalToConstant: 50),
+            passwordTextField.heightAnchor.constraint(equalToConstant: 45),
             
             loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
             loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             loginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            loginButton.heightAnchor.constraint(equalToConstant: 50),
+            loginButton.heightAnchor.constraint(equalToConstant: 45),
             
             forgetPasswordLabel.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
             forgetPasswordLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             forgetPasswordLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            forgetPasswordLabel.heightAnchor.constraint(equalToConstant: 50),
+            forgetPasswordLabel.heightAnchor.constraint(equalToConstant: 45),
             
-            signUpLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            signUpLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             signUpLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             signUpLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            signUpLabel.heightAnchor.constraint(equalToConstant: 50)
+            signUpLabel.heightAnchor.constraint(equalToConstant: 45)
             
             
 
@@ -182,6 +210,11 @@ class LoginViewController : UIViewController{
         
         
         
+    }
+    
+    @objc func backButtonTapped(){
+        print("Back Button Tapped")
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc func loginButtonTapped(){
@@ -218,9 +251,12 @@ class LoginViewController : UIViewController{
                     DispatchQueue.main.async {
                         if verifed {
                             AuthManager.setUserDefaults(token: user_data.token, refresh_token: user_data.refreshToken, verified:  user_data.verified, user_id: user_id , seller_id: seller_id)
+                            NotificationCenter.default.post(name: .userDidLogin, object: nil)
+                            strongSelf.completionHandler?(true)
                             strongSelf.dismiss(animated: true, completion: nil)
                         }else{
                             let vc = VerifyEmailViewController(email: email)
+                            vc.completionHandler = self?.completionHandler
                             strongSelf.navigationController?.pushViewController(vc, animated: true)
                             return
                         }
@@ -244,8 +280,7 @@ class LoginViewController : UIViewController{
     
     @objc func signUpTapped(_ sender : UITapGestureRecognizer){
         print("Sign Up Tapped")
-        let vc = RegisterController()
-        self.navigationController?.pushViewController(vc, animated: true)
+        self.navigationController?.popViewController(animated: true)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -255,3 +290,5 @@ class LoginViewController : UIViewController{
     
 
 }
+
+

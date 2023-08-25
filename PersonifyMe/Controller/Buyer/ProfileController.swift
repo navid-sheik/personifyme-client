@@ -10,7 +10,7 @@ import Foundation
 
 import UIKit
 
-class ProfileController: UIViewController {
+class ProfileController: RestrictedController {
     
     
     var paymentMethods : [PaymentMethod] = []{
@@ -30,6 +30,11 @@ class ProfileController: UIViewController {
                 self.topPart.emailLabel.text =  user.email
                 if let imageUlr  =  user.image{
                     self.topPart.mainImage.loadImageUrlString(urlString: imageUlr)
+                }
+                if user.role  == "moderator"{
+                    self.moderatorButton.isHidden =  false
+                }else {
+                    self.moderatorButton.isHidden =  true
                 }
              
             }
@@ -120,6 +125,11 @@ class ProfileController: UIViewController {
         return button
     }()
     
+    let moderatorButton : CustomButton = {
+        let button  =  CustomButton(title: "Moderator"  ,  hasBackground : true, fontType: .medium)
+        return button
+    }()
+    
     // MARK: - Properties
     // All properties and variables you need in your ViewController
     
@@ -127,14 +137,29 @@ class ProfileController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
+        
+      
+    }
+    override func setupAuthenticatedUI() {
+        super.setupAuthenticatedUI()
         topPart.delegate = self
+        orderPart.delegate = self
+        moderatorButton.addTarget(self, action: #selector(handleModeration), for: .touchUpInside)
         signOutButton.addTarget(self, action: #selector(handleSignOut), for: .touchUpInside)
         setUpNavigationBar()
         setUpCollectionView()
         setupUI()
         fecthUserDetails()
         fetchPaymentMethod()
+        
     }
+    
+    override func teardownAuthenticatedUI() {
+        super.teardownAuthenticatedUI()
+        self.navigationItem.rightBarButtonItem = nil
+    }
+    
+        
     
     @objc func handleSignOut(){
         print("Sign out")
@@ -142,8 +167,12 @@ class ProfileController: UIViewController {
             switch result{
             case .success(_):
                 print("Success in logout")
-                AuthManager.clearUserDefaults()
-                AlertManager.showLogoutAlert(on: self!)
+                DispatchQueue.main.async {
+                    AuthManager.clearUserDefaults()
+                    NotificationCenter.default.post(name: .userDidLogout, object: nil)
+                    AlertManager.showLogoutAlert(on: self!)
+                }
+                
             case .failure(let error):
                 ErrorManager.handleServiceError(error, on: self)
             }
@@ -187,11 +216,23 @@ class ProfileController: UIViewController {
         collectionViewPayment.anchor( top:  collectionViewShipping.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 120)
         
         contentView.addSubview(signOutButton)
-        signOutButton.anchor( top:  collectionViewPayment.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: -10, width: nil, height: 40)
         
         
     
+            
+            signOutButton.anchor( top:  collectionViewPayment.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom:nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: -10, width: nil, height: 40)
+            moderatorButton.isHidden =  true
+            contentView.addSubview(moderatorButton)
+            (moderatorButton).anchor( top: signOutButton.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 40)
+
+      
         
+    
+        
+        
+        
+        
+
     }
     
     
@@ -212,9 +253,12 @@ class ProfileController: UIViewController {
     
     private func setUpNavigationBar (){
         //IMAGE BAR BUTTON
-        navigationController?.navigationBar.prefersLargeTitles = false
+//        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode =  .never
         navigationItem.title =  "My Profile"
-        let settingButton  = UIBarButtonItem(image: UIImage(systemName: "gearshape"), style: .plain, target: self, action: #selector(handleSetting))
+        let settingButton  = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill")?.withRenderingMode(.alwaysTemplate), style: .plain, target: self, action: #selector(handleSetting))
+        settingButton.tintColor = DesignConstants.primaryColor
+        
         
         self.navigationItem.rightBarButtonItem = settingButton
         
@@ -261,6 +305,11 @@ class ProfileController: UIViewController {
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
+    
+    @objc func handleModeration(){
+       let vc  = ModeratorViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
     
     @objc func handleSetting(){
         print("Setting ")
@@ -409,10 +458,14 @@ extension ProfileController : SettingViewControllerDelegate{
 extension ProfileController: ProfileTopPartDelegate{
     func didTapWishList() {
         print("Tap")
+        goToLikes()
+        
+        
     }
     
     func didTapShop() {
         print("Tap")
+        goShopping()
     }
     
     func didTapReviews() {
@@ -425,5 +478,75 @@ extension ProfileController: ProfileTopPartDelegate{
         print("Tap")
     }
     
+    
+    
+    func goShopping() {
+        if let tabBarController = self.navigationController?.tabBarController as? BuyerTabController {
+            // Capture the currently displayed view controller
+            guard let fromView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Switch the tab
+            tabBarController.selectedIndex = 0
+
+            // Capture the view controller that will be displayed
+            guard let toView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Perform the animation
+            UIView.transition(from: fromView, to: toView, duration: 0.3, options: [.transitionCrossDissolve], completion: nil)
+        }
+    }
+    
+    func goToLikes() {
+        if let tabBarController = self.navigationController?.tabBarController as? BuyerTabController {
+            // Capture the currently displayed view controller
+            guard let fromView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Switch the tab
+            tabBarController.selectedIndex = 1
+
+            // Capture the view controller that will be displayed
+            guard let toView = tabBarController.selectedViewController?.view else {
+                return
+            }
+
+            // Perform the animation
+            UIView.transition(from: fromView, to: toView, duration: 0.3, options: [.transitionCrossDissolve], completion: nil)
+        }
+    }
+    
+    
+}
+
+extension ProfileController :ProfileOrdersDelegate{
+    func didTapProduced() {
+        goOrderController(filter: "Processing")
+    }
+    
+    func didTapToBeShipped() {
+        goOrderController(filter: "Shipped")
+    }
+    
+    func didTapDelivered() {
+        goOrderController(filter: "Delivered")
+    }
+    
+    func didTapRefund() {
+        goOrderController(filter: "Refunded")
+    }
+    
+    
+    func goOrderController (filter :  String){
+        let vc = OrderBuyerController(filter: filter)
+        
+        let nav  =  UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .currentContext
+        self.present(nav, animated: true)
+    }
     
 }

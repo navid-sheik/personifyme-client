@@ -12,7 +12,7 @@ import UIKit
 
 class VerifyEmailViewController : UIViewController{
     
-    
+    var completionHandler: ((Bool) -> Void)?
     private let email : String
     
     
@@ -50,10 +50,10 @@ class VerifyEmailViewController : UIViewController{
     
     private let sendVerificationCodeButton : CustomButton = {
         let button = CustomButton(title: "Send Verification Code", hasBackground: false, fontType: .medium)
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.borderWidth = 2
+        button.layer.borderColor = DesignConstants.primaryColor?.cgColor
         button.layer.masksToBounds = true
-        button.setTitleColor(.systemBlue, for: .normal)
+        button.setTitleColor(DesignConstants.primaryColor, for: .normal)
 //        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         button.translatesAutoresizingMaskIntoConstraints = false
         
@@ -61,6 +61,14 @@ class VerifyEmailViewController : UIViewController{
         return button
     }()
     
+    
+    private let backButton  :  UIButton =  {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "arrow.backward"), for: .normal)
+        button.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        button.tintColor = DesignConstants.primaryColor
+        return button
+    }()
     
    
     
@@ -85,6 +93,8 @@ class VerifyEmailViewController : UIViewController{
     func setupViews(){
         self.view.backgroundColor = .systemBackground
         headerView.titleLabel.text = "Verify Your Account"
+        
+        view.addSubview(backButton)
         self.view.addSubview(headerView)
         self.view.addSubview(notificationLabel)
         self.view.addSubview(verifyCodeTextField)
@@ -92,8 +102,13 @@ class VerifyEmailViewController : UIViewController{
         self.view.addSubview(verifyButton)
 //        self.view.addSubview(resendLabel)
         
-        headerView.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 20,paddingRight: -20, paddingBottom: 0, width: nil, height: 200)
+        backButton.anchor(top: self.view.safeAreaLayoutGuide.topAnchor, left: self.view.leadingAnchor, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: 40, height: 40)
         
+        
+        
+        let width  = self.view.frame.width * 0.8
+        headerView.anchor(top: backButton.bottomAnchor, left: nil, right: nil, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: 0, paddingBottom: 0, width: width, height: 100)
+        headerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         
         notificationLabel.anchor( top: headerView.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 20,paddingRight: -20, paddingBottom: 0, width: nil, height: 50)
         
@@ -112,6 +127,11 @@ class VerifyEmailViewController : UIViewController{
         
         
         
+    }
+    
+    @objc func backButtonTapped(){
+        print("Back Button Tapped")
+        self.navigationController?.popViewController(animated: true)
     }
     
     
@@ -133,7 +153,8 @@ class VerifyEmailViewController : UIViewController{
                 if verifed{
                     DispatchQueue.main.async {
                         AuthManager.setUserDefaults(token: user.token, refresh_token: user.refreshToken, verified: user.verified, user_id: user_id, seller_id: seller_id)
-                        
+                        NotificationCenter.default.post(name: .userDidLogin, object: nil)
+                        self.completionHandler?(true)
                         self.dismiss(animated: true)
                     }
                 }
@@ -169,6 +190,9 @@ class VerifyEmailViewController : UIViewController{
         
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
     
     

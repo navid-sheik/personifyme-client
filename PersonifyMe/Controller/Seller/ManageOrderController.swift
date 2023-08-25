@@ -20,13 +20,59 @@ import UIKit
 
 class ManageOrderController: UIViewController {
     
-    var ordersItems : [OrderItem] = []{
+    var orderItems : [OrderItem]=[]{
+        didSet {
+            // You may want to check the lastSelectedScope here and filter accordingly
+            if lastSelectedScope == 0 { // Assuming 0 is for "Processing"
+                filteredOrderItems = orderItems.filter { $0.status == .Processing }
+            } else {
+                filteredOrderItems = orderItems
+            }
+            // Since filteredOrderItems has its own didSet, you don't need to reload the tableView here
+        }
+
+    }
+    
+    var filteredOrderItems: [OrderItem] = []{
         didSet{
-            print(ordersItems)
+            
+            
             DispatchQueue.main.async {
+                self.totalItemslabel.text = "Total - \(self.filteredOrderItems.count) Orders"
+                if self.filteredOrderItems.isEmpty {
+                    if let selectedScope = self.getSelectedScopeTitle(from: self.searchBar) {
+                        self.tableViewProducts.setEmptyMessage("You have 0 orders with status \(selectedScope)")
+                    } else {
+                        self.tableViewProducts.setEmptyMessage("You have 0 orders with this status")
+                    }
+                    
+                } else {
+                    self.tableViewProducts.restore()
+                }
                 self.tableViewProducts.reloadData()
             }
+            
         }
+    }
+
+    
+    
+    
+    func getSelectedScopeTitle(from searchBar: UISearchBar) -> String? {
+        if let scopeButtonTitles = searchBar.scopeButtonTitles {
+            let selectedIndex = searchBar.selectedScopeButtonIndex
+            return scopeButtonTitles[selectedIndex]
+        }
+        return nil
+    }
+    
+    
+    
+    
+    var lastSearchText: String = ""
+    var lastSelectedScope: Int = 0 // Assuming 0 is the default
+    func isFiltering() -> Bool {
+        return !lastSearchText.isEmpty || lastSelectedScope != 0
     }
     
     //MARK: - IDENTIFER
@@ -48,8 +94,8 @@ class ManageOrderController: UIViewController {
     let totalItemslabel : UILabel  =  {
         let label = UILabel()
         label.text  =  "Total - 0 Items"
+        label.textColor  = DesignConstants.textColor
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
         return label
     }()
     
@@ -63,7 +109,8 @@ class ManageOrderController: UIViewController {
     
     let filterButton : UIButton =  {
         let button  =  UIButton()
-        button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
+        button.setImage(UIImage(systemName: "slider.horizontal.3")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor =  DesignConstants.primaryColor
         return button
     }()
     
@@ -72,7 +119,8 @@ class ManageOrderController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
-        navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
+        navigationItem.title = "Manage Orders"
         setUpSearchBar()
         setTableView()
         setupUI()
@@ -83,7 +131,9 @@ class ManageOrderController: UIViewController {
     private func setupUI() {
         // Set up all UI elements here
         view.addSubview(searchBar)
-        searchBar.anchor( top: self.view.layoutMarginsGuide.topAnchor, left: self.view.leadingAnchor, right: self.view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 40)
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(closeButton)
+        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: -10, paddingBottom: 0, width: nil, height: 100)
         view.addSubview(filterButton)
         filterButton.anchor( top: searchBar.bottomAnchor, left: nil, right: self.view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: 40, height: 40)
         
@@ -104,14 +154,30 @@ class ManageOrderController: UIViewController {
         searchBar.delegate = self
         searchBar.placeholder = "Search"
         searchBar.searchBarStyle = .minimal
-//        searchBar.showsBookmarkButton = true
+        searchBar.showsBookmarkButton = false
         
-        searchBar.setImage(UIImage(systemName: "slider.horizontal.3"), for: .bookmark, state: .normal)
-
-
-
+        searchBar.showsScopeBar = true
+//        searchBar.barTintColor = UIColor(white: 0.9, alpha: 0.1)
+        searchBar.scopeButtonTitles = ["Processing", "Shipped",  "Delivered",  "Refunded"]
+        
+      
+        // To change UISegmentedControl color only when appeared in UISearchBar
+        UISegmentedControl.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = .red
+        
+//        searchBar.sizeToFit()
+//        self.navigationItem.titleView = searchBar
+      
     }
     
+    
+    func setSelectedScopeButton(matchingStatus status: String) -> Int {
+        if let scopeButtonTitles = searchBar.scopeButtonTitles,
+           let index = scopeButtonTitles.firstIndex(of: status) {
+            searchBar.selectedScopeButtonIndex = index
+            return index
+        }
+        return -1 // Return -1 or any other number to indicate that the status was not found
+    }
     private func setTableView(){
         tableViewProducts.dataSource = self
         tableViewProducts.delegate = self
@@ -120,9 +186,9 @@ class ManageOrderController: UIViewController {
         
     }
     private func setUpNavigationBar(){
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Listings"
-        
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationItem.title = "Listings"
+//
         
     }
     
@@ -133,7 +199,7 @@ class ManageOrderController: UIViewController {
                 
             case .success(let response):
                 guard let orderItems = response.data else {return}
-                self.ordersItems =  orderItems
+                self.orderItems =  orderItems
                 
             case .failure(let error):
                 print(error)
@@ -151,30 +217,40 @@ class ManageOrderController: UIViewController {
     // All other functions that you use within the ViewController
 }
 
-extension ManageOrderController : UISearchBarDelegate {
+extension ManageOrderController  : UISearchBarDelegate {
     
+  
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         
         self.searchBar.showsCancelButton = true
     }
 
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
- 
-        // Update the search results
-        
-        print(searchText)
-    }
-
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        // Clear the search results and remove the search results controller
-        searchBar.text = ""
-        searchBar.resignFirstResponder()
-//        searchBar.showsCancelButton = false
-        self.searchBar.showsCancelButton = false
-
     
-        
-   
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        lastSearchText = searchText
+        updateFilteredItems()
+       tableViewProducts.reloadData()
+       print(searchText)
+//        if searchText.isEmpty {
+//            filteredOrderItems = orderItems
+//        } else {
+//            filteredOrderItems = orderItems.filter { orderItem in
+//                return orderItem.product.title.lowercased().contains(searchText.lowercased()) ||
+//                       (orderItem.shippingDetails?.name ?? "").lowercased().contains(searchText.lowercased())
+//            }
+//        }
+//        tableViewProducts.reloadData()
+//        print(searchText)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        lastSearchText = ""
+        searchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
+        updateFilteredItems()
+        tableViewProducts.reloadData()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -197,7 +273,7 @@ extension ManageOrderController : UITableViewDataSource, UITableViewDelegate {
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return ordersItems.count
+        return filteredOrderItems.count
     }
     
     
@@ -208,7 +284,7 @@ extension ManageOrderController : UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: tableCellOrderIdentifier, for: indexPath) as! ManageOrderCell
        
-        cell.orderItem =  ordersItems[indexPath.section]
+        cell.orderItem =  filteredOrderItems[indexPath.section]
         cell.delegate = self
         
         return cell
@@ -216,11 +292,42 @@ extension ManageOrderController : UITableViewDataSource, UITableViewDelegate {
     
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+        return 30
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header  =  ManagerOrderHeader()
-      
+        let  orderItem = filteredOrderItems[section] // Assume this is an OrderItem object
+        let estimatedDates = TimeManager.calculateEstimatedDates(for: orderItem)
+        if let estimatedDates = estimatedDates {
+            if orderItem.status == .Processing{
+                let stringDateFormatted =  TimeManager.daysUntilOrderItem(estimatedDates.maxShippingDate)
+                if stringDateFormatted == "Today" ||  stringDateFormatted == "Tomorrow"{
+                    header.toBeShipped.text = "To Be Shipped \(stringDateFormatted) - Free Shipping"
+                }else {
+                    header.toBeShipped.text = "To Be Shipped in  \(stringDateFormatted) - Free Shipping"
+                }
+                
+              
+                
+            }else if orderItem.status == .Shipped{
+                let stringDateFormatted =  TimeManager.daysUntilOrderItem(estimatedDates.maxDeliveryDate)
+
+                if stringDateFormatted == "Today" ||  stringDateFormatted == "Tomorrow"{
+                    header.toBeShipped.text = "Estimate Delivery  \(stringDateFormatted) - Free Shipping"
+                }else {
+                    header.toBeShipped.text = "Estimate Delivery in \(stringDateFormatted) - Free Shipping"
+                }
+                
+                
+            }else if orderItem.status == .Delivered{
+                header.toBeShipped.text = "Delivered"
+            }
+            
+            
+          
+        }
+       
+       
         return header
     }
     
@@ -236,15 +343,21 @@ extension ManageOrderController: ManageOrderCellDelegate{
         let vc = AddTrackingController()
         vc.delegate = self
         
-        let indexPath = tableViewProducts.indexPath(for: cell)
-        vc.order = ordersItems[indexPath!.section]
+        guard let indexPath = tableViewProducts.indexPath(for: cell) else {
+            print("IndexPath not found for cell")
+            return
+        }
+        
+        // If filtering is active, use `filteredOrderItems`; otherwise use `orderItems`
+        let currentOrderItem =  filteredOrderItems[indexPath.section] 
+        
+        print(currentOrderItem)  // Debugging purpose
+        vc.order = currentOrderItem
+        
         vc.modalPresentationStyle = .overCurrentContext
-        self.definesPresentationContext = true //*** adding this line should solve your issue ***
+        self.definesPresentationContext = true
         self.present(vc, animated: true, completion: nil)
-        
-        
     }
-    
    
     
     
@@ -252,28 +365,88 @@ extension ManageOrderController: ManageOrderCellDelegate{
 
 extension ManageOrderController: AddTrackingControllerDelegate{
     func updateValue(courierName: String, trackingNumber: String, order: OrderItem?, indexPath: IndexPath?) {
-        print("Update table now ")
+        print("Update table now")
+        guard let updatedOrder = order, let orderId = order?.orderId else { return }
 
-            guard let indexPath = indexPath, let order = order else { return }
-
-            
-            self.ordersItems[indexPath.row] = order
-            self.tableViewProducts.reloadRows(at: [indexPath], with: .automatic)
+        // Update item in orderItems based on orderId
+        if let indexInOrderItems = orderItems.firstIndex(where: { $0.orderId == orderId }) {
+            orderItems[indexInOrderItems] = updatedOrder
+        }
         
-        
-       
-
-        
-        
-        
-        
-//        ordersItems[indexPath?.row] = order!
-//        tableViewProducts.reloadRows(at: [indexPath!], with: .automatic)
-//
+        // Update item in filteredOrderItems based on orderId
+        if let indexInFilteredOrderItems = filteredOrderItems.firstIndex(where: { $0.orderId == orderId }) {
+            filteredOrderItems[indexInFilteredOrderItems] = updatedOrder
+            // Reload the specific row in the table view
+            let indexPathToReload = IndexPath(row: indexInFilteredOrderItems, section: 0)
+            tableViewProducts.reloadRows(at: [indexPathToReload], with: .automatic)
+        }
     }
     
    
     
     
 }
+
+
+extension  ManageOrderController{
+    
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        lastSelectedScope = selectedScope
+        updateFilteredItems()
+          tableViewProducts.reloadData()
+//        handleSelectedScopeChange(selectedScope: selectedScope)
+//        tableViewProducts.reloadData()
+    
+    }
+
+    
+    func handleSelectedScopeChange(selectedScope: Int) {
+        switch selectedScope {
+        case 0:
+            print("Processing selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Processing }
+        case 1:
+            print("Shipped selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Shipped }
+        case 2:
+            print("Delivered selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Delivered }
+        case 3:
+            print("Refunded or Cancelled or Returned selected")
+            filteredOrderItems = orderItems.filter { $0.status == .Refunded || $0.status == .Cancelled || $0.status == .Returned }
+        default:
+            filteredOrderItems = orderItems
+        }
+     
+    }
+    
+    func updateFilteredItems() {
+        let scopeCondition: (OrderItem) -> Bool
+        switch lastSelectedScope {
+        case 0:
+            scopeCondition = { $0.status == .Processing }
+        case 1:
+            scopeCondition = { $0.status == .Shipped }
+            
+        case 2:
+            scopeCondition = { $0.status == .Delivered }
+        default:
+            scopeCondition = { $0.status == .Refunded || $0.status == .Cancelled || $0.status == .Returned }
+        }
+
+        if lastSearchText.isEmpty {
+            filteredOrderItems = orderItems.filter(scopeCondition)
+        } else {
+            filteredOrderItems = orderItems.filter { orderItem in
+                return scopeCondition(orderItem) && (
+                    orderItem.product.title.lowercased().contains(lastSearchText.lowercased()) ||
+                    (orderItem.shippingDetails?.name ?? "").lowercased().contains(lastSearchText.lowercased())
+                )
+            }
+        }
+    }
+    
+}
+
 

@@ -27,10 +27,10 @@ class CustomButton : UIButton {
         
         super.init(frame: .zero)
         self.setTitle(title, for: .normal)
-        self.backgroundColor =  hasBackground ? .black : .clear
+        self.backgroundColor =  hasBackground ?  DesignConstants.primaryColor : .clear
         self.layer.cornerRadius =  4
 //
-        let titleColor : UIColor = hasBackground ? .white : .systemBlue
+        let titleColor : UIColor = hasBackground ? .white :  DesignConstants.primaryColor!
         
         self.setTitleColor(titleColor, for: .normal)
         

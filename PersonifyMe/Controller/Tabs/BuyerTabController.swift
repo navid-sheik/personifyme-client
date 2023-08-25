@@ -11,6 +11,7 @@ import UIKit
 protocol CartUpdateDelegate : class{
     func addProductToCart(_ cartItem: CartItemSend?)
     func emptyCart()
+    func fetchCartAgain(cart : Cart?)
 }
 
 class BuyerTabController: UITabBarController {
@@ -43,6 +44,7 @@ class BuyerTabController: UITabBarController {
         // Do any additional setup after loading the view.
         setUpTabs()
         fetchCartData()
+        fetchrequestSellerStatus()
        
     }
     
@@ -85,6 +87,11 @@ class BuyerTabController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("disappeared")
+      
+    }
+    
+    
+    func fetchrequestSellerStatus (){
         Service.shared.checkSellerStatus(expecting: SellerResponse.self) { [weak self] result in
             switch result{
                 
@@ -124,12 +131,11 @@ class BuyerTabController: UITabBarController {
         }
     }
     
-    
     // MARK: - Navigation
     
     private func setUpTabs() {
         let homeVC = HomeViewController()
-        let likesVC = ModeratorViewController()
+        let likesVC = LikesViewController()
         let cartVC = CartViewController()
         cartVC.delegate = self
         let profileVC =  ProfileController()
@@ -196,6 +202,12 @@ class BuyerTabController: UITabBarController {
     }
 }
 extension BuyerTabController: CartUpdateDelegate{
+    func fetchCartAgain( cart : Cart?) {
+        print("Fetched")
+        guard let cart = cart else {return}
+        self.updateCartTag(cart.items.count)
+    }
+    
     func emptyCart() {
         self.updateCartTag(0)
     }
@@ -271,10 +283,15 @@ extension BuyerTabController: CartUpdateDelegate{
 
 
 extension BuyerTabController: OnBoardingLaunchViewControllerDelegate{
+ 
+    
+    
+    
     func updateTabController(onBoardingData: OnBoardingData) {
         DispatchQueue.main.async {
             // Step 0: Switch to another tab if the user is currently on the tab that's going to be replaced
-            if self.selectedIndex == 2 {
+            let  secondIndex  = self.selectedIndex ==  2
+            if secondIndex {
                 
                 // Capture a snapshot of the current view
                 if let snapshot = self.selectedViewController?.view.snapshotView(afterScreenUpdates: false) {
@@ -295,6 +312,7 @@ extension BuyerTabController: OnBoardingLaunchViewControllerDelegate{
             // Step 1: Create the new ViewController
             let vc = DashboardViewController(alreadyFetchedInfo: true)
             vc.onBoardingInfo = onBoardingData
+            vc.delegate = self
             vc.navigationItem.largeTitleDisplayMode = .automatic
             let nav = UINavigationController(rootViewController: vc)
             nav.tabBarItem = UITabBarItem(title: "Seller", image: UIImage(systemName: "dollarsign.square"), tag: 3)
@@ -306,15 +324,72 @@ extension BuyerTabController: OnBoardingLaunchViewControllerDelegate{
             self.setViewControllers(vcs, animated: false)  // Update without animation
 
             // Step 3: Optionally, switch to the new tab programmatically with animation
-            UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                self.selectedIndex = 2
-            }, completion: nil)
+            if secondIndex{
+                UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                    self.selectedIndex = 2
+                }, completion: nil)
+            }
+            
+        
         }
     }
 
 
 
 
+    
+}
+extension BuyerTabController  :  DashboardViewControllerDelegate{
+    func unauthorizedAcces() {
+        updateSellerBackToNonVerfied()
+    }
+    
+    
+    func updateSellerBackToNonVerfied(){
+        DispatchQueue.main.async {
+            
+            // Step 0: Switch to another tab if the user is currently on the tab that's going to be replaced
+            let  secondIndex  = self.selectedIndex ==  2
+            if secondIndex{
+                
+                // Capture a snapshot of the current view
+                if let snapshot = self.selectedViewController?.view.snapshotView(afterScreenUpdates: false) {
+                    self.view.addSubview(snapshot)
+
+                    // Switch the index to change the tab
+                    self.selectedIndex = 0
+
+                    // Animate the snapshot view out
+                    UIView.animate(withDuration: 0.3, animations: {
+                        snapshot.alpha = 0
+                    }, completion: { _ in
+                        snapshot.removeFromSuperview()
+                    })
+                }
+            }
+
+            // Step 1: Create the new ViewController
+            let vc = OnBoardingLaunchViewController()
+            vc.delegate = self
+            let nav = UINavigationController(rootViewController: vc)
+            nav.tabBarItem = UITabBarItem(title: "Seller", image: UIImage(systemName: "dollarsign.square"), tag: 3)
+            nav.navigationBar.prefersLargeTitles = true
+
+            // Step 2: Replace the old ViewController with the new one in the TabBarController
+            var vcs = self.viewControllers  // Get the current list of view controllers
+            vcs?[2] = nav  // Replace the one you want to remove with the new one
+            self.setViewControllers(vcs, animated: false)  // Update without animation
+
+            // Step 3: Optionally, switch to the new tab programmatically with animation
+            if secondIndex{
+                UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                    self.selectedIndex = 2
+                }, completion: nil)
+            }
+            
+        }
+    }
+    
 }
     
     

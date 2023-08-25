@@ -25,7 +25,7 @@ class VerificationStatusView :  UIView {
     let iconMenu : UIImageView =  {
         let imageView  = UIImageView()
         imageView.contentMode =  .scaleAspectFit
-        imageView.image =  UIImage(systemName: "checkmark.seal.fill")
+//        imageView.image =  UIImage(systemName: "checkmark.seal.fill")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -57,7 +57,7 @@ class VerificationStatusView :  UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.layer.borderColor = DesignConstants.primaryColor?.cgColor
         self.layer.borderWidth =  1
         self.layer.cornerRadius = 2
         
@@ -73,7 +73,7 @@ class VerificationStatusView :  UIView {
     
     
     private func setUpView (){
-        
+        self.backgroundColor = DesignConstants.secondaryColor
         self.addSubview(iconMenu)
        self.addSubview(label)
         

@@ -17,6 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeAPI.defaultPublishableKey = "pk_test_51NYyrYB6nvvF5Xeh38vBBJ9xWCtNKsSLuFexpx3A9nTpOAj9TZTLTRdRuo5cJbJusInPeXJo0LH1zoW3NHSDLtGZ00LrL4fvI5"
         // Override point for customization after application launch.
         DropDown.startListeningToKeyboard()
+        UINavigationBar.appearance().tintColor = DesignConstants.primaryColor
+//        UITableView.appearance().separatorColor = DesignConstants.primaryColor
+        
+
         return true
     }
 

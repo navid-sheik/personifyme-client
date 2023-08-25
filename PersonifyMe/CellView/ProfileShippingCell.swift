@@ -16,9 +16,9 @@ class ProfileShippingCell: CustomCell {
     let nameLabel : UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Name"
+        label.text = "Name (Upcoming)"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.primaryColor
         return label
     }()
     
@@ -60,7 +60,7 @@ class ProfileShippingCell: CustomCell {
     
     override func setUpCell() {
         super.setUpCell()
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =  DesignConstants.secondaryColor
         
         let stackText  = StackManager.createStackView(with: [nameLabel, addressLabel], axis: .vertical, spacing: 8, distribution: .fillProportionally, alignment: .leading)
         

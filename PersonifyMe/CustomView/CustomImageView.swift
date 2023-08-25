@@ -14,6 +14,7 @@ class CustomImageView: UIImageView {
     
     var imageUrlString: String?
     
+    
     func loadImageUrlString( urlString: String){
         imageUrlString =  urlString
         guard let url = URL(string: urlString) else {return}

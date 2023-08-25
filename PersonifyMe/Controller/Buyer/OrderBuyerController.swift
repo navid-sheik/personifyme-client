@@ -22,13 +22,51 @@ class OrderBuyerController: UIViewController {
         didSet{
             filteredOrderItems = orderItems
             DispatchQueue.main.async {
+                let index = self.setSelectedScopeButton(matchingStatus: self.filterPassed ?? "Processing")
+                print (index)
+                if index >= 0 {
+                    // Successfully set, handle additional logic if needed
+                    self.handleSelectedScopeChange(selectedScope: index)
+               
+                } else {
+                    // Status not found in scopeButtonTitles
+                    self.handleSelectedScopeChange(selectedScope: 0)
+                }
+
                 self.tableViewOrders.reloadData()
             }
            
         }
     }
-    var filteredOrderItems: [OrderItem] = []
+    var filteredOrderItems: [OrderItem] = []{
+        didSet{
+            
+            DispatchQueue.main.async {
+            
+                if self.filteredOrderItems.isEmpty {
+                    if let selectedScope = self.getSelectedScopeTitle(from: self.searchBar) {
+                        self.tableViewOrders.setEmptyMessage("You have 0 orders with status \(selectedScope)")
+                    } else {
+                        self.tableViewOrders.setEmptyMessage("You have 0 orders with this status")
+                    }
+                    
+                } else {
+                    self.tableViewOrders.restore()
+                }
+                self.tableViewOrders.reloadData()
+            }
+            
+        }
+    }
     
+    
+    func getSelectedScopeTitle(from searchBar: UISearchBar) -> String? {
+        if let scopeButtonTitles = searchBar.scopeButtonTitles {
+            let selectedIndex = searchBar.selectedScopeButtonIndex
+            return scopeButtonTitles[selectedIndex]
+        }
+        return nil
+    }
     
     //MARK: - Identifier
     
@@ -67,29 +105,73 @@ class OrderBuyerController: UIViewController {
         return label
     }()
     
+    let closeButton  : UIButton = {
+        let button = UIButton()
+        button.setTitle("Close", for: .normal)
+   
+        button.setTitleColor(DesignConstants.primaryColor, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    
     
     
     // MARK: - Properties
     // All properties and variables you need in your ViewController
     
+    var filterPassed: String?
+    
+    init(filter : String?) {
+        self.filterPassed = filter
+        
+        super.init(nibName: nil, bundle: nil)
+        // Do your custom initialization here
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
-        navigationController?.navigationBar.prefersLargeTitles = false
+        navigationItem.largeTitleDisplayMode =  .never
+        let closeButton = UIBarButtonItem(title: "Close", style: .plain,  target: self, action: #selector(closeButtonTapped))
+        closeButton.tintColor = DesignConstants.primaryColor
+        self.navigationItem.rightBarButtonItem = closeButton
+        self.navigationItem.title =  "Order History"
+
+//        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
 //        navigationItem.title = "Orders"
         setUpSearchBar()
         setTableView()
         setupUI()
         fetchOrder()
+        
+     
+    
+        
     }
     
     // MARK: - UI Setup
     private func setupUI() {
         // Set up all UI elements here
         view.addSubview(tableViewOrders)
+//        searchBar.sizeToFit()
+        view.addSubview(searchBar)
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(closeButton)
+        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0, paddingRight: -10, paddingBottom: 0, width: nil, height: 100)
+//
+//
+//
         
-        tableViewOrders.anchor( top: view.layoutMarginsGuide.topAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: view.bottomAnchor,  paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
+        tableViewOrders.anchor( top: searchBar.bottomAnchor, left: searchBar.leadingAnchor, right: view.trailingAnchor, bottom: view.bottomAnchor,  paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: nil)
         
     }
     
@@ -103,13 +185,23 @@ class OrderBuyerController: UIViewController {
         searchBar.showsScopeBar = true
 //        searchBar.barTintColor = UIColor(white: 0.9, alpha: 0.1)
         searchBar.scopeButtonTitles = ["Processing", "Shipped",  "Delivered",  "Refunded"]
-
+        
+      
         // To change UISegmentedControl color only when appeared in UISearchBar
         UISegmentedControl.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = .red
         
-        self.navigationItem.titleView = searchBar
+//        searchBar.sizeToFit()
+//        self.navigationItem.titleView = searchBar
+      
 
-
+    }
+    func setSelectedScopeButton(matchingStatus status: String) -> Int {
+        if let scopeButtonTitles = searchBar.scopeButtonTitles,
+           let index = scopeButtonTitles.firstIndex(of: status) {
+            searchBar.selectedScopeButtonIndex = index
+            return index
+        }
+        return -1 // Return -1 or any other number to indicate that the status was not found
     }
     
     private func setTableView(){
@@ -139,7 +231,9 @@ class OrderBuyerController: UIViewController {
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
-    
+    @objc func closeButtonTapped(){
+        self.dismiss(animated: true)
+    }
     // MARK: - Navigation
     // Segue preparations and related stuff
     
@@ -149,47 +243,50 @@ class OrderBuyerController: UIViewController {
 
 
 
-extension OrderBuyerController : UISearchBarDelegate {
+extension OrderBuyerController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        
-        self.searchBar.showsCancelButton = true
+        // Show the cancel button when the user begins editing
+        searchBar.showsCancelButton = true
     }
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            filteredOrderItems = orderItems
-        } else {
-            filteredOrderItems = orderItems.filter {
+        // First, filter items based on the selected scope.
+        handleSelectedScopeChange(selectedScope: searchBar.selectedScopeButtonIndex)
+        
+        // Next, filter those scoped items based on the search text.
+        if !searchText.isEmpty {
+            filteredOrderItems = filteredOrderItems.filter {
                 $0.product.title.lowercased().contains(searchText.lowercased())
             }
         }
+        
+        // Reload the table view to reflect the changes.
         tableViewOrders.reloadData()
-        print(searchText)
     }
 
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.resignFirstResponder()
-        self.searchBar.showsCancelButton = false
-        filteredOrderItems = orderItems
+        searchBar.showsCancelButton = false
+        // Call the function to filter items based on the selected scope
+        handleSelectedScopeChange(selectedScope: searchBar.selectedScopeButtonIndex)
         tableViewOrders.reloadData()
     }
 
-    
+
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // Hide the keyboard when the search button is clicked
         searchBar.resignFirstResponder()
-     
     }
 
-  
+    // Allow editing to end
     func searchBarShouldEndEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
-    
-    
-    
+
+    // Allow editing to begin
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
     }
@@ -217,7 +314,7 @@ extension OrderBuyerController : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let controller = OrderDetailsController()
-        controller.orderItem = orderItems[indexPath.section]
+        controller.orderItem = filteredOrderItems[indexPath.section]
         
         self.navigationController?.pushViewController(controller, animated: true)
     }
@@ -229,10 +326,26 @@ extension OrderBuyerController : UITableViewDataSource, UITableViewDelegate {
         let header  =  BuyerOrderHeader()
         
        
-        header.status.text  = orderItems[section].status.rawValue
+        header.status.text  = filteredOrderItems[section].status.rawValue
         
-        if  let date = orderItems[section].createdAt{
-            header.date.text =  TimeManager.orderDateFormatter( date)
+        
+        let order =  filteredOrderItems[section]
+       
+        if  let date = order.createdAt,   let estimatedDates = TimeManager.calculateEstimatedDates(for: order){
+            
+            let (maxShippingDate, maxDeliveryDate) = TimeManager.formatEstimatedDates(estimatedDates)
+            
+            if order.status == .Processing {
+                
+                header.date.text  =  maxShippingDate
+            }else  if order.status == .Shipped{
+                header.date.text =  maxDeliveryDate
+            }else if order.status == .Delivered{
+                header.date.text =  maxDeliveryDate
+            }else {
+                header.date.text =  ""
+            }
+            
            
         }
         
@@ -246,6 +359,13 @@ extension OrderBuyerController : UITableViewDataSource, UITableViewDelegate {
 }
 extension  OrderBuyerController{
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        handleSelectedScopeChange(selectedScope: selectedScope)
+        tableViewOrders.reloadData()
+    
+    }
+
+    
+    func handleSelectedScopeChange(selectedScope: Int) {
         switch selectedScope {
         case 0:
             print("Processing selected")
@@ -262,9 +382,8 @@ extension  OrderBuyerController{
         default:
             filteredOrderItems = orderItems
         }
-        tableViewOrders.reloadData()
+     
     }
-
     
     
 }

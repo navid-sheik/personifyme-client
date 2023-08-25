@@ -9,6 +9,16 @@ import Foundation
 
 
 class TimeManager {
+    
+    struct EstimatedDates {
+        var minShippingDate: Date
+        var maxShippingDate: Date
+        var minDeliveryDate: Date
+        var maxDeliveryDate: Date
+    }
+    
+    
+
     static func timeAgo(from dateString: String) -> String {
         let dateFormatter = ISO8601DateFormatter()
         dateFormatter.formatOptions.insert(.withFractionalSeconds)
@@ -106,4 +116,114 @@ class TimeManager {
            // Return the formatted date string
            return dateFormatter.string(from: date)
        }
+    
+    
+    static func calculateEstimatedDates(for orderItem: OrderItem) -> EstimatedDates? {
+            guard let createdAt = orderItem.createdAt else {
+                return nil // No date provided
+            }
+            
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions.insert(.withFractionalSeconds)
+            
+            guard let createdAtDate = dateFormatter.date(from: createdAt) else {
+                return nil // Invalid date
+            }
+            
+            let minProcessingTime = orderItem.product.shippingInfo.processingTime.min
+            let maxProcessingTime = orderItem.product.shippingInfo.processingTime.max
+            
+            let minDeliveryTime = orderItem.product.shippingInfo.standardDelivery.deliveryTime.min
+            let maxDeliveryTime = orderItem.product.shippingInfo.standardDelivery.deliveryTime.max
+            
+            // Calculate estimated shipping time (processing time)
+            let minShippingEstimate = Calendar.current.date(byAdding: .day, value: minProcessingTime, to: createdAtDate)!
+            let maxShippingEstimate = Calendar.current.date(byAdding: .day, value: maxProcessingTime, to: createdAtDate)!
+            
+            // Calculate estimated delivery time based on max shipping estimate
+            let minDeliveryEstimate = Calendar.current.date(byAdding: .day, value: minDeliveryTime, to: maxShippingEstimate)!
+            let maxDeliveryEstimate = Calendar.current.date(byAdding: .day, value: maxDeliveryTime, to: maxShippingEstimate)!
+            
+            return EstimatedDates(minShippingDate: minShippingEstimate, maxShippingDate: maxShippingEstimate, minDeliveryDate: minDeliveryEstimate, maxDeliveryDate: maxDeliveryEstimate)
+        }
+    
+    static func formatEstimatedDates(_ estimatedDates: EstimatedDates) -> (maxShippingDate: String, maxDeliveryDate: String) {
+        // Create a DateFormatter to format the Date object
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, yyyy" // Aug 21, 2023 format
+
+        // Format max shipping and delivery dates
+        let maxShipping = dateFormatter.string(from: estimatedDates.maxShippingDate)
+        let maxDelivery = dateFormatter.string(from: estimatedDates.maxDeliveryDate)
+        
+        // Return formatted date strings for max shipping and max delivery dates
+        return (maxShipping, maxDelivery)
+    }
+    static func daysUntilOrderItem(_ targetDate: Date, from currentDate: Date = Date()) -> String {
+         let calendar = Calendar.current
+         let components = calendar.dateComponents([.day], from: currentDate, to: targetDate)
+         
+         if let days = components.day {
+             switch days {
+             case 0:
+                 return "Today"
+             case 1:
+                 return "Tomorrow"
+             case 2...6:
+                 return "\(days) Days"
+             case 7:
+                 return "1 Week"
+             case 8...13:
+                 return "\(days) Days" // Optional, depending on how you want to handle this range
+             case 14...20:
+                 return "2 Weeks"
+             case ..<0:
+                 let absoluteDays = abs(days)
+                 switch absoluteDays {
+                 case 1:
+                     return "Yesterday"
+                 case 2...6:
+                     return "\(absoluteDays) Days Ago"
+                 case 7:
+                     return "1 Week Ago"
+                 case 8...13:
+                     return "\(absoluteDays) Days Ago" // Optional, depending on how you want to handle this range
+                 case 14...20:
+                     return "2 Weeks Ago"
+                 default:
+                     return "\(absoluteDays) Days Ago" // or "\(absoluteDays/7) Weeks Ago"
+                 }
+             default:
+                 return "\(days) Days" // or "\(days/7) Weeks"
+             }
+         }
+         
+         return "Unknown"
+     }
+
+    
+    
+//
+//    static func calculateEstimatedDates(createdAt: String?, minProcessingTime: Int, maxProcessingTime: Int, minDeliveryTime: Int, maxDeliveryTime: Int) -> EstimatedDates? {
+//
+//        guard let createdAt = createdAt else {
+//            return nil // No date provided
+//        }
+//
+//        let dateFormatter = ISO8601DateFormatter()
+//
+//        guard let createdAtDate = dateFormatter.date(from: createdAt) else {
+//            return nil // Invalid date
+//        }
+//
+//        // Calculate estimated shipping time (processing time)
+//        let minShippingEstimate = Calendar.current.date(byAdding: .day, value: minProcessingTime, to: createdAtDate)!
+//        let maxShippingEstimate = Calendar.current.date(byAdding: .day, value: maxProcessingTime, to: createdAtDate)!
+//
+//        // Calculate estimated delivery time based on max shipping estimate
+//        let minDeliveryEstimate = Calendar.current.date(byAdding: .day, value: minDeliveryTime, to: maxShippingEstimate)!
+//        let maxDeliveryEstimate = Calendar.current.date(byAdding: .day, value: maxDeliveryTime, to: maxShippingEstimate)!
+//
+//        return EstimatedDates(minShippingDate: minShippingEstimate, maxShippingDate: maxShippingEstimate, minDeliveryDate: minDeliveryEstimate, maxDeliveryDate: maxDeliveryEstimate)
+//    }
 }

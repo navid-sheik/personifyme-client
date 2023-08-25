@@ -60,6 +60,7 @@ class SearchResultViewController: UIViewController {
     let filterButton : UIButton =  {
         let button  =  UIButton()
         button.setImage(UIImage(systemName: "slider.horizontal.3"), for: .normal)
+        button.tintColor =  DesignConstants.primaryColor
         return button
     }()
     
@@ -67,7 +68,7 @@ class SearchResultViewController: UIViewController {
         let label = UILabel()
         label.text  =  "Total - 0 Items"
         label.font = UIFont.systemFont(ofSize: 14)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
     private var  progress = Progress(totalUnitCount: 100)
@@ -94,7 +95,7 @@ class SearchResultViewController: UIViewController {
         super.viewDidLoad()
         searchBar.text = textSearchBar
         self.view.backgroundColor  = .systemBackground
-       
+        progressBar.tintColor =  DesignConstants.primaryColor
         progressBar.setProgress(progress)
         setUpNavigationBar()
         setUpSearch()
@@ -132,12 +133,15 @@ class SearchResultViewController: UIViewController {
         progressBar.anchor( top: self.view.layoutMarginsGuide.topAnchor, left: self.view.leadingAnchor, right: self.view.trailingAnchor, bottom: nil, paddingTop: 0, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 20)
         
         view.addSubview(filterButton)
-        filterButton.anchor( top: self.progressBar.bottomAnchor, left: nil, right: self.view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: 40, height: 40)
+        filterButton.anchor( top: self.progressBar.bottomAnchor, left: nil, right: self.view.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: 40, height: 40)
         
         
         
         view.addSubview(totalItemslabel)
-        totalItemslabel.anchor( top: self.progressBar.bottomAnchor, left: self.view.leadingAnchor, right: self.view.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: nil, height: nil)
+        totalItemslabel.anchor( top: nil, left: self.view.leadingAnchor, right: self.view.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 5,paddingRight: -5, paddingBottom: 0, width: nil, height: nil)
+        
+        totalItemslabel.centerYAnchor.constraint(equalTo: filterButton.centerYAnchor).isActive = true
+        
         
         
         
@@ -173,6 +177,7 @@ class SearchResultViewController: UIViewController {
         searchBar.delegate = self
         searchBar.searchTextField.clearButtonMode = .whileEditing
         let customBackButton = UIBarButtonItem(image: UIImage(systemName:  "arrow.backward"), style: .plain, target: self, action: #selector(handleBackButton))
+        customBackButton.tintColor = DesignConstants.primaryColor
         self.navigationItem.leftBarButtonItem = customBackButton
     }
     func simulateDownload() {

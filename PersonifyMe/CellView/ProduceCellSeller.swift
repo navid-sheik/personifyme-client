@@ -68,11 +68,12 @@ class ProduceCellSeller :  CustomCell{
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "checkmark.circle"), for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.backgroundColor = UIColor.black
+        button.backgroundColor = DesignConstants.primaryColor
         button.tintColor =  UIColor.green
         button.layer.cornerRadius = 5
         button.clipsToBounds = true
         button.isUserInteractionEnabled = true
+        
         return button
     }()
     

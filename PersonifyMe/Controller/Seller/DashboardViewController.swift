@@ -46,7 +46,18 @@ enum StatusSeller {
     }
     
 }
+
+
+protocol DashboardViewControllerDelegate : class {
+    func unauthorizedAcces()
+}
+
 class DashboardViewController : RestrictedController {
+    
+    weak var delegate : DashboardViewControllerDelegate?
+    
+    
+    
     
     var status : StatusSeller = .Unverified
     
@@ -62,20 +73,23 @@ class DashboardViewController : RestrictedController {
                     //Verified
                     self.status =  .Verified
                     self.verificationStatus.label.text =  self.status.title
-                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)?.withRenderingMode(.alwaysTemplate)
+                    self.verificationStatus.iconMenu.tintColor =  DesignConstants.primaryColor
                 }else if  (info.requirements.pending_verification.isEmpty == false) && (info.requirements.currently_due.isEmpty == true){
                     //Pending
                     self.status =  .Pending
            
                     self.verificationStatus.displayInfoVerificationButton.isHidden =  true
                     self.verificationStatus.label.text =  self.status.title
-                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)?.withRenderingMode(.alwaysTemplate)
+                    self.verificationStatus.iconMenu.tintColor =  DesignConstants.primaryColor
                 }else{
                     //Unverified
                     self.status =  .Unverified
                     
                     self.verificationStatus.label.text =  "\(self.status.title)" 
-                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)
+                    self.verificationStatus.iconMenu.image = UIImage(systemName: self.status.imageString)?.withRenderingMode(.alwaysTemplate)
+                    self.verificationStatus.iconMenu.tintColor =  DesignConstants.primaryColor
                 }
             }
             
@@ -160,6 +174,8 @@ class DashboardViewController : RestrictedController {
         let button  = CustomButton(title: "Today ▼", hasBackground: true, fontType: .medium)
         return button
     }()
+    
+  
     // MARK: - Properties
     // All properties and variables you need in your ViewController
     
@@ -178,14 +194,58 @@ class DashboardViewController : RestrictedController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        self.checkStripeStatus()
         
-        verificationStatus.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(updateOnBoardingLink)))
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Dashboard"
         view.backgroundColor = .systemBackground
+        navigationItem.largeTitleDisplayMode =  .always
+        navigationItem.title = "Dashboard"
+       
+//
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+           navigationController?.setNavigationBarHidden(false, animated: animated)
+       }
+
+//       // Show the navigation bar when this view disappears
+//       override func viewWillDisappear(_ animated: Bool) {
+//           super.viewWillDisappear(animated)
+//           navigationController?.setNavigationBarHidden(true, animated: animated)
+//       }
+    
+    override func setupAuthenticatedUI() {
+        super.setupAuthenticatedUI()
+        
+        //If seller is not started onBoarding-> to the return OnBoarding
+        Service.shared.getSellerOnBoardingStatus(expecting: ApiResponse<OnBoardingData>.self) { [weak self] result in
+            switch result{
+                
+                
+            case .success(let response):
+                guard let infoData = response.data else {return}
+                DispatchQueue.main.async {  [weak self]  in
+                    self?.onBoardingInfo = infoData
+//                    self?.delegate?.updateTabController(onBoardingData: infoData)
+                   
+                   
+                    
+                }
+                
+            case .failure(_):
+                self?.delegate?.unauthorizedAcces()
+                
+            }
+            
+        }
+
+    
+     
         sellerMenuCollection.register(SellerMenuCell.self, forCellWithReuseIdentifier:identifierMenuCeller )
         sellerMenuCollection.dataSource = self
         sellerMenuCollection.delegate = self
@@ -194,12 +254,19 @@ class DashboardViewController : RestrictedController {
             // other properties
         }
 
+        verificationStatus.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(updateOnBoardingLink)))
         setupUI()
         if !alreadyFetchedInfo{
             fetchStatus()
         }
-//
+        
     }
+    
+    override func teardownAuthenticatedUI() {
+        super.teardownAuthenticatedUI()
+        
+    }
+    
     
     
     
@@ -218,6 +285,7 @@ class DashboardViewController : RestrictedController {
         view.addSubview(orderStat)
         view.addSubview(viewStat)
         view.addSubview(impresssionStat)
+      
         
         
    
@@ -236,6 +304,7 @@ class DashboardViewController : RestrictedController {
         //For setting the  collection view resizable, set the bottom anchor less or equal
         sellerMenuCollection.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         (verificationStatus).anchor( top: sellerMenuCollection.bottomAnchor, left: view.leadingAnchor, right: view.trailingAnchor, bottom: nil, paddingTop: 20, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: 60)
+        
         
         
         
@@ -285,7 +354,17 @@ class DashboardViewController : RestrictedController {
  
         }
     }
-    
+//    override func presentNotLoggedInState() {
+//          notLoggedInView = createNotLoggedInView(with: "To Access the Dashboard")
+//
+//          if let notLoggedInView = notLoggedInView {
+//              notLoggedInView.frame = view.bounds
+//              notLoggedInView.backgroundColor = .orange
+//              view.addSubview(notLoggedInView)
+//              view.bringSubviewToFront(notLoggedInView)
+//          }
+//      }
+//
     
     // MARK: - IBActions
     // Here you add all your @IBActions (functions called by UI interactions like button taps)
@@ -345,7 +424,8 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifierMenuCeller, for: indexPath) as! SellerMenuCell
         cell.label.text =   setting?.description
         if let stringImage  = setting?.imageSetting {
-            cell.iconMenu.image =  UIImage(systemName: stringImage)
+            cell.iconMenu.image =  UIImage(systemName: stringImage)?.withRenderingMode(.alwaysTemplate)
+            cell.iconMenu.tintColor = DesignConstants.primaryColor
         }
         
        
@@ -369,47 +449,54 @@ extension DashboardViewController : UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let itemSelected  =  SellerMenu.init(rawValue: indexPath.row)
-        switch itemSelected{
-            
-       
-            
-        case .some(.ListItem):
-            let controller  = AddListingViewController()
-          
-            self.navigationController?.pushViewController(controller, animated: true)
-            
-        case .none:
-            return
-        case .some(.Orders):
-            let controller  = ManageOrderController()
-          
-            self.navigationController?.pushViewController(controller, animated: true)
-        case .some(.Listings):
-            let controller  = ManageListingController()
-          
-            self.navigationController?.pushViewController(controller, animated: true)
-        case .some(.Messages):
-            let controller  =  BalanceViewController()
-            
-            self.navigationController?.pushViewController(controller, animated: true)
-            return 
-        case .some(.Reviews):
-            guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
-            let controller  =  AllReviewController(typeReview: .seller, reviews: nil, sellerId: seller_id)
-            
-            self.navigationController?.pushViewController(controller, animated: true)
-            return
-        case .some(.Shop):
-            guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
-         
-            let controller  =  ShopViewController(sellerId: seller_id, shopInfo: nil, admin: true)
-            self.navigationController?.pushViewController(controller, animated: true)
+        
+        if status == .Verified{
+            switch itemSelected{
+                
            
-        case .some(.MyInfo):
-            return
-        case .some(.Support):
-            return
+                
+            case .some(.ListItem):
+                let controller  = AddListingViewController()
+              
+                self.navigationController?.pushViewController(controller, animated: true)
+                
+            case .none:
+                return
+            case .some(.Orders):
+                let controller  = ManageOrderController()
+              
+                self.navigationController?.pushViewController(controller, animated: true)
+            case .some(.Listings):
+                let controller  = ManageListingController()
+              
+                self.navigationController?.pushViewController(controller, animated: true)
+            case .some(.Messages):
+                let controller  =  BalanceViewController()
+                
+                self.navigationController?.pushViewController(controller, animated: true)
+                return
+            case .some(.Reviews):
+                guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
+                let controller  =  AllReviewController(typeReview: .seller, reviews: nil, sellerId: seller_id)
+                
+                self.navigationController?.pushViewController(controller, animated: true)
+                return
+            case .some(.Shop):
+                guard let seller_id  = UserDefaults.standard.object(forKey: "seller_id") as? String else {return}
+             
+                let controller  =  ShopViewController(sellerId: seller_id, shopInfo: nil, admin: true)
+                self.navigationController?.pushViewController(controller, animated: true)
+               
+            case .some(.MyInfo):
+                return
+            case .some(.Support):
+                return
+            }
+            
+        }else {
+            AlertManager.showSellerMessage(on: self, message: "You can't perform these actions until you're verified")
         }
+       
         
       
        
@@ -467,3 +554,5 @@ extension DashboardViewController: SFSafariViewControllerDelegate {
 //    }
     
 }
+
+

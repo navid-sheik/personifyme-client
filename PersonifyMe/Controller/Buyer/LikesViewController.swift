@@ -21,10 +21,20 @@ class LikesViewController : RestrictedController{
     
     //MARK: Properties
     
+    
+
+    
     private var products : [Product]?{
         didSet{
             
             DispatchQueue.main.async {
+                
+                guard let products = self.products else {return}
+                if products.isEmpty {
+                      self.imageCollectionView.setEmptyMessage("You have 0 active listing")
+                  } else {
+                      self.imageCollectionView.restore()
+                  }
                 self.imageCollectionView.reloadData()
             }
            
@@ -54,7 +64,17 @@ class LikesViewController : RestrictedController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        title = "Likes"
+        self.title = "Likes"
+        self.navigationItem.largeTitleDisplayMode =  .always
+
+       
+        
+    }
+    
+    override func setupAuthenticatedUI() {
+        super.setupAuthenticatedUI()
+       
+       
         
         imageCollectionView.register(ProductLikeCell.self, forCellWithReuseIdentifier: likesCellIdentifier)
         imageCollectionView.delegate  = self
@@ -62,9 +82,10 @@ class LikesViewController : RestrictedController{
         imageCollectionView.backgroundColor = .systemBackground
         setUpView()
         fetchProductLikes()
-        
     }
-    
+    override func teardownAuthenticatedUI() {
+        super.teardownAuthenticatedUI()
+    }
     
     
     //MARK: Methods

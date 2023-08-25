@@ -21,7 +21,6 @@ class ManageOrderCell : UITableViewCell{
     
     var orderItem : OrderItem?{
         didSet{
-            print("Something")
             guard let orderItem =  orderItem else {return}
             self.configureCell(orderItem)
         }
@@ -43,7 +42,7 @@ class ManageOrderCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "A Unique Embodiment of Your Personal Style,Crafted with Precision, Simple Kind Something"
         label.font = UIFont.boldSystemFont(ofSize: 16)
-        label.textColor = UIColor.gray
+        label.textColor =  DesignConstants.textColor
         label.numberOfLines = 1
         return label
     }()
@@ -132,7 +131,7 @@ class ManageOrderCell : UITableViewCell{
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Shipping"
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         
         return label
     }()
@@ -157,6 +156,8 @@ class ManageOrderCell : UITableViewCell{
         
         return button
     }()
+    
+    
     
     private let trackingBUtton : CustomButton = {
         let button = CustomButton(title: "ADD TRACKING", hasBackground: true, fontType: .small)
@@ -196,9 +197,10 @@ class ManageOrderCell : UITableViewCell{
     
     
     
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentView.backgroundColor =  UIColor.init(red: 0.949, green: 0.949, blue: 0.97, alpha: 1.0)
+        self.contentView.backgroundColor =  DesignConstants.secondaryColor
         trackingBUtton.addTarget(self, action: #selector(addTracking), for: .touchUpInside)
         setupUI()
         
@@ -264,9 +266,27 @@ class ManageOrderCell : UITableViewCell{
         }
         
         self.amountValue.text = "$\(orderItem.total)"
-        self.statusValue.text = orderItem.status == .Processing ? "Paid" : "Shipped"
-        
+        switch orderItem.status {
+            
+        case .Processing:
+            self.statusValue.text = "Paid"
+        case .Shipped:
+            self.statusValue.text = "Shipped"
+        case .Delivered:
+            self.statusValue.text = "Delivered"
+        case .Cancelled:
+            self.statusValue.text = "Cancelled"
+        case .Returned:
+            self.statusValue.text = "Returned"
+        case .Refunded:
+            self.statusValue.text = "Refunded"
+        }
+      
         self.shippingValue.text = "$0.00"
+        
+        if let trackingNumber = orderItem.tracking?.trackingNumber{
+            self.trackingBUtton.setTitle("Edit", for: .normal)
+        }
     
       
         

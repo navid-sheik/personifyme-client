@@ -19,8 +19,13 @@ import UIKit
 import SimpleCheckbox
 
 
-
+protocol UpdateListingDelegate  : class {
+    func deleteItemsWithId(productId : String)
+    
+}
 class AddListingViewController: UIViewController{
+    
+    weak var delegate :UpdateListingDelegate?
     
     
     var product : Product?{
@@ -193,6 +198,7 @@ class AddListingViewController: UIViewController{
     
     var addImageButton : CustomButton =  {
         let button  = CustomButton(title: "Add Picture", hasBackground: true, fontType: .medium)
+        
         return button
     }()
     
@@ -245,7 +251,7 @@ class AddListingViewController: UIViewController{
         let swithControl = UISwitch()
         swithControl.isOn = false
         swithControl.isEnabled = true
-        swithControl.onTintColor = UIColor(red: 55/255, green: 120/255, blue: 250/255, alpha: 1)
+        swithControl.onTintColor = DesignConstants.primaryColor
         swithControl.translatesAutoresizingMaskIntoConstraints = false
         swithControl.addTarget(self, action: #selector(handleSwitchAction), for: .valueChanged)
         
@@ -285,12 +291,12 @@ class AddListingViewController: UIViewController{
     ///Personalization
     let personalizationLabel  : UILabel =  {
         let label  = UILabel()
-        label.text =  "Personlization"
+        label.text =  "Personalization"
         label.font =  UIFont.systemFont(ofSize: 18)
         return label
     }()
     let personalizationTextView :  LabeledTextView = {
-        let labelTextView = LabeledTextView(labelText: "Enter personalization for buyers", placeholder: "Enter an appropriate description")
+        let labelTextView = LabeledTextView(labelText: "Enter instruction for  personalization", placeholder: "Enter an appropriate description")
         labelTextView.translatesAutoresizingMaskIntoConstraints = false
         return labelTextView
     }()
@@ -420,10 +426,11 @@ class AddListingViewController: UIViewController{
         let tickBox = Checkbox(frame: CGRect(x: 30, y: 160, width: 25, height: 25))
         tickBox.borderStyle = .square
         tickBox.checkmarkStyle = .tick
-        tickBox.checkedBorderColor = .lightGray
+        tickBox.checkedBorderColor = DesignConstants.primaryColor
+        tickBox.backgroundColor = DesignConstants.secondaryColor
         tickBox.checkmarkSize = 0.7
-        tickBox.checkmarkColor = .darkGray
-        tickBox.checkedBorderColor = .darkGray
+        tickBox.checkmarkColor = DesignConstants.primaryColor
+        tickBox.checkedBorderColor =  DesignConstants.primaryColor
         tickBox.valueChanged = { (value) in
             print("tickBox value change: \(value)")
         }
@@ -434,10 +441,11 @@ class AddListingViewController: UIViewController{
         let tickBox = Checkbox(frame: CGRect(x: 30, y: 160, width: 25, height: 25))
         tickBox.borderStyle = .square
         tickBox.checkmarkStyle = .tick
-        tickBox.checkedBorderColor = .lightGray
+        tickBox.checkedBorderColor = DesignConstants.primaryColor
+        tickBox.backgroundColor = DesignConstants.secondaryColor
         tickBox.checkmarkSize = 0.7
-        tickBox.checkmarkColor = .darkGray
-        tickBox.checkedBorderColor = .darkGray
+        tickBox.checkmarkColor = DesignConstants.primaryColor
+        tickBox.checkedBorderColor =  DesignConstants.primaryColor
         tickBox.valueChanged = { (value) in
             print("exhange  value change: \(value)")
         }
@@ -647,7 +655,7 @@ class AddListingViewController: UIViewController{
  
         imageCollectionView.anchor( top: titleTextField.bottomAnchor , left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
         
-        addImageButton.anchor( top: imageCollectionView.bottomAnchor, left:  nil, right:  nil, bottom: nil, paddingTop: 15, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: self.view.frame.width / 2, height: nil)
+        addImageButton.anchor( top: imageCollectionView.bottomAnchor, left:  nil, right:  nil, bottom: nil, paddingTop: 15, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: self.view.frame.width / 2, height: 35)
         addImageButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         categoriesView.anchor( top: addImageButton.bottomAnchor , left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: 40)
         
@@ -803,6 +811,7 @@ class AddListingViewController: UIViewController{
                     guard let deletedProduct = response.data else {return}
                     print(deletedProduct)
                     DispatchQueue.main.async {
+                        self.delegate?.deleteItemsWithId(productId: deletedProduct)
                         self.navigationController?.popViewController(animated: true)
                     }
                 case .failure(_):
@@ -1195,7 +1204,7 @@ extension AddListingViewController: AddVariantControllerDelegate{
                     
                     let optionLabel = UILabel()
                     optionLabel.text = option
-                    optionLabel.backgroundColor = UIColor.black // Color the background
+                    optionLabel.backgroundColor = DesignConstants.primaryColor
                     optionLabel.textColor = UIColor.white
                     optionLabel.font = UIFont.systemFont(ofSize: 14)
                     optionLabel.textAlignment = .center

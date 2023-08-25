@@ -45,12 +45,14 @@ class CreateReviePopController: UIViewController {
        let closeButton  =  UIButton()
         closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.tintColor  = DesignConstants.primaryColor
         return closeButton
     }()
     let plusButton : UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName:  "xmark.circle.fill" ), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor  = DesignConstants.primaryColor
         return button
     }()
     
@@ -136,7 +138,18 @@ class CreateReviePopController: UIViewController {
     
         // Set up all UI elements here
         view.addSubview(viewContainer)
-        viewContainer.backgroundColor = .lightGray
+        viewContainer.backgroundColor = DesignConstants.secondaryColor
+        viewContainer.layer.shadowColor = UIColor.black.cgColor
+        viewContainer.layer.shadowOpacity = 0.8
+        viewContainer.layer.shadowOffset = CGSize(width: 0, height: 0)
+        viewContainer.layer.shadowRadius = 8
+
+
+               // To make the shadow work properly, set the background color and shadow on the same layer,
+               // and make sure to set the `masksToBounds` property to false.
+        viewContainer.layer.masksToBounds = false
+
+        
         let widthContainer  = self.view.frame.width * 0.9
         let heightContainer  = self.view.frame.height / 2
         

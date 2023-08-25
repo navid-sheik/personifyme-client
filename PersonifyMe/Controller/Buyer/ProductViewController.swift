@@ -27,7 +27,12 @@ class ProductViewController: UIViewController {
     
     var product : Product
     
-    var shopInfo :  Shop?
+    var shopInfo :  Shop?{
+        didSet{
+            guard let shopInfo =  shopInfo else { return }
+            self.productShopInfo.shop = shopInfo
+        }
+    }
     var sellerInfo : Seller?
     
     var isLiked : Bool =  false
@@ -69,7 +74,7 @@ class ProductViewController: UIViewController {
             DispatchQueue.main.async {
                 let average = ReviewManager.calculateAverageRating(from: self.reviews)
                 self.starRatingView.setRating(average)
-                self.averageReview.text =   "(\(average))"
+                self.averageReview.text =   "\(average)"
                 self.totalReview.text   =  "(\(self.reviews.count))"
                 self.reviewTable.reloadData()
                 self.reviewTable.layoutIfNeeded()
@@ -101,16 +106,16 @@ class ProductViewController: UIViewController {
         let label = UILabel()
         label.text  =  "Something"
         label.numberOfLines =  2
-        label.font = UIFont.systemFont(ofSize: 20)
-        label.textColor = UIColor.gray
+        label.font = UIFont.boldSystemFont(ofSize: 30)
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
     let currenyLabel : UILabel = {
         let label = UILabel()
         label.text = "$"
-        label.font = UIFont.systemFont(ofSize: 24)
-        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 25)
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -119,8 +124,8 @@ class ProductViewController: UIViewController {
     let priceLabel : UILabel = {
         let label = UILabel()
         label.text = "100"
-        label.font = UIFont.systemFont(ofSize: 35)
-        label.textColor = UIColor.gray
+        label.font = UIFont.systemFont(ofSize: 25)
+        label.textColor = DesignConstants.textColor
         return label
     }()
     
@@ -135,6 +140,8 @@ class ProductViewController: UIViewController {
         let button  =  CustomButton(title: "ADD TO CART"  ,  hasBackground : true, fontType: .medium)
         return button
     }()
+    
+
 //
 //
 //    private let starRatingView: StarRatingView = {
@@ -148,10 +155,10 @@ class ProductViewController: UIViewController {
         let tableView = ExpandableTableViewV2(frame: .zero, style: .plain)
         
         tableView.sections = [
-            Section(title: "HOW TO PERSONALIZE", items: [GlobalTexts.productionDelivery]),
-                   Section(title: "PRODUCT & DELIVERY", items: ["Item 3"]),
-                           Section(title: "OUR GUARANTEE", items: ["Item 3"]),
-                        Section(title: "FAQ", items: ["Item 3"]),
+            Section(title: "HOW TO PERSONALIZE", items: [GlobalTexts.personlization]),
+                   Section(title: "PRODUCT & DELIVERY", items: [GlobalTexts.productionDelivery]),
+                           Section(title: "OUR GUARANTEE", items: [GlobalTexts.ourguarantee]),
+                        Section(title: "FAQ", items: [GlobalTexts.faq]),
                           
                           
                           
@@ -159,6 +166,17 @@ class ProductViewController: UIViewController {
                ]
       
         return tableView
+    }()
+    
+    
+    let productShopInfo : ProductShopInfo = {
+        let info  = ProductShopInfo()
+        
+        return info
+    }()
+    let productDetails : ProductDetailsView = {
+        let details  = ProductDetailsView()
+        return details
     }()
     
 
@@ -208,7 +226,7 @@ class ProductViewController: UIViewController {
         let label = UILabel()
         label.text = "Description"
         label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gray
+        label.textColor = DesignConstants.textColor
         return label
     }()
         
@@ -217,11 +235,12 @@ class ProductViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.layer.masksToBounds = true
         textView.text = GlobalTexts.placeHolder
-        textView.textAlignment = .left
+        textView.textAlignment = .justified
         textView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0);
         textView.font = UIFont.systemFont(ofSize: 14)
         textView.sizeToFit()
         textView.isScrollEnabled = false
+        textView.isEditable = false
         return textView
     }()
     
@@ -229,6 +248,8 @@ class ProductViewController: UIViewController {
         let button = UIButton(type: .system)
 //        let image = UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate)
 //        button.setImage(image, for: .normal)
+        let image = UIImage(systemName: "heart")?.withRenderingMode(.alwaysTemplate)
+        button.setImage(image , for: .normal)
         button.tintColor = .red
         button.translatesAutoresizingMaskIntoConstraints = false
         button.contentMode = .scaleAspectFill
@@ -273,13 +294,13 @@ class ProductViewController: UIViewController {
     }()
     
     
-    let shopLabel : UILabel = {
-        let label = UILabel()
-        label.text = "Shop"
-        label.font = UIFont.systemFont(ofSize: 18)
-        label.textColor = UIColor.gray
-        return label
-    }()
+//    let shopLabel : UILabel = {
+//        let label = UILabel()
+//        label.text = "Shop"
+//        label.font = UIFont.systemFont(ofSize: 18)
+//        label.textColor = DesignConstants.textColor
+//        return label
+//    }()
     
     
     
@@ -373,7 +394,8 @@ class ProductViewController: UIViewController {
                     
                 case .shop(let shopOject):
                     self.shopInfo =  shopOject
-                    shopLabel.text  = shopOject.name
+//                    shopLabel.text  = shopOject.name
+                    self.productShopInfo.shop = shopOject
                    
                 case .string(let idString):
                     print("idString \(idString)")
@@ -409,14 +431,19 @@ class ProductViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor  = .systemBackground
-        navigationController?.navigationBar.prefersLargeTitles = false
-     
+//        navigationController?.navigationBar.largeContentTitle = false
         
+        navigationItem.largeTitleDisplayMode =  .never
+//        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        navigationController?.navigationBar.shadowImage = UIImage()
+//        navigationController?.navigationBar.isTranslucent = true
+     
+    
         favouriteButton.addTarget(self, action: #selector(handleFavouriteButtno), for: .touchUpInside)
         addToCartButton.addTarget(self, action: #selector(handleAddCart), for: .touchUpInside)
-        shopLabel.isUserInteractionEnabled = true
+       
         
-        shopLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleGotToShop)))
+//        shopLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleGotToShop)))
        
         personalizationView.textView.delegate = self
          placeholderLabel = UILabel()
@@ -443,6 +470,13 @@ class ProductViewController: UIViewController {
         
       
        
+        if let category = product.category {
+            productDetails.configure(condition: product.condition, category: category.name, disptaches: product.shippingInfo.originCountry, returns: product.returnPolicy, exchanhe: product.shippingPolicy)
+        }
+        
+        
+     
+        productShopInfo.delegate = self
         setupUI()
         
         guard let variants = self.product.variations else {return }
@@ -488,8 +522,19 @@ class ProductViewController: UIViewController {
         contentView.addSubview(estimateLabel)
         contentView.addSubview(reviewTable)
         contentView.addSubview(accordionTableView)
+        contentView.addSubview(productShopInfo)
 
 //        contentView.addSubview(starRatingView)
+        
+
+//
+                
+        imageCollectionView.anchor( top: contentView.topAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
+        
+        favouriteButton.anchor( top: nil, left: contentView.leadingAnchor, right: nil, bottom: imageCollectionView.bottomAnchor, paddingTop: 0, paddingLeft: 2,paddingRight: 0, paddingBottom: -2, width: 30, height: 30)
+
+        
+        productTitle.anchor( top: imageCollectionView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         starRatingView.widthAnchor.constraint(equalToConstant: self.view.frame.width / 4).isActive = true
 
@@ -500,23 +545,15 @@ class ProductViewController: UIViewController {
         reviewStackView = StackManager.createStackView(with: [averageReview, starRatingView, totalReview], axis: .horizontal, spacing: 3, distribution: .fillProportionally , alignment: .center)
 
         contentView.addSubview(reviewStackView)
-        reviewStackView.anchor(top: contentView.topAnchor, left: nil, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 5, paddingRight: -5, paddingBottom: 0, width: nil, height: nil)
+        reviewStackView.anchor(top: productTitle.bottomAnchor, left: contentView.leadingAnchor, right: nil, bottom: nil, paddingTop: 10, paddingLeft: 10, paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         let minimumHeightConstraint = reviewStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 20)
         minimumHeightConstraint.isActive = true
 
-//
-                
-        imageCollectionView.anchor( top: reviewStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 5, paddingLeft: 0,paddingRight: 0, paddingBottom: 0, width: nil, height: self.view.frame.width)
-        
-        favouriteButton.anchor( top: nil, left: contentView.leadingAnchor, right: nil, bottom: imageCollectionView.bottomAnchor, paddingTop: 0, paddingLeft: 2,paddingRight: 0, paddingBottom: -2, width: 30, height: 30)
-
-        
-        productTitle.anchor( top: imageCollectionView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil, paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         let priceStackView  = createStackView(with: [currenyLabel, priceLabel], axis: .horizontal, spacing: 5, distribution: .fillProportionally, alignment: .fill)
         
         contentView.addSubview(priceStackView)
-        priceStackView.anchor( top: productTitle.bottomAnchor, left: contentView.leadingAnchor, right: nil, bottom: nil,  paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        priceStackView.anchor( top: reviewStackView.bottomAnchor, left: contentView.leadingAnchor, right: nil, bottom: nil,  paddingTop: 10, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         
    
@@ -541,14 +578,30 @@ class ProductViewController: UIViewController {
         descriptionStackView.anchor( top: estimateLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
         
         
-        contentView.addSubview(shopLabel)
+//        contentView.addSubview(shopLabel)
         
-        shopLabel.anchor(top: descriptionStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+    
         
-        accordionTableView.anchor( top: shopLabel.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        contentView.addSubview(productDetails)
+//        productDetails.backgroundColor = .green
         
-        reviewTable.anchor( top: accordionTableView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: -100, width: nil, height: nil)
+        productDetails.anchor( top: descriptionStackView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+//        productDetails.heightAnchor.constraint(greaterThanOrEqualToConstant: 150).isActive = true
         
+            
+        
+        accordionTableView.anchor( top: productDetails.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+        
+        
+        
+            
+        productShopInfo.anchor( top: accordionTableView.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: nil,  paddingTop: 25, paddingLeft: 10,paddingRight: -10, paddingBottom: 0, width: nil, height: nil)
+            
+            
+
+        
+        
+        reviewTable.anchor( top: productShopInfo.bottomAnchor, left: contentView.leadingAnchor, right: contentView.trailingAnchor, bottom: contentView.bottomAnchor,  paddingTop: 25, paddingLeft: 0,paddingRight: -10, paddingBottom: -100, width: nil, height: nil)
         
         
         
@@ -686,7 +739,7 @@ class ProductViewController: UIViewController {
 //
 //                    if self.product.productId == productId2 {
 //                        UIView.transition(with: self.favouriteButton, duration: 0.3, options: .transitionCrossDissolve, animations: {
-//                              self.favouriteButton.setImage(UIImage(systemName: "heart"), for: .normal)
+//                              self.favouriteButton.setImage(UIImage(x: "heart"), for: .normal)
 //                          }, completion: nil)
 //                    }
 //                    self.delegate?.handleUnlike(cell: self)
@@ -703,9 +756,27 @@ class ProductViewController: UIViewController {
         
     }
     
+
+    
      func handleLike(){
         print("Like Product")
+         
+         performActionOrAuthorize { success in
+             if success {
+                 self.likeRequest()
+             }else {
+                 print("Something wrong")
+             }
+         
+         }
    
+   
+       
+
+        
+    }
+    
+    @objc func likeRequest (){
         Service.shared.likeProduct(productId: product.productId, expecting: ApiResponse<String>.self) { [weak self] result in
             guard let self = self else {return}
             switch result{
@@ -730,14 +801,10 @@ class ProductViewController: UIViewController {
             }
         }
         
-       
-
-        
     }
 
     
     @objc func handleAddCart(_ sender: UIButton){
-     
         
         let personalizationText  = personalizationView.textView.text ?? ""
         
@@ -750,9 +817,26 @@ class ProductViewController: UIViewController {
         }
         
         let variantsArray = getVariantValues()
-        
         let cartItem = CartItemSend(productId: product.productId, quantity: 1, price: product.price, hasVariations: true , variations: variantsArray, customizationOptions: [personalizationText], cartItemId: nil, createdAt: nil, updatedAt: nil)
         
+        
+       
+        performActionOrAuthorize { success in
+            if success {
+                self.addToCartRequest(sender, cartItem: cartItem)
+            }else {
+                print("Something wrong adding to cart")
+            }
+        
+        }
+        
+       
+        
+        
+    }
+    
+    func addToCartRequest(_ sender : UIButton , cartItem:  CartItemSend){
+
         
         let originalColor = sender.backgroundColor
         let originalText  =  sender.title(for: .normal)
@@ -770,8 +854,6 @@ class ProductViewController: UIViewController {
                }, completion: nil)
            }
         delegate?.addProductToCart(cartItem)
-        
-        
         
         
     }
@@ -857,6 +939,20 @@ extension ProductViewController:  UITextFieldDelegate{
 
 extension ProductViewController : AddReviewDelegate {
     func addReview() {
+        
+        performActionOrAuthorize { success in
+            if success {
+                self.showPreotectReview()
+            }else {
+                print("Something wrong adding to cart")
+            }
+        
+        }
+
+    }
+    
+    func showPreotectReview(){
+        
         print("Add new review")
 //        if let  productId  = product.productId else {
 //            print("Product id is nil")
@@ -937,6 +1033,7 @@ extension ProductViewController :  UITableViewDelegate, UITableViewDataSource{
         let cell  = tableView.dequeueReusableCell(withIdentifier: reviewCellIdentifier, for: indexPath) as! ReviewTableViewCell
 //        cell.backgroundColor = .blue
         cell.review = reviews[indexPath.row]
+        cell.selectionStyle = .none
         return cell
     }
     
@@ -971,3 +1068,97 @@ extension ProductViewController :  UITableViewDelegate, UITableViewDataSource{
 //    }
 }
 
+
+
+extension ProductViewController  :  ProductShopInfoDelegate{
+    func didTapShopButton() {
+        guard let shopInfo =  self.shopInfo else { return}
+        
+        guard let sellerId = sellerInfo?.id else {return}
+//        ShopViewController(sellerId: <#T##String#>, shopInfo: <#T##Shop#>, )
+        let vc = ShopViewController(sellerId: sellerId, shopInfo: shopInfo,admin: false)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func didTapFollowButton() {
+        print("Follow")
+        performActionOrAuthorize { success in
+            if success {
+                
+                guard let user_id  = UserDefaults.standard.object(forKey: "user_id") as? String else {return}
+                if ((self.shopInfo?.followers?.contains(user_id)) == true){
+                    self.unfollowShop()
+            
+                    
+                }else {
+                    self.followShop()
+                }
+                
+
+            }else {
+                print("Something wrong adding to cart")
+            }
+        
+        }
+        
+    }
+    
+    
+    
+    
+    
+    
+    private func followShop(){
+        guard let shopID = self.shopInfo?.sellerShopID else {return}
+        Service.shared.followShop(with: shopID, expecting: ApiResponse<Shop>.self) { [weak self] result in
+            guard let self = self else {return}
+        
+            switch result{
+                
+            case .success(let response):
+        
+                guard let shop = response.data else {return}
+                
+
+                        self.shopInfo =  shop
+                   
+                           
+                
+                
+                
+             
+            case .failure(_):
+                print("Error fetching product for shop")
+            }
+        }
+    }
+    
+    private func unfollowShop(){
+        guard let shopID = self.shopInfo?.sellerShopID else {return}
+        
+        Service.shared.unfollowShop(with: shopID, expecting: ApiResponse<Shop>.self) { [weak self] result in
+            guard let self = self else {return}
+        
+            switch result{
+                
+            case .success(let response):
+        
+                
+                guard let shop = response.data else {return}
+
+                    self.shopInfo =  shop
+                    
+                
+                           
+                
+                
+                
+                
+            case .failure(_):
+                print("Error fetching product for shop")
+            }
+        }
+    }
+    
+    
+}

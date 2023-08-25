@@ -26,6 +26,13 @@ class AlertManager {
 
 //Product Alert
 extension AlertManager{
+    
+    public static func showSellerMessage(on vc : UIViewController, message: String){
+        showBasicAlert(on: vc, title: "Seller Notification", message: message)
+    }
+    public static func showSellerErrorMessage(on vc : UIViewController, message: String){
+        showBasicAlert(on: vc, title: "Seller Error", message: message)
+    }
     public static func showAddToCartError(on vc : UIViewController, message: String){
         showBasicAlert(on: vc, title: "Add To Cart Error", message: message)
     }
@@ -114,7 +121,7 @@ extension AlertManager{
     
     
     public static func showSendingPasswordReset(on vc : UIViewController){
-        showBasicAlert(on: vc, title: "Password Reset Sent", message: "An error occured during password reset. Please try again later")
+        showBasicAlert(on: vc, title: "Password Reset Sent", message: "Sent email successful")
     }
     public static func showErrorSendingPasswordReset(on vc : UIViewController, with error: Error){
         showBasicAlert(on: vc, title: "Password Reset Error",  message: "\(error.localizedDescription)")

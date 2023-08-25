@@ -45,7 +45,7 @@ class DashBoardStatsElement : UIView{
         self.value = value
         super.init(frame: .zero)
         
-        self.layer.borderColor = UIColor.lightGray.cgColor
+        self.layer.borderColor = DesignConstants.primaryColor?.cgColor
         self.layer.borderWidth =  1
         self.layer.cornerRadius = 2
         
@@ -68,6 +68,7 @@ class DashBoardStatsElement : UIView{
  
     
     func setUpView (){
+        self.backgroundColor =  DesignConstants.secondaryColor
         self.addSubview(titleLabel)
         self.addSubview(valueLabel)
         titleLabel.text   = placeholder

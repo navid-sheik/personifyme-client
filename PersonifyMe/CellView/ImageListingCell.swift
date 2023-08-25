@@ -49,7 +49,8 @@ class ImageListingCell: CustomCell {
     
     let closeBUtton :  UIButton =  {
        let closeButton  =  UIButton()
-        closeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        closeButton.setImage(UIImage(systemName: "xmark.circle.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        closeButton.tintColor = DesignConstants.primaryColor
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         return closeButton
     }()
